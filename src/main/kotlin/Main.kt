@@ -19,14 +19,6 @@ data class Link(val url:String)
 	Text(link.url)
 }
 
-class PortEventListener(var counter:Int) : SerialPortEventListener{
-	override fun serialEvent(event:SerialPortEvent){
-		println("event from pin")
-		counter+=1
-	}
-}
-
-
 @Composable
 @Preview
 fun App() {
@@ -53,7 +45,6 @@ fun App() {
 		port = SerialPort(ports[0])
 		port?.openPort()
 		port?.setParams(BAUDRATE_9600,  DATABITS_8, STOPBITS_1, PARITY_NONE)
-		port?.addEventListener(PortEventListener(counter))
 		onDispose{
           port?.closePort()
 		}
