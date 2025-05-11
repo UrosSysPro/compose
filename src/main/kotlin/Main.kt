@@ -11,12 +11,19 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import jssc.*
 import jssc.SerialPort.*
+import kotlinx.coroutines.*
 
 data class Link(val url:String)
 
-
 @Composable fun LinkCard(link:Link){
 	Text(link.url)
+}
+
+class CustomSerialPortListener(var counter:Int):SerialPortEventListener{
+	override fun serialEvent(event:SerialPortEvent){
+		println("hello from serial")
+		counter++
+	}
 }
 
 @Composable
@@ -25,8 +32,6 @@ fun App() {
     var text by remember { mutableStateOf("Hello, World!") }
 	var checked by remember{ mutableStateOf(false) }
 
-
-	
 	val links=listOf(
 		Link(url="link 1"),
 		Link(url="link 2"),
@@ -45,6 +50,10 @@ fun App() {
 		port = SerialPort(ports[0])
 		port?.openPort()
 		port?.setParams(BAUDRATE_9600,  DATABITS_8, STOPBITS_1, PARITY_NONE)
+		runBlocking{
+			println("hello from coroutine")	
+			port?.addEventListener(CustomSerialPortListener(counter))
+		}
 		onDispose{
           port?.closePort()
 		}
