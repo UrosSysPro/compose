@@ -30,10 +30,39 @@ class CustomSerialPortListener(val callback:(String)->Unit):SerialPortEventListe
 	}
 }
 
+@Composable fun SerialPortSelector(ports:List<String>,onSelect:(String?)->Unit){
+	var expanded by remember { mutableStateOf(false) }
+
+	Box(
+		modifier = Modifier
+			.padding(16.dp)
+	) {
+		OutlinedButton(onClick = { expanded = !expanded }) {
+			Text("Select Port")
+		}
+		DropdownMenu(
+			expanded = expanded,
+			onDismissRequest = { expanded = false }
+		) {
+			DropdownMenuItem(
+				onClick = {onSelect(null)},
+			){
+				Text("None")
+			}
+			ports.forEach {
+				DropdownMenuItem(
+					onClick = { onSelect(it) },
+				){
+					Text(it)
+				}
+			}
+		}
+	}
+}
+
 @Composable
 @Preview
 fun App() {
-	var expanded by remember { mutableStateOf(false) }
 	var port by remember{ mutableStateOf<SerialPort?>(null) }
 	var counter by remember{ mutableStateOf(0) }
 	var serialPorts by remember{ mutableStateOf(listOf<String>())}
@@ -61,7 +90,7 @@ fun App() {
 		}
 	}
 
-    MaterialTheme {
+	MaterialTheme {
 
 		Scaffold(
 			topBar={
@@ -72,39 +101,15 @@ fun App() {
 				)
 			},
 			content={padding->
-				Box(
-					modifier = Modifier
-						.padding(padding)
-				) {
-					OutlinedButton(onClick = { expanded = !expanded }) {
-						Text("Select Port")
-					}
-					DropdownMenu(
-						expanded = expanded,
-						onDismissRequest = { expanded = false }
-					) {
-						DropdownMenuItem(
-							onClick = {selectedPortName=null},
-						){
-							Text("None")
-						}
-						serialPorts.forEach {
-							DropdownMenuItem(
-								onClick = { selectedPortName = it},
-							){
-								Text(it)
-							}
-						}
-					}
-				}
+				SerialPortSelector(serialPorts,onSelect = {selectedPortName=it})
 				Text("$counter")
 			}
 		)
-    }
+	}
 }
 
 fun main() = application {
-    Window(onCloseRequest = ::exitApplication) {
-        App()
-    }
+	Window(onCloseRequest = ::exitApplication) {
+		App()
+	}
 }
