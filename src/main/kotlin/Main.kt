@@ -2,11 +2,15 @@ import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import jssc.*
@@ -19,47 +23,46 @@ data class Link(val url:String)
 	Text(link.url)
 }
 
-class CustomSerialPortListener(var counter:Int):SerialPortEventListener{
+class CustomSerialPortListener(val callback:(String)->Unit):SerialPortEventListener{
 	override fun serialEvent(event:SerialPortEvent){
-		println("hello from serial")
-		counter++
+		val message=event.port.readString()
+		callback(message)
 	}
 }
 
 @Composable
 @Preview
 fun App() {
-    var text by remember { mutableStateOf("Hello, World!") }
-	var checked by remember{ mutableStateOf(false) }
-
-	val links=listOf(
-		Link(url="link 1"),
-		Link(url="link 2"),
-		Link(url="link 3"),
-		Link(url="link 4"),
-		Link(url="link 5"),
-	)
-	
+	var expanded by remember { mutableStateOf(false) }
 	var port by remember{ mutableStateOf<SerialPort?>(null) }
 	var counter by remember{ mutableStateOf(0) }
-    DisposableEffect(text){
+	var serialPorts by remember{ mutableStateOf(listOf<String>())}
+	var selectedPortName by remember{ mutableStateOf<String?>(null)}
+
+	LaunchedEffect(null) {
 		val ports=SerialPortList.getPortNames()
-		for(port in ports){
-			println(port)
-		}
-		port = SerialPort(ports[0])
-		port?.openPort()
-		port?.setParams(BAUDRATE_9600,  DATABITS_8, STOPBITS_1, PARITY_NONE)
-		runBlocking{
-			println("hello from coroutine")	
-			port?.addEventListener(CustomSerialPortListener(counter))
+		serialPorts = ports.toList()
+		serialPorts.forEach { println(it) }
+	}
+
+	DisposableEffect(selectedPortName){
+		if(selectedPortName != null){
+			if(port?.isOpened == true)port?.closePort()
+			port = SerialPort(selectedPortName)
+			port?.openPort()
+			port?.setParams(BAUDRATE_9600,  DATABITS_8, STOPBITS_1, PARITY_NONE)
+			port?.addEventListener(CustomSerialPortListener{
+				println(it)
+				counter++
+			})
 		}
 		onDispose{
-          port?.closePort()
+			if(port?.isOpened == true)port?.closePort()
 		}
 	}
 
     MaterialTheme {
+
 		Scaffold(
 			topBar={
 				TopAppBar(
@@ -69,16 +72,32 @@ fun App() {
 				)
 			},
 			content={padding->
-				/*Switch(
-					checked=checked,
-					onCheckedChange={
-						checked=it
+				Box(
+					modifier = Modifier
+						.padding(padding)
+				) {
+					OutlinedButton(onClick = { expanded = !expanded }) {
+						Text("Select Port")
 					}
-				)*/
-				Column{
-					Text("$counter")		
-					links.map{LinkCard(it)}
-				}	
+					DropdownMenu(
+						expanded = expanded,
+						onDismissRequest = { expanded = false }
+					) {
+						DropdownMenuItem(
+							onClick = {selectedPortName=null},
+						){
+							Text("None")
+						}
+						serialPorts.forEach {
+							DropdownMenuItem(
+								onClick = { selectedPortName = it},
+							){
+								Text(it)
+							}
+						}
+					}
+				}
+				Text("$counter")
 			}
 		)
     }
