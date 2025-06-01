@@ -1,3 +1,4 @@
+package net.systemvi.configurator
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.material.*
 import androidx.compose.runtime.*
