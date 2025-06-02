@@ -79,8 +79,6 @@ fun App() {
 		}
 	}
 
-	var a=mutableStateOf(2)
-	var b=remember{2}
 
 	MaterialTheme() {
 
