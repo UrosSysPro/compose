@@ -18,19 +18,6 @@ import jssc.*
 import jssc.SerialPort.*
 import kotlinx.coroutines.*
 
-data class Link(val url:String)
-
-@Composable fun LinkCard(link:Link){
-	Text(link.url)
-}
-
-class CustomSerialPortListener(val callback:(String)->Unit):SerialPortEventListener{
-	override fun serialEvent(event:SerialPortEvent){
-		val message=event.port.readString()
-		callback(message)
-	}
-}
-
 @Composable fun SerialPortSelector(ports:List<String>,onSelect:(String?)->Unit){
 	var expanded by remember { mutableStateOf(false) }
 
@@ -81,17 +68,19 @@ fun App() {
 			port = SerialPort(selectedPortName)
 			port?.openPort()
 			port?.setParams(BAUDRATE_9600,  DATABITS_8, STOPBITS_1, PARITY_NONE)
-			port?.addEventListener(CustomSerialPortListener{
-				println(it)
-				counter++
-			})
-		}
+			port?.addEventListener {
+                println(it)
+            }
+        }
 		onDispose{
 			if(port?.isOpened == true)port?.closePort()
 		}
 	}
 
-	MaterialTheme {
+	var a=mutableStateOf(2)
+	var b=remember{2}
+
+	MaterialTheme() {
 
 		Scaffold(
 			topBar={
