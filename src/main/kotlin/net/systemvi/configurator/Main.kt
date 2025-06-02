@@ -1,8 +1,9 @@
 package net.systemvi.configurator
 import androidx.compose.desktop.ui.tooling.preview.Preview
-import androidx.compose.material.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.runtime.Composable
@@ -48,6 +49,7 @@ import kotlinx.coroutines.*
 	}
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 @Preview
 fun App() {
@@ -86,13 +88,33 @@ fun App() {
 			topBar={
 				TopAppBar(
 					title={
-						Text("this is a title")
+						Row{
+							TextButton(
+								onClick = { println("Configure")}
+							) {
+								Text("Configure")
+							}
+							TextButton(
+								onClick = { println("Keytester")}
+							) {
+								Text("KeyTester")
+							}
+							TextButton(
+								onClick = { println("Design")}
+							) {
+								Text("Design")
+							}
+						}
+
 					}
 				)
 			},
 			content={padding->
-				SerialPortSelector(serialPorts,onSelect = {selectedPortName=it})
-				Text("$counter")
+				Column(Modifier.padding(padding)) {
+					SerialPortSelector(serialPorts,onSelect = {selectedPortName=it})
+					Text("$counter")
+				}
+
 			}
 		)
 	}
