@@ -23,6 +23,7 @@ dependencies {
     implementation(compose.desktop.currentOs)
 	implementation("io.github.java-native:jssc:2.9.6")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.1")
+    implementation(compose.material3)
 }
 
 compose.desktop {
