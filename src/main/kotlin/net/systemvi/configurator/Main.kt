@@ -15,35 +15,6 @@ import net.systemvi.configurator.components.keyboard_layout.KeyboardLayout
 import net.systemvi.configurator.components.NavBar
 import net.systemvi.configurator.components.common.BorderHorizontal
 
-@Composable fun SerialPortSelector(ports:List<String>,onSelect:(String?)->Unit){
-	var expanded by remember { mutableStateOf(false) }
-
-	Box(
-		modifier = Modifier
-			.padding(16.dp)
-	) {
-		OutlinedButton(onClick = { expanded = !expanded }) {
-			Text("Select Port")
-		}
-		DropdownMenu(
-			expanded = expanded,
-			onDismissRequest = { expanded = false }
-		) {
-			DropdownMenuItem(
-				onClick = {onSelect(null)},
-			){
-				Text("None")
-			}
-			ports.forEach {
-				DropdownMenuItem(
-					onClick = { onSelect(it) },
-				){
-					Text(it)
-				}
-			}
-		}
-	}
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -75,18 +46,12 @@ fun App() {
 		}
 	}
 
-
-	MaterialTheme() {
-
+	MaterialTheme {
 		Scaffold(
 			topBar={
 				NavBar()
 			},
 			content={padding->
-//				Column(Modifier.padding(padding)) {
-//					SerialPortSelector(serialPorts,onSelect = {selectedPortName=it})
-//					Text("$counter")
-//				}
 				Column(Modifier.padding(padding)) {
 					Box(Modifier.weight(1f)){KeyboardLayout()}
 					BorderHorizontal()
