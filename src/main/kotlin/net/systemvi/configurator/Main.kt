@@ -4,19 +4,16 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.DropdownMenuItem
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Window
-import androidx.compose.ui.window.application
+import androidx.compose.ui.window.*
 import jssc.*
 import jssc.SerialPort.*
+import net.systemvi.configurator.components.KeyboardKeys
 import net.systemvi.configurator.components.keyboard_layout.KeyboardLayout
 import net.systemvi.configurator.components.NavBar
+import net.systemvi.configurator.components.common.BorderHorizontal
 
 @Composable fun SerialPortSelector(ports:List<String>,onSelect:(String?)->Unit){
 	var expanded by remember { mutableStateOf(false) }
@@ -70,9 +67,9 @@ fun App() {
 			port?.openPort()
 			port?.setParams(BAUDRATE_9600,  DATABITS_8, STOPBITS_1, PARITY_NONE)
 			port?.addEventListener {
-                println(it)
-            }
-        }
+				println(it)
+			}
+		}
 		onDispose{
 			if(port?.isOpened == true)port?.closePort()
 		}
@@ -91,7 +88,9 @@ fun App() {
 //					Text("$counter")
 //				}
 				Column(Modifier.padding(padding)) {
-					KeyboardLayout()
+					Box(Modifier.weight(1f)){KeyboardLayout()}
+					BorderHorizontal()
+					Box(Modifier.weight(1f)){KeyboardKeys()}
 				}
 			}
 		)
@@ -99,9 +98,15 @@ fun App() {
 }
 
 fun main() = application {
-	Window(onCloseRequest = ::exitApplication, title = "Configurator") {
+	val state=rememberWindowState(
+		width = 1600.dp,
+		height = 900.dp,
+	)
+	Window(
+		state = state,
+		onCloseRequest = ::exitApplication,
+		title = "Configurator"
+	) {
 		App()
 	}
 }
-//poz2
-//poz
