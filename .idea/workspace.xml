@@ -13,7 +13,10 @@
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+<<<<<<< HEAD
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/net/systemvi/configurator/components/NavBar.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/net/systemvi/configurator/components/NavBar.kt" afterDir="false" />
+=======
+>>>>>>> 055a79cb7d171e51494a0dfab8d755492fd71bb2
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
