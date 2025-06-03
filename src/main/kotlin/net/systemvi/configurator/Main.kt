@@ -18,6 +18,7 @@ import androidx.compose.ui.window.application
 import jssc.*
 import jssc.SerialPort.*
 import kotlinx.coroutines.*
+import net.systemvi.configurator.components.NavBar
 
 @Composable fun SerialPortSelector(ports:List<String>,onSelect:(String?)->Unit){
 	var expanded by remember { mutableStateOf(false) }
@@ -84,28 +85,7 @@ fun App() {
 
 		Scaffold(
 			topBar={
-				TopAppBar(
-					title={
-						Row{
-							TextButton(
-								onClick = { println("Configure")}
-							) {
-								Text("Configure")
-							}
-							TextButton(
-								onClick = { println("Keytester")}
-							) {
-								Text("KeyTester")
-							}
-							TextButton(
-								onClick = { println("Design")}
-							) {
-								Text("Design")
-							}
-						}
-
-					}
-				)
+				NavBar()
 			},
 			content={padding->
 				Column(Modifier.padding(padding)) {
@@ -119,7 +99,7 @@ fun App() {
 }
 
 fun main() = application {
-	Window(onCloseRequest = ::exitApplication) {
+	Window(onCloseRequest = ::exitApplication, title = "Configurator") {
 		App()
 	}
 }
