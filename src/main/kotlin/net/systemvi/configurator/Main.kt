@@ -4,8 +4,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -17,7 +15,7 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import jssc.*
 import jssc.SerialPort.*
-import kotlinx.coroutines.*
+import net.systemvi.configurator.components.keyboard_layout.KeyboardLayout
 import net.systemvi.configurator.components.NavBar
 
 @Composable fun SerialPortSelector(ports:List<String>,onSelect:(String?)->Unit){
@@ -88,11 +86,13 @@ fun App() {
 				NavBar()
 			},
 			content={padding->
+//				Column(Modifier.padding(padding)) {
+//					SerialPortSelector(serialPorts,onSelect = {selectedPortName=it})
+//					Text("$counter")
+//				}
 				Column(Modifier.padding(padding)) {
-					SerialPortSelector(serialPorts,onSelect = {selectedPortName=it})
-					Text("$counter")
+					KeyboardLayout()
 				}
-
 			}
 		)
 	}
