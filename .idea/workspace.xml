@@ -5,11 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a51477ab-1531-4590-871e-ad5022bfaee8" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/net/systemvi/configurator/components/NavBar.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.kotlin/sessions/kotlin-compiler-5544581280716038751.salive" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/net/systemvi/configurator/Main.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/net/systemvi/configurator/Main.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/net/systemvi/configurator/components/NavBar.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/net/systemvi/configurator/components/NavBar.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -141,7 +138,8 @@
       <workItem from="1747052979985" duration="157000" />
       <workItem from="1747053180875" duration="4071000" />
       <workItem from="1748850862828" duration="2895000" />
-      <workItem from="1748934340451" duration="372000" />
+      <workItem from="1748934340451" duration="2818000" />
+      <workItem from="1748949522667" duration="390000" />
     </task>
     <servers />
   </component>
