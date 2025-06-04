@@ -3,17 +3,13 @@ import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.DropdownMenuItem
-import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.*
 import jssc.*
 import jssc.SerialPort.*
-import net.systemvi.configurator.components.KeyboardKeys
-import net.systemvi.configurator.components.keyboard_layout.KeyboardLayout
 import net.systemvi.configurator.components.NavBar
-import net.systemvi.configurator.components.common.BorderHorizontal
+import net.systemvi.configurator.components.configure.ConfigurePage
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -52,11 +48,7 @@ fun App() {
 				NavBar()
 			},
 			content={padding->
-				Column(Modifier.padding(padding)) {
-					Box(Modifier.weight(1f)){KeyboardLayout()}
-					BorderHorizontal()
-					Box(Modifier.weight(1f)){KeyboardKeys()}
-				}
+				ConfigurePage(Modifier.padding(padding))
 			}
 		)
 	}
