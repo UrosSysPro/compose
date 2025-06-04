@@ -9,11 +9,8 @@ build
 gradle
 gradle/
 ./.gradle/
-<<<<<<< HEAD
 .idea/workspace.xml
 .idea/*
-=======
->>>>>>> 055a79cb7d171e51494a0dfab8d755492fd71bb2
 .idea/
-kotlin/
 .kotlin/
+kls_database.db
