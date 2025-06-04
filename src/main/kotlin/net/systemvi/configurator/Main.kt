@@ -50,25 +50,25 @@ fun App() {
 				NavBar()
 			},
 			content={padding->
-//				ConfigurePage(Modifier.padding(padding))
-				Box(modifier = Modifier.padding(padding)){
-					Grid(
-						listOf(
-							listOf(
-								GridItem("Tab",1.5f,1f),
-								"q w e r t y u i o p [ ]",
-							),
-							listOf(
-								GridItem("Space",1.75f,1f),
-								"q w e r t y u i o p [ ]",
-							),
-							listOf(
-								GridItem("",2f,1f),
-								"q w e r t y u i o p [ ]",
-							)
-						)
-					)
-				}
+				ConfigurePage(Modifier.padding(padding))
+//				Box(modifier = Modifier.padding(padding)){
+//					Grid(
+//						listOf(
+//							listOf(
+//								GridItem("Tab",1.5f,1f),
+//								"q w e r t y u i o p [ ]",
+//							),
+//							listOf(
+//								GridItem("Space",1.75f,1f),
+//								"q w e r t y u i o p [ ]",
+//							),
+//							listOf(
+//								GridItem("",2f,1f),
+//								"q w e r t y u i o p [ ]",
+//							)
+//						)
+//					)
+//				}
 			}
 		)
 	}
