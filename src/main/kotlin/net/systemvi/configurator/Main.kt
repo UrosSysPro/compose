@@ -8,10 +8,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.*
 import jssc.*
 import jssc.SerialPort.*
-import net.systemvi.configurator.components.keyboard_keys.KeyboardKeys
-import net.systemvi.configurator.components.keyboard_layout.KeyboardLayout
 import net.systemvi.configurator.components.NavBar
-import net.systemvi.configurator.components.common.BorderHorizontal
+import net.systemvi.configurator.components.configure.ConfigurePage
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -50,11 +48,7 @@ fun App() {
 				NavBar()
 			},
 			content={padding->
-				Column(Modifier.padding(padding)) {
-					Box(Modifier.weight(1f)){KeyboardLayout()}
-					BorderHorizontal()
-					Box(Modifier.weight(1f)){KeyboardKeys()}
-				}
+				ConfigurePage(Modifier.padding(padding))
 			}
 		)
 	}
