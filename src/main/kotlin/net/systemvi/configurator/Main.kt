@@ -10,6 +10,8 @@ import jssc.*
 import jssc.SerialPort.*
 import net.systemvi.configurator.components.NavBar
 import net.systemvi.configurator.components.configure.ConfigurePage
+import net.systemvi.configurator.components.tester.Grid
+import net.systemvi.configurator.components.tester.GridItem
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -48,7 +50,25 @@ fun App() {
 				NavBar()
 			},
 			content={padding->
-				ConfigurePage(Modifier.padding(padding))
+//				ConfigurePage(Modifier.padding(padding))
+				Box(modifier = Modifier.padding(padding)){
+					Grid(
+						listOf(
+							listOf(
+								GridItem("Tab",1.5f,1f),
+								"q w e r t y u i o p [ ]",
+							),
+							listOf(
+								GridItem("Space",1.75f,1f),
+								"q w e r t y u i o p [ ]",
+							),
+							listOf(
+								GridItem("",2f,1f),
+								"q w e r t y u i o p [ ]",
+							)
+						)
+					)
+				}
 			}
 		)
 	}
