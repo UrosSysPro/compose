@@ -1,7 +1,10 @@
 package net.systemvi.configurator.components.configure.keyboard_layout
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -13,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import net.systemvi.configurator.components.serial.SerialPortSelector
 
 @Composable
 fun LayerSelector(){
@@ -25,24 +29,31 @@ fun LayerSelector(){
     )
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp)
-    ) {
-        Text("Layer",
-            color = MaterialTheme.colorScheme.primary,
-            fontSize = 24.sp,
-            modifier = Modifier.padding(0.dp,0.dp,30.dp,0.dp)
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp, horizontal = 16.dp)
+    ){
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp)
+        ) {
+            Text("Layer",
+                color = MaterialTheme.colorScheme.primary,
+                fontSize = 24.sp,
+                modifier = Modifier.padding(0.dp,0.dp,30.dp,0.dp)
 //            fontSize = 20.dp
-        )
-        for(layer in layers){
-            ElevatedButton(
-                onClick = layer.onClick,
-                Modifier
-                    .width(IntrinsicSize.Min)
-                    .height(IntrinsicSize.Min)
-                    .padding(vertical=2.dp,horizontal=4.dp)
-            ){
-                Text(layer.name)
+            )
+            for(layer in layers){
+                ElevatedButton(
+                    onClick = layer.onClick,
+                    Modifier
+                        .width(IntrinsicSize.Min)
+                        .height(IntrinsicSize.Min)
+                        .padding(vertical=2.dp,horizontal=4.dp)
+                ){
+                    Text(layer.name)
+                }
             }
         }
+        SerialPortSelector()
     }
 }
