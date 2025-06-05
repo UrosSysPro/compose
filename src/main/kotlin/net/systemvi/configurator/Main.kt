@@ -6,18 +6,25 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.*
+import androidx.lifecycle.viewmodel.compose.viewModel
 import jssc.*
 import jssc.SerialPort.*
+import net.systemvi.configurator.components.ConfigurePage
+import net.systemvi.configurator.components.DesignPage
 import net.systemvi.configurator.components.NavBar
+import net.systemvi.configurator.components.PageViewModel
+import net.systemvi.configurator.components.SettingsPage
+import net.systemvi.configurator.components.TesterPage
 import net.systemvi.configurator.components.configure.ConfigurePage
-import net.systemvi.configurator.components.tester.Grid
-import net.systemvi.configurator.components.tester.GridItem
+import net.systemvi.configurator.components.tester.TesterPage
+import net.systemvi.configurator.components.settings.SettingsPage
+import net.systemvi.configurator.components.design.DesignPage
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 @Preview
-fun App() {
+fun App(pageViewModel: PageViewModel= viewModel { PageViewModel() }) {
 	var port by remember{ mutableStateOf<SerialPort?>(null) }
 	var counter by remember{ mutableStateOf(0) }
 	var serialPorts by remember{ mutableStateOf(listOf<String>())}
@@ -50,25 +57,12 @@ fun App() {
 				NavBar()
 			},
 			content={padding->
-				ConfigurePage(Modifier.padding(padding))
-//				Box(modifier = Modifier.padding(padding)){
-//					Grid(
-//						listOf(
-//							listOf(
-//								GridItem("Tab",1.5f,1f),
-//								"q w e r t y u i o p [ ]",
-//							),
-//							listOf(
-//								GridItem("Space",1.75f,1f),
-//								"q w e r t y u i o p [ ]",
-//							),
-//							listOf(
-//								GridItem("",2f,1f),
-//								"q w e r t y u i o p [ ]",
-//							)
-//						)
-//					)
-//				}
+				when(pageViewModel.currentPage){
+					ConfigurePage -> ConfigurePage(Modifier.padding(padding).fillMaxSize())
+					TesterPage -> TesterPage(Modifier.padding(padding))
+					DesignPage -> DesignPage(Modifier.padding(padding))
+					SettingsPage -> SettingsPage(Modifier.padding(padding))
+				}
 			}
 		)
 	}
