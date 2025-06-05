@@ -13,3 +13,5 @@ gradle/
 .idea/
 .kotlin/
 kls_database.db
+graldew
+gradlew.bat
