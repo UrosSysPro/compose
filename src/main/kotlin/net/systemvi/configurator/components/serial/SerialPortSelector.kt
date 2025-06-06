@@ -22,40 +22,16 @@ import jssc.SerialPortList
 import net.systemvi.configurator.components.configure.ConfigureViewModel
 
 @Composable fun SerialPortSelector(configureViewModel: ConfigureViewModel= viewModel { ConfigureViewModel() }) {
-    val onSelect:(String?)->Unit={}
-
-    var port by remember{ mutableStateOf<SerialPort?>(null) }
-    var serialPorts by remember{ mutableStateOf(listOf<String>())}
-    var selectedPortName by remember{ mutableStateOf<String?>(null)}
-
-    LaunchedEffect(null) {
-        val ports=SerialPortList.getPortNames()
-        serialPorts = ports.toList()
-        serialPorts.forEach { println(it) }
-    }
-
-    DisposableEffect(selectedPortName){
-        if(selectedPortName != null){
-            if(port?.isOpened == true)port?.closePort()
-            port = SerialPort(selectedPortName)
-            port?.openPort()
-            port?.setParams(BAUDRATE_9600,  DATABITS_8, STOPBITS_1, PARITY_NONE)
-            port?.addEventListener {
-                println(it)
-            }
-        }
-        onDispose{
-            if(port?.isOpened == true)port?.closePort()
-        }
-    }
-
     var expanded by remember { mutableStateOf(false) }
 
     Box(
         modifier = Modifier
             .padding(16.dp)
     ) {
-        OutlinedButton(onClick = { expanded = !expanded }) {
+        OutlinedButton(onClick = {
+            configureViewModel.readPortNames()
+            expanded = !expanded
+        }) {
             Text("Select Port")
         }
         DropdownMenu(
@@ -63,12 +39,12 @@ import net.systemvi.configurator.components.configure.ConfigureViewModel
             onDismissRequest = { expanded = false }
         ) {
             DropdownMenuItem(
-                onClick = {onSelect(null)},
+                onClick = {configureViewModel.selectPort(null); expanded = false},
                 text = { Text("None") }
             )
-            serialPorts.forEach {
+            configureViewModel.serialPortNames.forEach {
                 DropdownMenuItem(
-                    onClick = { onSelect(it) },
+                    onClick = { configureViewModel.selectPort(it);expanded = false },
                     text = { Text(it) }
                 )
             }

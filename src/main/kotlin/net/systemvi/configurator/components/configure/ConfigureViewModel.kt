@@ -8,11 +8,16 @@ import jssc.SerialPort.*
 import jssc.*
 import net.systemvi.configurator.components.configure.keyboard_layout.ConfiguratorKey
 
+fun <T>List<List<T>>.transpose(): List<List<T>> {
+    return (this[0].indices).map { i -> (this.indices).map { j -> this[j][i] } }
+}
+
 class ConfigureViewModel(): ViewModel() {
 
-    var serialPortNames=mutableStateOf(listOf<String>())
-    var selectedPortName=mutableStateOf<String?>(null)
-    var port: SerialPort?=null
+    var serialPortNames by mutableStateOf(listOf<String>())
+    var selectedPortName by mutableStateOf<String?>(null)
+    var port by mutableStateOf<SerialPort?>(null)
+    var messageBuffer=listOf<Byte>()
 
     var keys by mutableStateOf( {
         val row0 = "` 1 2 3 4 5 6 7 8 9 0 - = Back"
@@ -63,10 +68,78 @@ class ConfigureViewModel(): ViewModel() {
     }
 
     fun readPortNames(){
-
+        serialPortNames=SerialPortList.getPortNames().toList()
     }
 
-    fun selectPort(name:String){
+    fun selectPort(name:String?){
+        selectedPortName=name
+        if(port?.isOpened == true)port?.closePort()
+        if(!selectedPortName.isNullOrEmpty()){
+            port = SerialPort(name)
+            port?.openPort()
+            port?.setParams(BAUDRATE_9600,  DATABITS_8, STOPBITS_1, PARITY_NONE)
+            keys=listOf()
+            port?.addEventListener { event ->
+                val port=event.port
+                val array: ByteArray = port.readBytes()?: ByteArray(0)
+//                println("Event ${array.size}")
+                messageBuffer=messageBuffer.plus(array.toList())
+                checkForCommands()
+            }
+            port?.writeString("r")
+        }
+    }
 
+    fun checkForCommands(){
+        while(true){
+            var cmdFound=false
+            for(i in 0 until messageBuffer.size){
+                if(messageBuffer[i] == '@'.code.toByte()){
+                    cmdFound=true
+                    val message=messageBuffer.slice(0 until i)
+                    val newMessageBuffer=messageBuffer.drop(i+1)
+                    processMessage(message)
+                    messageBuffer = newMessageBuffer
+                    break
+                }
+            }
+            if(!cmdFound)break
+        }
+    }
+
+    fun processMessage(buffer:List<Byte>){
+//        println("processing event ${buffer.size}")
+        val cmd = buffer[0].toInt().toChar()
+        when(cmd){
+            'l'->{
+                val width=buffer[1].toInt()
+                val height=buffer[2].toInt()
+                val keys:MutableList<MutableList<ConfiguratorKey?>> = MutableList(width){
+                    MutableList(height){
+                        null
+                    }
+                }
+                val keysBuffer=buffer.drop(3)
+                val n=width*height
+                for(i in 0 until n){
+                    val index=i*6
+                    val x=keysBuffer[index].toInt()
+                    val y=keysBuffer[index+1].toInt()
+                    val value=listOf(
+                        keysBuffer[index+2].toInt().toChar(),
+                        keysBuffer[index+3].toInt().toChar(),
+                        keysBuffer[index+4].toInt().toChar(),
+                        keysBuffer[index+5].toInt().toChar(),
+                    )
+                    keys[x][y]= ConfiguratorKey(y*width+x,"${value[0]}",1f)
+                }
+                this.keys=keys.map { it.map { key->key!! }.toList() }.toList().transpose()
+            }
+            else -> println("unknown cmd")
+        }
+    }
+
+    fun closePort(){
+        if(port?.isOpened == true)port?.closePort()
     }
 }
