@@ -16,10 +16,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import net.systemvi.configurator.components.configure.ConfigureViewModel
 import net.systemvi.configurator.components.serial.SerialPortSelector
 
 @Composable
-fun LayerSelector(){
+fun LayerSelector(configureViewModel: ConfigureViewModel = viewModel { ConfigureViewModel() }){
     data class LayerLink(val name:String,val onClick:()->Unit={})
     val layers=listOf(
         LayerLink("1"),

@@ -4,17 +4,24 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import jssc.SerialPort.*
+import jssc.*
 import net.systemvi.configurator.components.configure.keyboard_layout.ConfiguratorKey
 
 class ConfigureViewModel(): ViewModel() {
-    val row0 = "` 1 2 3 4 5 6 7 8 9 0 - = Back"
-    val row1 = "Tab q w e r t y u i o p [ ] \\"
-    val row2 = "Caps a s d f g h j k l ; ' Enter"
-    val row3 = "Shift z x c v b n m , . / Shift"
-    val row4 = "Ctrl Win Alt Space Fn Win Alt Ctrl"
-    val rows = listOf(row0, row1, row2, row3, row4)
+
+    var serialPortNames=mutableStateOf(listOf<String>())
+    var selectedPortName=mutableStateOf<String?>(null)
+    var port: SerialPort?=null
 
     var keys by mutableStateOf( {
+        val row0 = "` 1 2 3 4 5 6 7 8 9 0 - = Back"
+        val row1 = "Tab q w e r t y u i o p [ ] \\"
+        val row2 = "Caps a s d f g h j k l ; ' Enter"
+        val row3 = "Shift z x c v b n m , . / Shift"
+        val row4 = "Ctrl Win Alt Space Fn Win Alt Ctrl"
+        val rows = listOf(row0, row1, row2, row3, row4)
+
         val keys= rows.zip(rows.indices).map { (row, j) ->
             row.split(" ").zip(row.split(" ").indices).map { (key, i) ->
                 ConfiguratorKey(j * 100 + i, key, 1.0f)
@@ -53,5 +60,13 @@ class ConfigureViewModel(): ViewModel() {
                 }
             }
         }
+    }
+
+    fun readPortNames(){
+
+    }
+
+    fun selectPort(name:String){
+
     }
 }
