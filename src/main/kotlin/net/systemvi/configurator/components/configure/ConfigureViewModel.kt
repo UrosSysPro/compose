@@ -65,6 +65,22 @@ class ConfigureViewModel(): ViewModel() {
                 }
             }
         }
+        keys.forEachIndexed { i, row ->
+           row.forEachIndexed { j, key ->
+               if(port?.isOpened == true){
+                   if(keyId==key.id){
+                       val bytes: ByteArray = arrayOf(
+                           'k'.code.toByte(),
+                           ('0'.code+j).toByte(),
+                           ('0'.code+i).toByte(),
+                           value[0].code.toByte(),
+                           0,0,0,
+                       ).toByteArray()
+                       port?.writeBytes(bytes)
+                   }
+               }
+           }
+        }
     }
 
     fun readPortNames(){
@@ -82,7 +98,6 @@ class ConfigureViewModel(): ViewModel() {
             port?.addEventListener { event ->
                 val port=event.port
                 val array: ByteArray = port.readBytes()?: ByteArray(0)
-//                println("Event ${array.size}")
                 messageBuffer=messageBuffer.plus(array.toList())
                 checkForCommands()
             }
@@ -108,7 +123,6 @@ class ConfigureViewModel(): ViewModel() {
     }
 
     fun processMessage(buffer:List<Byte>){
-//        println("processing event ${buffer.size}")
         val cmd = buffer[0].toInt().toChar()
         when(cmd){
             'l'->{
