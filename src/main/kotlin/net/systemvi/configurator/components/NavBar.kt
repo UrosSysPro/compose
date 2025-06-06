@@ -10,37 +10,34 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
+import net.systemvi.configurator.components.configure.ConfigurePage
+import net.systemvi.configurator.components.design.DesignPage
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NavBar(){
+fun NavBar(pageViewModel: PageViewModel= viewModel { PageViewModel() }) {
+    data class Link(val title:String,val page:Page)
+    val links=listOf(
+        Link("Configure", ConfigurePage),
+        Link("Key Tester", TesterPage),
+        Link("Design", DesignPage),
+        Link("Settings", SettingsPage),
+    )
     TopAppBar(
         title={
             Row(modifier = Modifier.fillMaxSize(),
                 horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically){
-                TextButton(
-                    onClick = { println("Configure")}
-                ) {
-                    Text("Configure")
-                }
-                TextButton(
-                    onClick = { println("Keytester")}
-                ) {
-                    Text("KeyTester")
-                }
-                TextButton(
-                    onClick = { println("Design")}
-                ) {
-                    Text("Design")
-                }
-                TextButton(
-                    onClick = { println("Settings")}
-                ) {
-                    Text("Settings")
+                verticalAlignment = Alignment.CenterVertically)
+            {
+                links.forEach { link->
+                    TextButton(
+                        onClick = { pageViewModel.currentPage = link.page }
+                    ) {
+                        Text(link.title)
+                    }
                 }
             }
-
         }
     )
 }
