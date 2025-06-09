@@ -40,7 +40,7 @@ import net.systemvi.configurator.components.configure.ConfigureViewModel
 }
 
 @Composable
-fun KeyboardLayoutGrid(
+fun KeyboardLayoutGridView(
     configureViewModel: ConfigureViewModel=viewModel{ConfigureViewModel()}
 ) {
     val keys=configureViewModel.keys

@@ -7,14 +7,14 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import net.systemvi.configurator.components.common.BorderHorizontal
 import net.systemvi.configurator.components.configure.keyboard_keys.KeyboardKeys
-import net.systemvi.configurator.components.configure.keyboard_layout.KeyboardLayout
+import net.systemvi.configurator.components.configure.keyboard_layout.KeyboardLayoutView
 
 @Composable fun ConfigurePage(
     modifier: Modifier,
     configureViewModel: ConfigureViewModel= viewModel { ConfigureViewModel() }
 ){
     Column(modifier) {
-        Box(Modifier.weight(1f)){KeyboardLayout()}
+        Box(Modifier.weight(1f)){KeyboardLayoutView()}
         BorderHorizontal()
         Box(Modifier.weight(1f)){KeyboardKeys()}
     }

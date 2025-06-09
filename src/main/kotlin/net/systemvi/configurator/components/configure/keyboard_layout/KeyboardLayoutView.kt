@@ -7,7 +7,7 @@ import net.systemvi.configurator.components.common.BorderVertical
 
 
 @Composable
-fun KeyboardLayout() {
+fun KeyboardLayoutView() {
     Column {
         BorderHorizontal()
         Row{
@@ -16,7 +16,7 @@ fun KeyboardLayout() {
             Column{
                 LayerSelector()
                 BorderHorizontal()
-                KeyboardLayoutGrid()
+                KeyboardLayoutGridView()
             }
         }
     }
