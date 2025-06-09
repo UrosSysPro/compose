@@ -7,12 +7,13 @@ import androidx.lifecycle.ViewModel
 import arrow.core.right
 import jssc.SerialPort.*
 import jssc.*
-import net.systemvi.configurator.components.configure.keyboard_layout.ConfiguratorKey
 import net.systemvi.configurator.model.*
 
 fun <T>List<List<T>>.transpose(): List<List<T>> {
     return (this[0].indices).map { i -> (this.indices).map { j -> this[j][i] } }
 }
+
+data class SelectedKeycapPositon(val x:Int,val y:Int)
 
 class ConfigureViewModel(): ViewModel() {
 
@@ -58,7 +59,16 @@ class ConfigureViewModel(): ViewModel() {
             .setKeyWidth(4,7, KeycapWidth.SIZE_125U)                        //right ctrl
     }())
 
-    var selectedKey by mutableStateOf<Keycap?>(null)
+    private var selectedKeycapPositon by mutableStateOf<SelectedKeycapPositon?>(null)
+
+    fun isKeycapSelected(i:Int,j:Int):Boolean=
+        selectedKeycapPositon!=null
+                && selectedKeycapPositon!!.x == i
+                && selectedKeycapPositon!!.y == j
+
+    fun selectKeycap(i:Int,j:Int){
+        selectedKeycapPositon = SelectedKeycapPositon(i,j)
+    }
 
     fun setKeyValue(keyId:Int,value:String){
 //        keys=keys.map { it.map { key->if (key.id==keyId) ConfiguratorKey(keyId,value,key.size) else key } }
@@ -127,34 +137,34 @@ class ConfigureViewModel(): ViewModel() {
     }
 
     fun processMessage(buffer:List<Byte>){
-        val cmd = buffer[0].toInt().toChar()
-        when(cmd){
-            'l'->{
-                val width=buffer[1].toInt()
-                val height=buffer[2].toInt()
-                val keys:MutableList<MutableList<ConfiguratorKey?>> = MutableList(width){
-                    MutableList(height){
-                        null
-                    }
-                }
-                val keysBuffer=buffer.drop(3)
-                val n=width*height
-                for(i in 0 until n){
-                    val index=i*6
-                    val x=keysBuffer[index].toInt()
-                    val y=keysBuffer[index+1].toInt()
-                    val value=listOf(
-                        keysBuffer[index+2].toInt().toChar(),
-                        keysBuffer[index+3].toInt().toChar(),
-                        keysBuffer[index+4].toInt().toChar(),
-                        keysBuffer[index+5].toInt().toChar(),
-                    )
-                    keys[x][y]= ConfiguratorKey(y*width+x,"${value[0]}",1f)
-                }
-//                this.keys=keys.map { it.map { key->key!! }.toList() }.toList().transpose()
-            }
-            else -> println("unknown cmd")
-        }
+//        val cmd = buffer[0].toInt().toChar()
+//        when(cmd){
+//            'l'->{
+//                val width=buffer[1].toInt()
+//                val height=buffer[2].toInt()
+//                val keys:MutableList<MutableList<ConfiguratorKey?>> = MutableList(width){
+//                    MutableList(height){
+//                        null
+//                    }
+//                }
+//                val keysBuffer=buffer.drop(3)
+//                val n=width*height
+//                for(i in 0 until n){
+//                    val index=i*6
+//                    val x=keysBuffer[index].toInt()
+//                    val y=keysBuffer[index+1].toInt()
+//                    val value=listOf(
+//                        keysBuffer[index+2].toInt().toChar(),
+//                        keysBuffer[index+3].toInt().toChar(),
+//                        keysBuffer[index+4].toInt().toChar(),
+//                        keysBuffer[index+5].toInt().toChar(),
+//                    )
+//                    keys[x][y]= ConfiguratorKey(y*width+x,"${value[0]}",1f)
+//                }
+////                this.keys=keys.map { it.map { key->key!! }.toList() }.toList().transpose()
+//            }
+//            else -> println("unknown cmd")
+//        }
     }
 
     fun closePort(){

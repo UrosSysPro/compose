@@ -44,6 +44,7 @@ enum class MacroActionType(val id:Int){
 @optics data class Macro(val actions:List<MacroAction>){companion object}
 
 @optics data class KeyMap(val keycaps:List<List<Keycap>>){companion object}
+
 fun KeyMap.setKeyWidth(i:Int,j:Int,width:KeycapWidth): KeyMap=
     KeyMap.keycaps
         .index(Index.list(),i)

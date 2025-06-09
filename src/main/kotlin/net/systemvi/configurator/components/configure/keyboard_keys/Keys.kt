@@ -23,7 +23,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import net.systemvi.configurator.components.configure.ConfigureViewModel
-import net.systemvi.configurator.components.configure.keyboard_layout.ConfiguratorKey
 import net.systemvi.configurator.model.Key
 import net.systemvi.configurator.model.Keycap
 

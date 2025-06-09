@@ -12,11 +12,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.layout.layoutId
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import net.systemvi.configurator.components.common.AutoSizingBox
 
 private data class GridItem(val value:String,val width:Float,val height:Float)
 
+data class AutoSizingBoxItemPosition(val x: Dp, val y:Dp)
 
 @Composable fun Grid(items:List<String>, keycap:@Composable (String, Boolean)->Unit) {
     val filteredItems = items.map {
@@ -41,7 +43,7 @@ private data class GridItem(val value:String,val width:Float,val height:Float)
                 Box(
                     modifier = Modifier
 //                        .offset(currentX.dp, currentY.dp)
-                        .layoutId(Pair(currentX, currentY))
+                        .layoutId(AutoSizingBoxItemPosition(currentX.dp, currentY.dp))
                         .size((size * item.width).dp, (size * item.height).dp)
                 ) {
                     keycap(item.value, true)

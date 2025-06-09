@@ -19,6 +19,8 @@ import net.systemvi.configurator.model.Keycap
 @Composable fun Keycap(
     key: Keycap,
     size1U:Float=50f,
+    selected:Boolean,
+    onClick:()->Unit,
     configureViewModel: ConfigureViewModel=viewModel{ConfigureViewModel()}
 ){
     Column(
@@ -28,9 +30,9 @@ import net.systemvi.configurator.model.Keycap
             .size((size1U*key.width.size).dp,50.dp)
             .padding(2.dp)
             .clip(RoundedCornerShape(10.dp))
-            .combinedClickable(enabled = true, onClick = {configureViewModel.selectedKey=key})
+            .combinedClickable(enabled = true, onClick = onClick)
             .background(
-                color = if(configureViewModel.selectedKey==key) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.primaryContainer,
+                color = if(selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.primaryContainer,
                 shape = RoundedCornerShape(10.dp)
             )
             .border(
@@ -53,10 +55,14 @@ fun KeyboardLayoutGridView(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Column{
-            keys?.keycaps?.forEach { row->
+            keys?.keycaps?.forEachIndexed { i,row->
                 Row{
-                    row.forEach { key->
-                        Keycap(key)
+                    row.forEachIndexed { j,key->
+                        Keycap(
+                            key,
+                            selected = configureViewModel.isKeycapSelected(i,j),
+                            onClick = { configureViewModel.selectKeycap(i,j) }
+                        )
                     }
                 }
             }

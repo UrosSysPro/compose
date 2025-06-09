@@ -3,19 +3,22 @@ package net.systemvi.configurator.components.common
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.layoutId
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import net.systemvi.configurator.components.tester.AutoSizingBoxItemPosition
 
 @Composable fun AutoSizingBox(content: @Composable () -> Unit) {
     Layout(content = content) { measurables, constraints ->
         val placeablesWithOffset = measurables.map { measurable ->
             val placeable = measurable.measure(constraints)
-            val layoutData:Pair<Int,Int>? = measurable.layoutId as Pair<Int, Int>?
-            val (x,y) = (layoutData ?: Pair(0, 0))
 
-            val xOffset = x.dp.toPx().toInt()
-            val yOffset = y.dp.toPx().toInt()
+            val data=measurable.layoutId
+            val (x:Dp,y: Dp) = when(data){
+                is AutoSizingBoxItemPosition -> Pair(data.x,data.y)
+                else -> Pair(0.dp,0.dp)
+            }
 
-            Triple(placeable, xOffset, yOffset)
+            Triple(placeable, x.toPx().toInt(), y.toPx().toInt())
         }
 
         val width = placeablesWithOffset.maxOf { it.second + it.first.width }
