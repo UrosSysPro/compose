@@ -30,6 +30,6 @@ data class Keycap(
     val rotation:Float
 )
 
-data class Layout(val keycaps:List<List<>>)
+data class Layout(val keycaps:List<List<Key>>)
 
 //data class Macro()
