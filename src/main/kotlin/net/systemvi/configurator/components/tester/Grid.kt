@@ -42,7 +42,6 @@ data class AutoSizingBoxItemPosition(val x: Dp, val y:Dp)
                 minSize = minSize.coerceAtMost(item.height)
                 Box(
                     modifier = Modifier
-//                        .offset(currentX.dp, currentY.dp)
                         .layoutId(AutoSizingBoxItemPosition(currentX.dp, currentY.dp))
                         .size((size * item.width).dp, (size * item.height).dp)
                 ) {

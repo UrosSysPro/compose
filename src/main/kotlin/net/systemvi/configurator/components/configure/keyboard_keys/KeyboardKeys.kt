@@ -19,7 +19,7 @@ enum class CurrentPage(val title:String,val keys:List<Key>){
     All("All", allKeys)
 }
 @Composable fun KeyboardKeys() {
-    var currentPage: CurrentPage by remember { mutableStateOf(CurrentPage.Alphabet) }
+    var currentPage: CurrentPage by remember { mutableStateOf(CurrentPage.All) }
     Row {
         SidePanel(currentPage,{page -> currentPage=page})
         BorderVertical()
