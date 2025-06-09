@@ -11,7 +11,7 @@ import net.systemvi.configurator.components.configure.keyboard_layout.KeyboardLa
 
 @Composable fun ConfigurePage(
     modifier: Modifier,
-    configureViewModel: ConfigureViewModel= viewModel { ConfigureViewModel() }
+//    configureViewModel: ConfigureViewModel= viewModel { ConfigureViewModel() }
 ){
     Column(modifier) {
         Box(Modifier.weight(1f)){KeyboardLayoutView()}

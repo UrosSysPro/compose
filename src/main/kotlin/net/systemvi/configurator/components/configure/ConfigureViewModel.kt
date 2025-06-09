@@ -4,9 +4,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import arrow.core.right
 import jssc.SerialPort.*
 import jssc.*
 import net.systemvi.configurator.components.configure.keyboard_layout.ConfiguratorKey
+import net.systemvi.configurator.model.*
 
 fun <T>List<List<T>>.transpose(): List<List<T>> {
     return (this[0].indices).map { i -> (this.indices).map { j -> this[j][i] } }
@@ -19,7 +21,7 @@ class ConfigureViewModel(): ViewModel() {
     var port by mutableStateOf<SerialPort?>(null)
     var messageBuffer=listOf<Byte>()
 
-    var keys by mutableStateOf( {
+    var keys by mutableStateOf<KeyMap?>( {
         val row0 = "` 1 2 3 4 5 6 7 8 9 0 - = Back"
         val row1 = "Tab q w e r t y u i o p [ ] \\"
         val row2 = "Caps a s d f g h j k l ; ' Enter"
@@ -27,60 +29,62 @@ class ConfigureViewModel(): ViewModel() {
         val row4 = "Ctrl Win Alt Space Fn Win Alt Ctrl"
         val rows = listOf(row0, row1, row2, row3, row4)
 
-        val keys= rows.zip(rows.indices).map { (row, j) ->
+        var keymap = KeyMap( rows.zip(rows.indices).map { (row, j) ->
             row.split(" ").zip(row.split(" ").indices).map { (key, i) ->
-                ConfiguratorKey(j * 100 + i, key, 1.0f)
+                Keycap(listOf(
+                    Key(key[0].code.toByte(),key).right()
+                ))
             }
-        }
-        keys[0].last().size=2f
+        })
+        keymap
+            .setKeyWidth(0,keymap.keycaps[0].size-1, KeycapWidth.SIZE_2U)   //backspace
 
-        keys[1][0].size=1.25f // tab
-        keys[1].last().size=1.75f // tab
+            .setKeyWidth(1,0, KeycapWidth.SIZE_15U)                        //tab
+            .setKeyWidth(1,keymap.keycaps[1].size-1, KeycapWidth.SIZE_15U) //backslash
 
-        keys[2][0].size=1.5f // caps
-        keys[2].last().size=2.5f // enter
+            .setKeyWidth(2,0, KeycapWidth.SIZE_175U)                        //caps lock
+            .setKeyWidth(2,keymap.keycaps[2].size-1, KeycapWidth.SIZE_225U) //enter
 
-        keys[3][0].size=2f  // left shift
-        keys[3].last().size=3f  // left shift
+            .setKeyWidth(3,0, KeycapWidth.SIZE_225U)                        //left shift
+            .setKeyWidth(3,keymap.keycaps[3].size-1, KeycapWidth.SIZE_275U) //right shift
 
-        keys[4][0].size=1.25f //ctrl
-        keys[4][1].size=1.25f //win
-        keys[4][2].size=1.25f //alt
-        keys[4][3].size=6.25f //space
-        keys[4][4].size=1.25f //fn
-        keys[4][5].size=1.25f //win
-        keys[4][6].size=1.25f //alt
-        keys[4][7].size=1.25f //ctrl
-        keys
+            .setKeyWidth(4,0, KeycapWidth.SIZE_125U)                        //left ctrl
+            .setKeyWidth(4,1, KeycapWidth.SIZE_125U)                        //left win
+            .setKeyWidth(4,2, KeycapWidth.SIZE_125U)                        //left alt
+            .setKeyWidth(4,3, KeycapWidth.SIZE_625U)                        //space
+            .setKeyWidth(4,4, KeycapWidth.SIZE_125U)                        //fn
+            .setKeyWidth(4,5, KeycapWidth.SIZE_125U)                        //right alt
+            .setKeyWidth(4,6, KeycapWidth.SIZE_125U)                        //right win
+            .setKeyWidth(4,7, KeycapWidth.SIZE_125U)                        //right ctrl
     }())
 
-    var selectedKey by mutableStateOf<ConfiguratorKey?>(null)
+    var selectedKey by mutableStateOf<Keycap?>(null)
 
     fun setKeyValue(keyId:Int,value:String){
-        keys=keys.map { it.map { key->if (key.id==keyId) ConfiguratorKey(keyId,value,key.size) else key } }
-        for(row in keys){
-            for(key in row){
-                if(key.id==keyId){
-                    selectedKey=key
-                }
-            }
-        }
-        keys.forEachIndexed { i, row ->
-           row.forEachIndexed { j, key ->
-               if(port?.isOpened == true){
-                   if(keyId==key.id){
-                       val bytes: ByteArray = arrayOf(
-                           'k'.code.toByte(),
-                           ('0'.code+j).toByte(),
-                           ('0'.code+i).toByte(),
-                           value[0].code.toByte(),
-                           0,0,0,
-                       ).toByteArray()
-                       port?.writeBytes(bytes)
-                   }
-               }
-           }
-        }
+//        keys=keys.map { it.map { key->if (key.id==keyId) ConfiguratorKey(keyId,value,key.size) else key } }
+//        for(row in keys){
+//            for(key in row){
+//                if(key.id==keyId){
+//                    selectedKey=key
+//                }
+//            }
+//        }
+//        keys.forEachIndexed { i, row ->
+//           row.forEachIndexed { j, key ->
+//               if(port?.isOpened == true){
+//                   if(keyId==key.id){
+//                       val bytes: ByteArray = arrayOf(
+//                           'k'.code.toByte(),
+//                           ('0'.code+j).toByte(),
+//                           ('0'.code+i).toByte(),
+//                           value[0].code.toByte(),
+//                           0,0,0,
+//                       ).toByteArray()
+//                       port?.writeBytes(bytes)
+//                   }
+//               }
+//           }
+//        }
     }
 
     fun readPortNames(){
@@ -94,7 +98,7 @@ class ConfigureViewModel(): ViewModel() {
             port = SerialPort(name)
             port?.openPort()
             port?.setParams(BAUDRATE_9600,  DATABITS_8, STOPBITS_1, PARITY_NONE)
-            keys=listOf()
+            keys=null
             port?.addEventListener { event ->
                 val port=event.port
                 val array: ByteArray = port.readBytes()?: ByteArray(0)
@@ -147,7 +151,7 @@ class ConfigureViewModel(): ViewModel() {
                     )
                     keys[x][y]= ConfiguratorKey(y*width+x,"${value[0]}",1f)
                 }
-                this.keys=keys.map { it.map { key->key!! }.toList() }.toList().transpose()
+//                this.keys=keys.map { it.map { key->key!! }.toList() }.toList().transpose()
             }
             else -> println("unknown cmd")
         }

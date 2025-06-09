@@ -42,8 +42,8 @@ import net.systemvi.configurator.model.Keycap
                 shape = RoundedCornerShape(8.dp)
             )
             .combinedClickable(onClick = {
-                if(configuratorViewModel.selectedKey!=null)
-                    configuratorViewModel.setKeyValue(configuratorViewModel.selectedKey!!.id,key.name)
+//                if(configuratorViewModel.selectedKey!=null)
+//                    configuratorViewModel.setKeyValue(configuratorViewModel.selectedKey!!.id,key.name)
             })
     ){
         Text(
