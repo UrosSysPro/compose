@@ -6,6 +6,7 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -23,8 +24,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import net.systemvi.configurator.components.configure.ConfigureViewModel
 import net.systemvi.configurator.components.configure.keyboard_layout.ConfiguratorKey
+import net.systemvi.configurator.model.Key
+import net.systemvi.configurator.model.Keycap
 
-data class Key(val value:String)
 
 @Composable fun Keycap(
     key:Key,
@@ -41,36 +43,24 @@ data class Key(val value:String)
             )
             .combinedClickable(onClick = {
                 if(configuratorViewModel.selectedKey!=null)
-                    configuratorViewModel.setKeyValue(configuratorViewModel.selectedKey!!.id,key.value)
+                    configuratorViewModel.setKeyValue(configuratorViewModel.selectedKey!!.id,key.name)
             })
     ){
         Text(
-            key.value,
+            key.name,
             textAlign = TextAlign.Center
         )
     }
 }
 
-@Composable fun Keys(){
-    val alphabet=listOf(
-        "q w e r t y u i o p",
-        "a s d f g h j k l",
-        "z x c v b n m",
-        "1 2 3 4 5 6 7 8 9 0",
-        "F1 F2 F3 F4 F5 F6 F7 F8 F9 F10 F11 F12",
-        "Esc ` Tab Caps_Lock L_Shift L_Ctrl L_Win L_Alt",
-        "Backspace Enter R_Shift R_Ctrl R_Win R_Alt"
-    )
-//    alphabet.fold(""){acc,s->acc+s}
-    Column(
+@Composable fun Keys(keys:List<Key>) {
+    FlowRow (
         modifier = Modifier
             .verticalScroll(rememberScrollState())
             .padding(16.dp),
     ) {
-        for(row in alphabet){
-            Row{
-                for(key in row.split(" ")) Keycap(Key(key))
-            }
-        }
+       keys.forEach {
+           Keycap(it)
+       }
     }
 }
