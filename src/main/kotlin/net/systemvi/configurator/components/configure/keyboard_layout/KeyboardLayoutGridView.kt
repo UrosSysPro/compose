@@ -1,8 +1,6 @@
 package net.systemvi.configurator.components.configure.keyboard_layout
 
 import androidx.compose.foundation.*
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.*
 import androidx.compose.material3.*
@@ -12,7 +10,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import arrow.core.flatMap
 import arrow.core.getOrElse
 import net.systemvi.configurator.components.configure.ConfigureViewModel
 import net.systemvi.configurator.model.Key
@@ -50,7 +47,7 @@ import net.systemvi.configurator.model.Keycap
 fun KeyboardLayoutGridView(
     configureViewModel: ConfigureViewModel=viewModel{ConfigureViewModel()}
 ) {
-    val keys=configureViewModel.keys
+    val keys=configureViewModel.keymap
     Column(
         modifier = Modifier
             .fillMaxSize()

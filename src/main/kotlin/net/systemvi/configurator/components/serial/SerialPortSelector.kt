@@ -23,7 +23,12 @@ import net.systemvi.configurator.components.configure.ConfigureViewModel
 
 @Composable fun SerialPortSelector(configureViewModel: ConfigureViewModel= viewModel { ConfigureViewModel() }) {
     var expanded by remember { mutableStateOf(false) }
-
+    var serialPortNames by remember { mutableStateOf<List<String>>(emptyList()) }
+    LaunchedEffect(expanded) {
+       if(expanded){
+           serialPortNames=configureViewModel.readPortNames()
+       }
+    }
     Box(
         modifier = Modifier
             .padding(16.dp)
@@ -42,7 +47,7 @@ import net.systemvi.configurator.components.configure.ConfigureViewModel
                 onClick = {configureViewModel.selectPort(null); expanded = false},
                 text = { Text("None") }
             )
-            configureViewModel.serialPortNames.forEach {
+            serialPortNames.forEach {
                 DropdownMenuItem(
                     onClick = { configureViewModel.selectPort(it);expanded = false },
                     text = { Text(it) }
