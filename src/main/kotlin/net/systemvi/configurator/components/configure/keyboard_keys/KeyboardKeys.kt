@@ -8,15 +8,17 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import net.systemvi.configurator.data.allKeys
 import net.systemvi.configurator.data.alphabetKeys
+import net.systemvi.configurator.data.fKeys
 import net.systemvi.configurator.data.numberKeys
 import net.systemvi.configurator.data.symbolKeys
 import net.systemvi.configurator.model.Key
 
 enum class CurrentPage(val title:String,val keys:List<Key>){
+    All("All", allKeys),
     Alphabet("Alphabet", alphabetKeys),
     Numbers("Numbers", numberKeys),
     Symbols("Symbols", symbolKeys),
-    All("All", allKeys)
+    FKeys("Function Keys", fKeys),
 }
 @Composable fun KeyboardKeys() {
     var currentPage: CurrentPage by remember { mutableStateOf(CurrentPage.All) }

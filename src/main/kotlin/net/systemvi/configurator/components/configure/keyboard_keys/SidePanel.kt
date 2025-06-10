@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.selects.select
 
 @Composable fun SidePanel(currentPage: CurrentPage,onSelect: (CurrentPage) -> Unit) {
-    val pages=listOf(CurrentPage.All,CurrentPage.Alphabet, CurrentPage.Numbers, CurrentPage.Symbols)
+    val pages= CurrentPage.entries
     Column(Modifier.padding(vertical = 8.dp, horizontal = 16.dp).width(170.dp)) {
         for(page in pages){
             val selected=currentPage==page

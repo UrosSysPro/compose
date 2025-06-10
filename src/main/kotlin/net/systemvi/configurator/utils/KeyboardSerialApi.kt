@@ -3,7 +3,9 @@ package net.systemvi.configurator.utils
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import arrow.core.getOrElse
 import arrow.core.right
+import arrow.core.toOption
 import jssc.SerialPort
 import jssc.SerialPort.BAUDRATE_9600
 import jssc.SerialPort.DATABITS_8
@@ -11,6 +13,7 @@ import jssc.SerialPort.PARITY_NONE
 import jssc.SerialPort.STOPBITS_1
 import jssc.SerialPortList
 import net.systemvi.configurator.components.configure.KeycapPosition
+import net.systemvi.configurator.data.allKeys
 import net.systemvi.configurator.model.Key
 import net.systemvi.configurator.model.KeyMap
 import net.systemvi.configurator.model.Keycap
@@ -111,7 +114,9 @@ object KeyboardSerialApi {
             val physicalX=keysBuffer[index+9].toInt()
             val active=keysBuffer[index+10].toInt()==1
             if(active)keycaps[physicalX][physicalY]= Keycap(
-                layers = value.map { Key(it,"${it.toInt().toChar()}").right()},
+                layers = value.map { value->
+                    allKeys.find { key->key.value==value }.toOption().getOrElse { Key(value,"???") }.right()
+                },
                 width = KeycapWidth.entries[widht],
                 height = KeycapHeight.entries[height],
                 matrixPosition = KeycapMatrixPosition(x,y)
