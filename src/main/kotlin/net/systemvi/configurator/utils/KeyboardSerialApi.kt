@@ -12,7 +12,6 @@ import jssc.SerialPort.DATABITS_8
 import jssc.SerialPort.PARITY_NONE
 import jssc.SerialPort.STOPBITS_1
 import jssc.SerialPortList
-import net.systemvi.configurator.components.configure.KeycapPosition
 import net.systemvi.configurator.data.allKeys
 import net.systemvi.configurator.model.Key
 import net.systemvi.configurator.model.KeyMap
@@ -108,7 +107,7 @@ object KeyboardSerialApi {
                 keysBuffer[index+4],
                 keysBuffer[index+5],
             )
-            val widht=keysBuffer[index+6].toInt()
+            val width=keysBuffer[index+6].toInt()
             val height=keysBuffer[index+7].toInt()
             val physicalY=keysBuffer[index+8].toInt()
             val physicalX=keysBuffer[index+9].toInt()
@@ -117,12 +116,11 @@ object KeyboardSerialApi {
                 layers = value.map { value->
                     allKeys.find { key->key.value==value }.toOption().getOrElse { Key(value,"???") }.right()
                 },
-                width = KeycapWidth.entries[widht],
+                width = KeycapWidth.entries[width],
                 height = KeycapHeight.entries[height],
                 matrixPosition = KeycapMatrixPosition(x,y)
             )
         }
-//                this.keys=keys.map { it.map { key->key!! }.toList() }.toList().transpose()
         return KeyMap(keycaps.map {
             it.flatMap { key->
                 if (key!=null)
