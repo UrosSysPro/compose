@@ -30,8 +30,18 @@ class ConfigureViewModel(): ViewModel() {
     }
 
     fun setKeyValue(key: Key){
-        if(selectedKeycapPositon!=null)
-            KeyboardSerialApi.uploadKeycap(selectedKeycapPositon!!,key,selectedLayer)
+        if(keymap!=null && selectedKeycapPositon!=null){
+            val x=selectedKeycapPositon!!.x
+            val y=selectedKeycapPositon!!.y
+            val keymap=this.keymap!!
+            val layer=selectedLayer
+            this.keymap=keymap.updateKeycap(x,y,layer,key)
+            KeyboardSerialApi.uploadKeycap(
+                keymap!!.keycaps[selectedKeycapPositon!!.x][selectedKeycapPositon!!.y],
+                key,
+                selectedLayer
+            )
+        }
     }
 
     fun readPortNames() = KeyboardSerialApi.getPortNames()

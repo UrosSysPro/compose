@@ -3,6 +3,7 @@ package net.systemvi.configurator.utils
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import arrow.core.right
 import jssc.SerialPort
 import jssc.SerialPort.BAUDRATE_9600
 import jssc.SerialPort.DATABITS_8
@@ -12,6 +13,10 @@ import jssc.SerialPortList
 import net.systemvi.configurator.components.configure.KeycapPosition
 import net.systemvi.configurator.model.Key
 import net.systemvi.configurator.model.KeyMap
+import net.systemvi.configurator.model.Keycap
+import net.systemvi.configurator.model.KeycapHeight
+import net.systemvi.configurator.model.KeycapMatrixPosition
+import net.systemvi.configurator.model.KeycapWidth
 
 object KeyboardSerialApi {
     private var selectedPortName by mutableStateOf<String?>(null)
@@ -21,13 +26,13 @@ object KeyboardSerialApi {
 
     fun getPortNames():List<String> = SerialPortList.getPortNames().toList()
 
-    fun uploadKeycap(position: KeycapPosition,key: Key,layer:Int) {
+    fun uploadKeycap(keycap: Keycap,key: Key,layer:Int) {
         val bytes: ByteArray = arrayOf(
-            'k'.code.toByte(),
-            ('0'.code + position.x).toByte(),
-            ('0'.code + position.y).toByte(),
+            'l'.code.toByte(),
+            keycap.matrixPosition.x.toByte(),
+            keycap.matrixPosition.y.toByte(),
+            layer.toByte(),
             key.value,
-            0, 0, 0,
         ).toByteArray()
         port?.writeBytes(bytes)
     }
@@ -76,33 +81,51 @@ object KeyboardSerialApi {
     private fun processMessage(buffer:List<Byte>){
         val cmd = buffer[0].toInt().toChar()
         when(cmd){
-            'l'->{
-                val width=buffer[1].toInt()
-                val height=buffer[2].toInt()
-//                val keys:MutableList<MutableList<ConfiguratorKey?>> = MutableList(width){
-//                    MutableList(height){
-//                        null
-//                    }
-//                }
-//                val keysBuffer=buffer.drop(3)
-//                val n=width*height
-//                for(i in 0 until n){
-//                    val index=i*6
-//                    val x=keysBuffer[index].toInt()
-//                    val y=keysBuffer[index+1].toInt()
-//                    val value=listOf(
-//                        keysBuffer[index+2].toInt().toChar(),
-//                        keysBuffer[index+3].toInt().toChar(),
-//                        keysBuffer[index+4].toInt().toChar(),
-//                        keysBuffer[index+5].toInt().toChar(),
-//                    )
-//                    keys[x][y]= ConfiguratorKey(y*width+x,"${value[0]}",1f)
-//                }
-////                this.keys=keys.map { it.map { key->key!! }.toList() }.toList().transpose()
-                onKeymapRead(KeyMap(emptyList()))
-            }
+            'l' -> onKeymapRead(readKeymapFromBuffer(buffer))
             else -> println("unknown cmd")
         }
+    }
+    private fun readKeymapFromBuffer(buffer:List<Byte>):KeyMap{
+        val height=buffer[1].toInt()
+        val width=buffer[2].toInt()
+        val keycaps:MutableList<MutableList<Keycap?>> = MutableList(width){
+            MutableList(height){
+                null
+            }
+        }
+        val keysBuffer=buffer.drop(3)
+        val n=width*height
+        for(i in 0 until n){
+            val index=i*11
+            val x=keysBuffer[index].toInt()
+            val y=keysBuffer[index+1].toInt()
+            val value=listOf(
+                keysBuffer[index+2],
+                keysBuffer[index+3],
+                keysBuffer[index+4],
+                keysBuffer[index+5],
+            )
+            val widht=keysBuffer[index+6].toInt()
+            val height=keysBuffer[index+7].toInt()
+            val physicalY=keysBuffer[index+8].toInt()
+            val physicalX=keysBuffer[index+9].toInt()
+            val active=keysBuffer[index+10].toInt()==1
+            if(active)keycaps[physicalX][physicalY]= Keycap(
+                layers = value.map { Key(it,"${it.toInt().toChar()}").right()},
+                width = KeycapWidth.entries[widht],
+                height = KeycapHeight.entries[height],
+                matrixPosition = KeycapMatrixPosition(x,y)
+            )
+        }
+//                this.keys=keys.map { it.map { key->key!! }.toList() }.toList().transpose()
+        return KeyMap(keycaps.map {
+            it.flatMap { key->
+                if (key!=null)
+                    listOf(key)
+                else
+                    emptyList()
+            }.toList()
+        }.toList())
     }
 
     fun closePort(){

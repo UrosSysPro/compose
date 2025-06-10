@@ -1,7 +1,7 @@
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
 plugins {
-    kotlin("jvm")
+    kotlin("jvm") version "2.1.20"
     id("org.jetbrains.compose") version "1.8.1"
     id("org.jetbrains.kotlin.plugin.compose")
     id("com.google.devtools.ksp") version "2.1.20-2.0.0"
