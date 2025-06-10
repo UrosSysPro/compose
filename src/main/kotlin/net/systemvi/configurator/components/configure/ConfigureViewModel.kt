@@ -29,6 +29,11 @@ class ConfigureViewModel(): ViewModel() {
         selectedKeycapPositon = KeycapPosition(i,j)
     }
 
+    fun selectLayer(layer:Int){
+        selectedLayer = layer
+    }
+    fun selectedLayer()=selectedLayer
+
     fun setKeyValue(key: Key){
         if(keymap!=null && selectedKeycapPositon!=null){
             val x=selectedKeycapPositon!!.x

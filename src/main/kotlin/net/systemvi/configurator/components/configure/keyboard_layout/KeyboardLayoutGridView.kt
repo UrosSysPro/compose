@@ -16,17 +16,18 @@ import net.systemvi.configurator.model.Key
 import net.systemvi.configurator.model.Keycap
 
 @Composable fun Keycap(
-    key: Keycap,
-    size1U:Float=50f,
+    keycap: Keycap,
+    size1U:Float=60f,
     selected:Boolean,
     onClick:()->Unit,
     configureViewModel: ConfigureViewModel=viewModel{ConfigureViewModel()}
 ){
+    val layer=configureViewModel.selectedLayer().coerceAtMost(keycap.layers.size-1)
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
-            .size((size1U*key.width.size).dp,50.dp)
+            .size((size1U*keycap.width.size).dp,50.dp)
             .padding(2.dp)
             .clip(RoundedCornerShape(10.dp))
             .combinedClickable(enabled = true, onClick = onClick)
@@ -39,7 +40,7 @@ import net.systemvi.configurator.model.Keycap
                 shape = RoundedCornerShape(10.dp)
             )
     ){
-        Text(key.layers[0].map { key:Key ->key.name }.getOrElse { "???" })
+        Text(keycap.layers[layer].map { key:Key ->key.name }.getOrElse { "???" })
     }
 }
 

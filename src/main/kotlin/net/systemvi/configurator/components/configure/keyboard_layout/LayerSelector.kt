@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -22,13 +24,6 @@ import net.systemvi.configurator.components.serial.SerialPortSelector
 
 @Composable
 fun LayerSelector(configureViewModel: ConfigureViewModel = viewModel { ConfigureViewModel() }){
-    data class LayerLink(val name:String,val onClick:()->Unit={})
-    val layers=listOf(
-        LayerLink("1"),
-        LayerLink("2"),
-        LayerLink("3"),
-        LayerLink("4"),
-    )
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -44,15 +39,27 @@ fun LayerSelector(configureViewModel: ConfigureViewModel = viewModel { Configure
                 modifier = Modifier.padding(0.dp,0.dp,30.dp,0.dp)
 //            fontSize = 20.dp
             )
-            for(layer in layers){
+            for(layer in 0..3){
                 ElevatedButton(
-                    onClick = layer.onClick,
+                    onClick = { configureViewModel.selectLayer(layer) },
                     Modifier
                         .width(IntrinsicSize.Min)
                         .height(IntrinsicSize.Min)
-                        .padding(vertical=2.dp,horizontal=4.dp)
+                        .padding(vertical=2.dp,horizontal=4.dp),
+                    colors= ButtonDefaults.elevatedButtonColors(
+                        containerColor = if(layer==configureViewModel.selectedLayer())
+                            MaterialTheme.colorScheme.primary
+                        else
+                            MaterialTheme.colorScheme.primaryContainer
+                        ,
+                        contentColor = if(layer==configureViewModel.selectedLayer())
+                            MaterialTheme.colorScheme.primaryContainer
+                        else
+                            MaterialTheme.colorScheme.primary
+                        ,
+                    )
                 ){
-                    Text(layer.name)
+                    Text("${layer+1}")
                 }
             }
         }
