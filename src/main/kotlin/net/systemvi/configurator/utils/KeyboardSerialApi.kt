@@ -3,8 +3,12 @@ package net.systemvi.configurator.utils
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import arrow.core.None
+import arrow.core.Option
+import arrow.core.Some
 import arrow.core.getOrElse
 import arrow.core.right
+import arrow.core.some
 import arrow.core.toOption
 import jssc.SerialPort
 import jssc.SerialPort.BAUDRATE_9600
@@ -23,7 +27,7 @@ import net.systemvi.configurator.model.KeycapWidth
 
 class KeyboardSerialApi {
     private var selectedPortName by mutableStateOf<String?>(null)
-    private var port by mutableStateOf<SerialPort?>(null)
+    private var port by mutableStateOf<Option<SerialPort>>(None)
     private var messageBuffer=listOf<Byte>()
     private var onKeymapRead:(keymap: KeyMap)->Unit={}
     private var onKeycapPress:(keycapPosition: KeycapMatrixPosition)->Unit={}
@@ -32,40 +36,46 @@ class KeyboardSerialApi {
     fun getPortNames():List<String> = SerialPortList.getPortNames().toList()
 
     fun uploadKeycap(keycap: Keycap,key: Key,layer:Int) {
-        val bytes: ByteArray = arrayOf(
-            'l'.code.toByte(),
-            keycap.matrixPosition.x.toByte(),
-            keycap.matrixPosition.y.toByte(),
-            layer.toByte(),
-            key.value,
-        ).toByteArray()
-        port?.writeBytes(bytes)
+        port.onSome { port->
+            val bytes: ByteArray = arrayOf(
+                'l'.code.toByte(),
+                keycap.matrixPosition.x.toByte(),
+                keycap.matrixPosition.y.toByte(),
+                layer.toByte(),
+                key.value,
+            ).toByteArray()
+            port.writeBytes(bytes)
+        }.onNone {
+            println("[ERROR] upload key called, and port is not opened")
+        }
     }
 
     fun selectPort(name:String?){
-        selectedPortName=name
-        if(port?.isOpened == true)port?.closePort()
-        if(!selectedPortName.isNullOrEmpty()){
-            port = SerialPort(name)
-            port?.openPort()
-            port?.setParams(BAUDRATE_9600,  DATABITS_8, STOPBITS_1, PARITY_NONE)
-            port?.addEventListener { event ->
-                val port=event.port
-                val array: ByteArray = port.readBytes()?: ByteArray(0)
-                messageBuffer=messageBuffer.plus(array.toList())
-                checkForCommands()
+        closePort()
+        if(name!=null){
+            selectedPortName=name
+            port = SerialPort(name).some()
+            port.onSome { port->
+                port.openPort()
+                port.setParams(BAUDRATE_9600,  DATABITS_8, STOPBITS_1, PARITY_NONE)
+                port.addEventListener { event ->
+                    val port=event.port
+                    val array: ByteArray = port.readBytes()?: ByteArray(0)
+                    messageBuffer=messageBuffer.plus(array.toList())
+                    checkForCommands()
+                }
             }
         }
     }
 
     fun requestKeymapRead(){
-        port?.writeString("r")
+        port.onSome { port -> port.writeString("r") }.onNone { println("[ERROR] requesting keymap read, no port opened") }
     }
     fun enableKeyPressEvents(){
-        port?.writeString("e")
+        port.onSome { port->port.writeString("e") }.onNone { println("[ERROR] enable key press event, no port opened") }
     }
     fun disableKeyPressEvents(){
-        port?.writeString("d")
+        port.onSome { port->port.writeString("d") }.onNone { println("[ERROR] disable key press event, no port opened") }
     }
 
     private fun checkForCommands(){
@@ -101,7 +111,7 @@ class KeyboardSerialApi {
             'l' -> onKeymapRead(readKeymapFromBuffer(buffer))
             'p' -> onKeycapPress(KeycapMatrixPosition(buffer[1].toInt(), buffer[2].toInt()))
             'r' -> onKeycapRelease(KeycapMatrixPosition(buffer[1].toInt(), buffer[2].toInt()))
-            else -> println("unknown cmd")
+            else -> println("[ERROR] unknown serial command: $cmd")
         }
     }
     private fun readKeymapFromBuffer(buffer:List<Byte>):KeyMap{
@@ -149,6 +159,11 @@ class KeyboardSerialApi {
     }
 
     fun closePort(){
-        if(port?.isOpened == true)port?.closePort()
+        selectedPortName=null
+        port.onSome { port-> if(port.isOpened){
+            disableKeyPressEvents()
+            port.closePort()
+        } }
+        port=None
     }
 }
