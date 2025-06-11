@@ -16,6 +16,7 @@ data class KeycapPosition(val x:Int,val y:Int)
 
 class ConfigureViewModel(): ViewModel() {
     var keymap by mutableStateOf<KeyMap?>(placeholderKeymap())
+    val serialApi=KeyboardSerialApi()
     var currentlyPressedKeycaps:Set<KeycapMatrixPosition> by mutableStateOf(emptySet())
 
     private var selectedLayer by mutableStateOf(0)
@@ -42,7 +43,7 @@ class ConfigureViewModel(): ViewModel() {
             val keymap=this.keymap!!
             val layer=selectedLayer
             this.keymap=keymap.updateKeycap(x,y,layer,key)
-            KeyboardSerialApi.uploadKeycap(
+            serialApi.uploadKeycap(
                 keymap!!.keycaps[selectedKeycapPositon!!.x][selectedKeycapPositon!!.y],
                 key,
                 selectedLayer
@@ -50,26 +51,26 @@ class ConfigureViewModel(): ViewModel() {
         }
     }
 
-    fun readPortNames() = KeyboardSerialApi.getPortNames()
+    fun readPortNames() = serialApi.getPortNames()
 
     fun selectPort(name:String?){
-        KeyboardSerialApi.selectPort(name)
-        KeyboardSerialApi.onKeymapRead { keymap->
+        serialApi.selectPort(name)
+        serialApi.onKeymapRead { keymap->
             println("new keymap read")
             this.keymap = keymap
         }
-        KeyboardSerialApi.onKeycapPress { keycap->
+        serialApi.onKeycapPress { keycap->
            currentlyPressedKeycaps += keycap
         }
-        KeyboardSerialApi.onKeycapRelease { keycap->
+        serialApi.onKeycapRelease { keycap->
             currentlyPressedKeycaps -= keycap
         }
-        KeyboardSerialApi.enableKeyPressEvents()
-        KeyboardSerialApi.requestKeymapRead()
+        serialApi.enableKeyPressEvents()
+        serialApi.requestKeymapRead()
     }
 
     fun closePort(){
-        KeyboardSerialApi.closePort()
+        serialApi.closePort()
     }
 
     fun placeholderKeymap(): KeyMap{

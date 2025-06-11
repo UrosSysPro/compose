@@ -21,7 +21,7 @@ import net.systemvi.configurator.model.KeycapHeight
 import net.systemvi.configurator.model.KeycapMatrixPosition
 import net.systemvi.configurator.model.KeycapWidth
 
-object KeyboardSerialApi {
+class KeyboardSerialApi {
     private var selectedPortName by mutableStateOf<String?>(null)
     private var port by mutableStateOf<SerialPort?>(null)
     private var messageBuffer=listOf<Byte>()
