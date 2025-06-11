@@ -20,9 +20,15 @@ import net.systemvi.configurator.model.Keycap
     size1U:Float=60f,
     selected:Boolean,
     onClick:()->Unit,
-    configureViewModel: ConfigureViewModel=viewModel{ConfigureViewModel()}
+    pressed:Boolean=false,
+    configureViewModel: ConfigureViewModel=viewModel{ConfigureViewModel()},
 ){
     val layer=configureViewModel.selectedLayer().coerceAtMost(keycap.layers.size-1)
+    val backgroundColor=when{
+        pressed-> MaterialTheme.colorScheme.tertiaryContainer
+        selected->MaterialTheme.colorScheme.primary
+        else->MaterialTheme.colorScheme.primaryContainer
+    }
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -32,7 +38,7 @@ import net.systemvi.configurator.model.Keycap
             .clip(RoundedCornerShape(10.dp))
             .combinedClickable(enabled = true, onClick = onClick)
             .background(
-                color = if(selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.primaryContainer,
+                color = backgroundColor,
                 shape = RoundedCornerShape(10.dp)
             )
             .border(
@@ -64,7 +70,8 @@ fun KeyboardLayoutGridView(
                         Keycap(
                             key,
                             selected = configureViewModel.isKeycapSelected(i,j),
-                            onClick = { configureViewModel.selectKeycap(i,j) }
+                            onClick = { configureViewModel.selectKeycap(i,j) },
+                            pressed = configureViewModel.currentlyPressedKeycaps.contains(key.matrixPosition),
                         )
                     }
                 }

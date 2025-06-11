@@ -16,6 +16,7 @@ data class KeycapPosition(val x:Int,val y:Int)
 
 class ConfigureViewModel(): ViewModel() {
     var keymap by mutableStateOf<KeyMap?>(placeholderKeymap())
+    var currentlyPressedKeycaps:Set<KeycapMatrixPosition> by mutableStateOf(emptySet())
 
     private var selectedLayer by mutableStateOf(0)
     private var selectedKeycapPositon by mutableStateOf<KeycapPosition?>(null)
@@ -57,6 +58,13 @@ class ConfigureViewModel(): ViewModel() {
             println("new keymap read")
             this.keymap = keymap
         }
+        KeyboardSerialApi.onKeycapPress { keycap->
+           currentlyPressedKeycaps += keycap
+        }
+        KeyboardSerialApi.onKeycapRelease { keycap->
+            currentlyPressedKeycaps -= keycap
+        }
+        KeyboardSerialApi.enableKeyPressEvents()
         KeyboardSerialApi.requestKeymapRead()
     }
 

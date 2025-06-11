@@ -12,6 +12,7 @@ import jssc.SerialPort.DATABITS_8
 import jssc.SerialPort.PARITY_NONE
 import jssc.SerialPort.STOPBITS_1
 import jssc.SerialPortList
+import net.systemvi.configurator.components.configure.KeycapPosition
 import net.systemvi.configurator.data.allKeys
 import net.systemvi.configurator.model.Key
 import net.systemvi.configurator.model.KeyMap
@@ -25,6 +26,8 @@ object KeyboardSerialApi {
     private var port by mutableStateOf<SerialPort?>(null)
     private var messageBuffer=listOf<Byte>()
     private var onKeymapRead:(keymap: KeyMap)->Unit={}
+    private var onKeycapPress:(keycapPosition: KeycapMatrixPosition)->Unit={}
+    private var onKeycapRelease:(keycapPosition: KeycapMatrixPosition)->Unit={}
 
     fun getPortNames():List<String> = SerialPortList.getPortNames().toList()
 
@@ -58,6 +61,12 @@ object KeyboardSerialApi {
     fun requestKeymapRead(){
         port?.writeString("r")
     }
+    fun enableKeyPressEvents(){
+        port?.writeString("e")
+    }
+    fun disableKeyPressEvents(){
+        port?.writeString("d")
+    }
 
     private fun checkForCommands(){
         while(true){
@@ -76,14 +85,22 @@ object KeyboardSerialApi {
         }
     }
 
-    fun onKeymapRead(listener: (keymap: KeyMap) -> Unit) {
+    fun onKeymapRead(listener: (KeyMap) -> Unit) {
         onKeymapRead = listener
+    }
+    fun onKeycapPress(listener: (KeycapMatrixPosition) -> Unit) {
+        onKeycapPress = listener
+    }
+    fun onKeycapRelease(listener: (KeycapMatrixPosition) -> Unit) {
+        onKeycapRelease = listener
     }
 
     private fun processMessage(buffer:List<Byte>){
         val cmd = buffer[0].toInt().toChar()
         when(cmd){
             'l' -> onKeymapRead(readKeymapFromBuffer(buffer))
+            'p' -> onKeycapPress(KeycapMatrixPosition(buffer[1].toInt(), buffer[2].toInt()))
+            'r' -> onKeycapRelease(KeycapMatrixPosition(buffer[1].toInt(), buffer[2].toInt()))
             else -> println("unknown cmd")
         }
     }
