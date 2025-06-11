@@ -11,12 +11,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
-import net.systemvi.configurator.components.configure.ConfigurePage
-import net.systemvi.configurator.components.design.DesignPage
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NavBar(pageViewModel: PageViewModel= viewModel { PageViewModel() }) {
+fun NavBar(pageViewModel: ApplicationViewModel= viewModel { ApplicationViewModel() }) {
     data class Link(val title:String,val page:Page)
     val links=listOf(
         Link("Configure", ConfigurePage),

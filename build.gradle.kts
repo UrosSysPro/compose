@@ -25,6 +25,7 @@ dependencies {
     implementation("io.arrow-kt:arrow-core:2.1.2")
     implementation("io.arrow-kt:arrow-optics:2.1.2")
     ksp("io.arrow-kt:arrow-optics-ksp-plugin:2.1.0")
+    implementation("com.materialkolor:material-kolor:3.0.0-alpha04")
     implementation(compose.material3)
 }
 

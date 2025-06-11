@@ -1,4 +1,4 @@
-package net.systemvi.configurator.components.serial
+package net.systemvi.configurator.components.configure.serial
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
