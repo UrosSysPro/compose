@@ -34,6 +34,7 @@ class ApplicationViewModel: ViewModel() {
     private var isDark by mutableStateOf(false)
     private var currentColor by mutableStateOf(colorSeeds[5])
     var colorScheme by mutableStateOf(dynamicColorScheme(currentColor, isDark))
+
     fun setDarkTheme(darkTheme:Boolean){
         this.isDark = darkTheme
         colorScheme=dynamicColorScheme(currentColor, darkTheme)

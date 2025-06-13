@@ -1,6 +1,5 @@
 package net.systemvi.configurator.model
 
-import androidx.compose.ui.unit.IntRect
 import arrow.core.Either
 import arrow.core.right
 import arrow.optics.*
