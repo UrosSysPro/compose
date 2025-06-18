@@ -2,7 +2,7 @@ package net.systemvi.configurator.data
 
 import net.systemvi.configurator.model.Key
 
-private val alphabet="q w e r t y u i o p a s d f g h j k l z x c v b n m"
+private val alphabet="q w e r t y u i o p a s d f g h j k l z x c v b n m".uppercase()
 private val numbers="1 2 3 4 5 6 7 8 9 0"
 private val symbols="` - = [ ] ; ' \\ , . /"
 val alphabetKeys: List<Key> = alphabet.split(" ").map { Key(it[0].code.toByte(),it) }+Key(' '.code.toByte(),"Space") + Key(0.toByte(),"Pass")
