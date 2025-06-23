@@ -45,7 +45,17 @@ val Keycap = @Composable { letter: String, wasClicked: Boolean, currentlyClicked
                     ),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(letter, style = MaterialTheme.typography.bodySmall, textAlign = TextAlign.Center)
+                Text(
+                    letter,
+                    style = MaterialTheme.typography.bodySmall,
+                    color =
+                        when {
+                            currentlyClicked -> MaterialTheme.colorScheme.tertiaryContainer
+                            wasClicked -> MaterialTheme.colorScheme.primaryContainer
+                            else -> MaterialTheme.colorScheme.primary
+                        },
+                    textAlign = TextAlign.Center
+                )
             }
         }
 }
