@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import arrow.core.right
+import arrow.core.toOption
 import net.systemvi.configurator.model.*
 import net.systemvi.configurator.utils.KeyboardSerialApi
 
@@ -16,11 +17,11 @@ data class KeycapPosition(val x:Int,val y:Int)
 
 class ConfigureViewModel(): ViewModel() {
     var savedKeymaps by mutableStateOf<List<KeyMap>>(listOf(
-        placeholderKeymap(),
-        placeholderKeymap(),
-        placeholderKeymap(),
+        placeholderKeymap("keymap 1"),
+        placeholderKeymap("keymap 2"),
+        placeholderKeymap("keymap 3"),
     ))
-    var keymap by mutableStateOf<KeyMap?>(placeholderKeymap())
+    var keymap by mutableStateOf<KeyMap?>(savedKeymaps[0])
     val serialApi=KeyboardSerialApi()
     var currentlyPressedKeycaps:Set<KeycapMatrixPosition> by mutableStateOf(emptySet())
 
@@ -53,6 +54,7 @@ class ConfigureViewModel(): ViewModel() {
                 key,
                 selectedLayer
             )
+            saveKeymap()
         }
     }
 
@@ -78,7 +80,7 @@ class ConfigureViewModel(): ViewModel() {
         serialApi.closePort()
     }
 
-    fun placeholderKeymap(): KeyMap{
+    fun placeholderKeymap(name:String): KeyMap{
         val row0 = "` 1 2 3 4 5 6 7 8 9 0 - = Back"
         val row1 = "Tab q w e r t y u i o p [ ] \\"
         val row2 = "Caps a s d f g h j k l ; ' Enter"
@@ -86,7 +88,7 @@ class ConfigureViewModel(): ViewModel() {
         val row4 = "Ctrl Win Alt Space Fn Win Alt Ctrl"
         val rows = listOf(row0, row1, row2, row3, row4)
 
-        var keymap = KeyMap( rows.zip(rows.indices).map { (row, j) ->
+        var keymap = KeyMap(name, rows.zip(rows.indices).map { (row, j) ->
             row.split(" ").zip(row.split(" ").indices).map { (key, i) ->
                 Keycap(listOf(
                     Key(key[0].code.toByte(),key).right()
@@ -116,6 +118,27 @@ class ConfigureViewModel(): ViewModel() {
     }
 
     fun loadKeymap(keymap: KeyMap){
+        if(this.keymap!=null){
+            savedKeymaps=savedKeymaps.map {
+                if(it.name==this.keymap!!.name)
+                    this.keymap!!
+                else it
+            }
+        }
         this.keymap=keymap
+    }
+    fun saveKeymap(){
+        if(this.keymap!=null){
+            savedKeymaps=savedKeymaps.map {
+                if(it.name==this.keymap!!.name)
+                    this.keymap!!
+                else it
+            }
+        }
+    }
+    fun saveKeymap(keymap: KeyMap){
+        savedKeymaps.find { it==keymap }.toOption().onNone {
+            savedKeymaps+=keymap
+        }
     }
 }

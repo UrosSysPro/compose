@@ -148,7 +148,7 @@ class KeyboardSerialApi {
                 matrixPosition = KeycapMatrixPosition(x,y)
             )
         }
-        return KeyMap(keycaps.map {
+        return KeyMap("untitled",keycaps.map {
             it.flatMap { key->
                 if (key!=null)
                     listOf(key)

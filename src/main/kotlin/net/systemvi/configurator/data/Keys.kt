@@ -5,8 +5,12 @@ import net.systemvi.configurator.model.Key
 private val alphabet="q w e r t y u i o p a s d f g h j k l z x c v b n m".uppercase()
 private val numbers="1 2 3 4 5 6 7 8 9 0"
 private val symbols="` - = [ ] ; ' \\ , . /"
-val alphabetKeys: List<Key> = alphabet.split(" ").map { Key(it[0].code.toByte(),it) }+Key(' '.code.toByte(),"Space") + Key(0.toByte(),"Pass")
-val numberKeys: List<Key> = numbers.split(" ").map { Key(it[0].code.toByte(),it) }
+val alphabetKeys: List<Key> = alphabet.split(" ").map {
+    Key(it[0].code.toByte(),it,it[0].code.toLong())
+}+
+ Key(' '.code.toByte(),"Space",' '.code.toLong())+
+ Key(0.toByte(),"Pass")
+val numberKeys: List<Key> = numbers.split(" ").map { Key(it[0].code.toByte(),it,it[0].code.toLong()) }
 val symbolKeys: List<Key> = symbols.split(" ").map { Key(it[0].code.toByte(),it) } + Key('\n'.code.toByte(),"Enter")
 val fKeys:List<Key> = listOf(
     Key(0xC2.toByte(),"F1"),

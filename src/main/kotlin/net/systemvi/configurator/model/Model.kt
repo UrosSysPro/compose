@@ -25,7 +25,7 @@ enum class KeycapHeight(val size:Float){
 
 @optics data class KeycapOffset(val x:Float=0f, val y:Float=0f){companion object}
 
-@optics data class Key(val value:Byte, val name:String){companion object}
+@optics data class Key(val value:Byte, val name:String, val nativeCode:Long=0){companion object}
 
 @optics data class KeycapMatrixPosition(val x:Int,val y:Int){companion object}
 
@@ -47,7 +47,7 @@ enum class MacroActionType(val id:Int){
 @optics data class MacroAction(val key:Key,val action:MacroActionType){companion object}
 @optics data class Macro(val actions:List<MacroAction>){companion object}
 
-@optics data class KeyMap(val keycaps:List<List<Keycap>>){companion object}
+@optics data class KeyMap(val name:String,val keycaps:List<List<Keycap>>){companion object}
 
 fun KeyMap.setKeyWidth(i:Int,j:Int,width:KeycapWidth): KeyMap=
     KeyMap.keycaps
