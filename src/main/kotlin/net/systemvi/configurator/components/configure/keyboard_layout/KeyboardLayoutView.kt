@@ -6,12 +6,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
 import net.systemvi.configurator.components.common.BorderHorizontal
 import net.systemvi.configurator.components.common.BorderVertical
 
 enum class CurrentPage(val title:String){
     Keymap("Keymap"),
-    Layouts("Layouts"),
     SaveAndLoad("Save and Load");
 }
 
@@ -23,10 +23,13 @@ fun KeyboardLayoutView() {
         Row{
             SidePanel(currentPage) { page -> currentPage = page }
             BorderVertical()
-            Column{
-                LayerSelector()
-                BorderHorizontal()
-                KeyboardLayoutGridView()
+            when(currentPage){
+                CurrentPage.Keymap->Column{
+                    LayerSelector()
+                    BorderHorizontal()
+                    KeyboardLayoutGridView()
+                }
+                CurrentPage.SaveAndLoad-> SaveAndLoad()
             }
         }
     }

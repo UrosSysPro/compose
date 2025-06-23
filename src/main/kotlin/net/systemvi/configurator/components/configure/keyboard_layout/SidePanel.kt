@@ -15,13 +15,9 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun SidePanel(currentPage: CurrentPage,onSelect: (CurrentPage)->Unit){
-    val pages = listOf(
-        CurrentPage.Keymap,
-        CurrentPage.Layouts,
-        CurrentPage.SaveAndLoad,
-    )
+
     Column(Modifier.padding(vertical = 8.dp, horizontal = 16.dp).width(170.dp)) {
-        for(page in pages){
+        for(page in CurrentPage.entries){
             val selected=currentPage==page
             TextButton(
                 border = if(selected)

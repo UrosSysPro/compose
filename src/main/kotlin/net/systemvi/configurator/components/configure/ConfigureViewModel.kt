@@ -15,6 +15,11 @@ fun <T>List<List<T>>.transpose(): List<List<T>> {
 data class KeycapPosition(val x:Int,val y:Int)
 
 class ConfigureViewModel(): ViewModel() {
+    var savedKeymaps by mutableStateOf<List<KeyMap>>(listOf(
+        placeholderKeymap(),
+        placeholderKeymap(),
+        placeholderKeymap(),
+    ))
     var keymap by mutableStateOf<KeyMap?>(placeholderKeymap())
     val serialApi=KeyboardSerialApi()
     var currentlyPressedKeycaps:Set<KeycapMatrixPosition> by mutableStateOf(emptySet())
@@ -108,5 +113,9 @@ class ConfigureViewModel(): ViewModel() {
             .setKeyWidth(4,5, KeycapWidth.SIZE_125U)                        //right alt
             .setKeyWidth(4,6, KeycapWidth.SIZE_125U)                        //right win
             .setKeyWidth(4,7, KeycapWidth.SIZE_125U)                        //right ctrl
+    }
+
+    fun loadKeymap(keymap: KeyMap){
+        this.keymap=keymap
     }
 }
