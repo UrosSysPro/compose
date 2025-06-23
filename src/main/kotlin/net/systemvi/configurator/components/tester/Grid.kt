@@ -20,7 +20,7 @@ private data class GridItem(val value:String,val width:Float,val height:Float)
 
 data class AutoSizingBoxItemPosition(val x: Dp, val y:Dp)
 
-@Composable fun Grid(items:List<String>, keycap:@Composable (String, Boolean)->Unit) {
+@Composable fun Grid(items:List<String>, keycap:@Composable (String, Boolean, Boolean)->Unit) {
     val filteredItems = items.map {
         it.split(" ").map {
             val matches = "%(.*),([0-9]+.[0-9]+),([0-9]+.[0-9]+)".toRegex().find(it);
@@ -32,7 +32,7 @@ data class AutoSizingBoxItemPosition(val x: Dp, val y:Dp)
             }
         }
     }
-    val size = 40f
+    val size = 50f
     var minSize = 1f
     val focusRequester by remember{ mutableStateOf(FocusRequester()) }
     var currentlyDownKeys by remember{mutableStateOf(emptySet<Key>())}
@@ -77,7 +77,7 @@ data class AutoSizingBoxItemPosition(val x: Dp, val y:Dp)
                             .size((size * item.width).dp, (size * item.height).dp)
                     ) {
                         val key = allKeys.find{it.name.uppercase() == item.value.uppercase()}
-                        keycap(item.value, wasDownKeys.contains(key))
+                        keycap(item.value, wasDownKeys.contains(key), currentlyDownKeys.contains(key))
                         currentX += size * item.width
                     }
                 }
