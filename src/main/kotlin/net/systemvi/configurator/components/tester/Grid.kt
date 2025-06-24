@@ -38,7 +38,10 @@ data class AutoSizingBoxItemPosition(val x: Dp, val y:Dp)
     var minSize = 1f
     val onKeyEvent:(KeyEvent) -> Boolean = {
         if(it.type!= KeyEventType.Unknown){
-            val key = allKeys.find { key-> key.value.toInt() == it.key.nativeKeyCode.toInt() }.toOption()
+            if(it.type ==  KeyEventType.KeyDown){
+                println("key code: ${it.key.nativeKeyCode}")
+            }
+            val key = allKeys.find { key-> key.nativeCode.toInt() == it.key.nativeKeyCode }.toOption()
             key.onSome { key->
                 when (it.type){
                     KeyEventType.KeyDown -> {
