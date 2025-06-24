@@ -3,24 +3,26 @@ package net.systemvi.configurator.components.tester
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.input.key.*
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import arrow.core.toOption
 import net.systemvi.configurator.components.common.AutoSizingBox
 import net.systemvi.configurator.data.allKeys
-import net.systemvi.configurator.model.Key
 
 private data class GridItem(val value:String,val width:Float,val height:Float)
 
 data class AutoSizingBoxItemPosition(val x: Dp, val y:Dp)
 
 @Composable fun Grid(items:List<String>, keycap:@Composable (String, Boolean, Boolean)->Unit) {
+    val viewModel = viewModel{ TesterPageViewModel() }
+
     val filteredItems = items.map {
         it.split(" ").map {
             val matches = "%(.*),([0-9]+.[0-9]+),([0-9]+.[0-9]+)".toRegex().find(it);
@@ -34,20 +36,17 @@ data class AutoSizingBoxItemPosition(val x: Dp, val y:Dp)
     }
     val size = 50f
     var minSize = 1f
-    val focusRequester by remember{ mutableStateOf(FocusRequester()) }
-    var currentlyDownKeys by remember{mutableStateOf(emptySet<Key>())}
-    var wasDownKeys by remember{mutableStateOf(emptySet<Key>())}
     val onKeyEvent:(KeyEvent) -> Boolean = {
         if(it.type!= KeyEventType.Unknown){
             val key = allKeys.find { key-> key.value.toInt() == it.key.nativeKeyCode.toInt() }.toOption()
             key.onSome { key->
                 when (it.type){
                     KeyEventType.KeyDown -> {
-                        currentlyDownKeys += key
-                        wasDownKeys += key
+                        viewModel.currentlyDownKeys += key
+                        viewModel.wasDownKeys += key
                     }
                     KeyEventType.KeyUp -> {
-                        currentlyDownKeys -= key
+                        viewModel.currentlyDownKeys -= key
                     }
 
                 }
@@ -62,7 +61,7 @@ data class AutoSizingBoxItemPosition(val x: Dp, val y:Dp)
     }
     Box(Modifier
         .onKeyEvent(onKeyEvent)
-        .focusRequester(focusRequester)
+        .focusRequester(viewModel.focusRequester)
         .focusable()
     ) {
         AutoSizingBox {
@@ -77,7 +76,7 @@ data class AutoSizingBoxItemPosition(val x: Dp, val y:Dp)
                             .size((size * item.width).dp, (size * item.height).dp)
                     ) {
                         val key = allKeys.find{it.name.uppercase() == item.value.uppercase()}
-                        keycap(item.value, wasDownKeys.contains(key), currentlyDownKeys.contains(key))
+                        keycap(item.value, viewModel.wasDownKeys.contains(key), viewModel.currentlyDownKeys.contains(key))
                         currentX += size * item.width
                     }
                 }
@@ -87,7 +86,7 @@ data class AutoSizingBoxItemPosition(val x: Dp, val y:Dp)
             }
         }
         LaunchedEffect(Unit) {
-            focusRequester.requestFocus()
+            viewModel.focusRequester.requestFocus()
         }
     }
 }

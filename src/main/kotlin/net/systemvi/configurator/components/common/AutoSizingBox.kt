@@ -22,7 +22,7 @@ import net.systemvi.configurator.components.tester.AutoSizingBoxItemPosition
         }
 
         val width = placeablesWithOffset.maxOf { it.second + it.first.width }
-        val height = placeablesWithOffset.maxOf { it.third + it.first.width }
+        val height = placeablesWithOffset.maxOf { it.third + it.first.height }
 
         layout(width, height) {
             placeablesWithOffset.forEach { (placeable, x, y) ->
