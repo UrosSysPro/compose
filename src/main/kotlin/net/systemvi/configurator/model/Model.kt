@@ -17,7 +17,6 @@ enum class KeycapWidth(val size:Float){
     SIZE_625U(6.25f);
 }
 
-
 enum class KeycapHeight(val size:Float){
     SIZE1U(1f),
     SIZE2U(2f);
