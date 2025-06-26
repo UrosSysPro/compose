@@ -1,5 +1,6 @@
 package net.systemvi.configurator.components
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -31,7 +32,7 @@ class ApplicationViewModel: ViewModel() {
         Color(0x140F2D),
     )
 
-    private var isDark by mutableStateOf(false)
+    private var isDark by mutableStateOf(true)
     private var currentColor by mutableStateOf(colorSeeds[5])
     var colorScheme by mutableStateOf(dynamicColorScheme(currentColor, isDark))
 
