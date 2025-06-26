@@ -2,21 +2,32 @@ package net.systemvi.configurator.data
 
 import net.systemvi.configurator.model.Key
 
-private val alphabet="q w e r t y u i o p a s d f g h j k l z x c v b n m"
+private val alphabetSmall="q w e r t y u i o p a s d f g h j k l z x c v b n m"
+private val alphabetBig=alphabetSmall.uppercase()
 private val numbers="1 2 3 4 5 6 7 8 9 0"
-private val symbols="[ ] ; ' \\ , . /"
+private val symbols=""
 
-val alphabetKeys: List<Key> = alphabet.split(" ").map { Key(it[0].code.toByte(),it.uppercase(),it[0].code.toLong()) }
+val alphabetKeys: List<Key> = alphabetSmall.split(" ").map { Key(it[0].code.toByte(),it,it[0].code.toLong()) }
     .plus(Key(' '.code.toByte(),"Space",' '.code.toLong()))
     .plus(Key(0.toByte(),"Pass"))
 //    .plus(Key('\n'.code.toByte(),"Enter"))
 
+val alphabetBigKeys=alphabetBig.split(" ").map { Key(it[0].code.toByte(),it,it[0].code.toLong()) }
+
 val numberKeys: List<Key> = numbers.split(" ").map { Key(it[0].code.toByte(),it,it[0].code.toLong()) }
 
-val symbolKeys: List<Key> = symbols.split(" ").map { Key(it[0].code.toByte(),it) }
-    .plus(Key('`' .code.toByte(),"`"))
-    .plus(Key('-' .code.toByte(),"-"))
-    .plus(Key('=' .code.toByte(),"="))
+val symbolKeys: List<Key> = emptyList<Key>()
+    .plus(Key('`' .code.toByte(),"`",192))
+    .plus(Key('-' .code.toByte(),"-",45))
+    .plus(Key('=' .code.toByte(),"=",61))
+    .plus(Key('\\' .code.toByte(),"\\",92))
+    .plus(Key('.' .code.toByte(),".",46))
+    .plus(Key('/' .code.toByte(),"/",47))
+    .plus(Key(',' .code.toByte(),",",44))
+    .plus(Key('[' .code.toByte(),"[",91))
+    .plus(Key(']' .code.toByte(),"]",93))
+    .plus(Key(';' .code.toByte(),";",59))
+    .plus(Key('\'' .code.toByte(),"'",222))
 
 val fKeys:List<Key> = listOf(
     Key(0xC2.toByte(),"F1", 112),
@@ -67,7 +78,7 @@ val modifierKeys:List<Key> = listOf(
     Key(0x80.toByte(),"Left Ctrl", 17),
     Key(0x81.toByte(),"Left Shift", 16),
     Key(0x82.toByte(),"Left Alt", 18),
-    Key(0x83.toByte(),"Left Win"),
+    Key(0x83.toByte(),"Left Win", 524),
     Key(0x84.toByte(),"Right Ctrl", 17),
     Key(0x85.toByte(),"Right Shift", 16),
     Key(0x86.toByte(),"Right Alt", 18),
@@ -90,7 +101,8 @@ val miscKeys:List<Key> = listOf(
     Key(0xD2.toByte(),"Home", 36),
     Key(0xD5.toByte(),"End", 35),
     Key(0xC1.toByte(),"Caps Lock", 20),
-    Key(0xCE.toByte(),"Print Scr.", 44),
+//    Key(0xCE.toByte(),"Print Scr.", 44),
+    Key(0xCE.toByte(),"Print Scr."),
     Key(0xCF.toByte(),"Scroll Lock", 145),
     Key(0xD0.toByte(),"Pause", 19),
 )
@@ -114,6 +126,7 @@ val mediaKeys:List<Key> = listOf(
 
 val allKeys:List<Key> = listOf(
     alphabetKeys,
+    alphabetBigKeys,
     numberKeys,
     symbolKeys,
     fKeys,

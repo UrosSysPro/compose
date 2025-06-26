@@ -7,20 +7,23 @@ import net.systemvi.configurator.model.Keycap
 import net.systemvi.configurator.model.KeycapWidth
 import net.systemvi.configurator.model.setKeyWidth
 
-val defaultKeymaps=listOf(
+fun defaultKeymaps()=listOf(
     {
         val row0 = "` 1 2 3 4 5 6 7 8 9 0 - = Back"
         val row1 = "Tab q w e r t y u i o p [ ] \\"
         val row2 = "Caps a s d f g h j k l ; ' Enter"
         val row3 = "Shift z x c v b n m , . / Shift"
         val row4 = "Ctrl Win Alt Space Fn Win Alt Ctrl"
-        val rows = listOf(row0, row1, row2, row3, row4)
+        val rows = listOf(row0, row1, row2, row3, row4).map { it.uppercase() }
 
-        var keymap = KeyMap("keyboard 60", rows.zip(rows.indices).map { (row, j) ->
-            row.split(" ").zip(row.split(" ").indices).map { (key, i) ->
-                Keycap(listOf(
+        val keymap = KeyMap("keyboard 60", rows.zip(rows.indices).map { (row, j) ->
+            row.split(" ").zip(row.split(" ").indices).flatMap { (key, i) ->
+                if(key.isEmpty())
+                    emptyList<Keycap>()
+                else
+                listOf(Keycap(listOf(
                     Key(key[0].code.toByte(),key).right()
-                ))
+                )))
             }
         })
         keymap
@@ -52,26 +55,29 @@ val defaultKeymaps=listOf(
             "Caps a s d f g h j k l ; ' Enter Home",
             "Shift z x c v b n m , . / Shift Pause",
             "Ctrl Win Alt Space Fn Win Alt Ctrl Idk",
-        )
+        ).map { it.uppercase() }
 
-        var keymap = KeyMap("keyboard 75", rows.zip(rows.indices).map { (row, j) ->
-            row.split(" ").zip(row.split(" ").indices).map { (key, i) ->
-                Keycap(listOf(
-                    Key(key[0].code.toByte(),key).right()
-                ))
+        val keymap = KeyMap("keyboard 75", rows.zip(rows.indices).map { (row, j) ->
+            row.split(" ").zip(row.split(" ").indices).flatMap { (key, i) ->
+                if(key.isEmpty())
+                    emptyList<Keycap>()
+                else
+                    listOf(Keycap(listOf(
+                        Key(key[0].code.toByte(),key).right()
+                    )))
             }
         })
         keymap
-            .setKeyWidth(1,keymap.keycaps[0].size-1, KeycapWidth.SIZE_2U)   //backspace
+            .setKeyWidth(1,keymap.keycaps[1].size-1, KeycapWidth.SIZE_2U)   //backspace
 
             .setKeyWidth(2,0, KeycapWidth.SIZE_15U)                        //tab
-            .setKeyWidth(2,keymap.keycaps[1].size-1, KeycapWidth.SIZE_15U) //backslash
+            .setKeyWidth(2,keymap.keycaps[2].size-1, KeycapWidth.SIZE_15U) //backslash
 
             .setKeyWidth(3,0, KeycapWidth.SIZE_175U)                        //caps lock
-            .setKeyWidth(3,keymap.keycaps[2].size-1, KeycapWidth.SIZE_225U) //enter
+            .setKeyWidth(3,keymap.keycaps[3].size-1, KeycapWidth.SIZE_225U) //enter
 
             .setKeyWidth(4,0, KeycapWidth.SIZE_225U)                        //left shift
-            .setKeyWidth(4,keymap.keycaps[3].size-1, KeycapWidth.SIZE_275U) //right shift
+            .setKeyWidth(4,keymap.keycaps[4].size-1, KeycapWidth.SIZE_275U) //right shift
 
             .setKeyWidth(5,0, KeycapWidth.SIZE_125U)                        //left ctrl
             .setKeyWidth(5,1, KeycapWidth.SIZE_125U)                        //left win
@@ -90,26 +96,29 @@ val defaultKeymaps=listOf(
             "Caps a s d f g h j k l ; ' Enter Home 4 5 6 ",
             "Shift z x c v b n m , . / Shift Pause 1 2 3 Num.Enter",
             "Ctrl Win Alt Space Fn Win Alt Ctrl Idk 0 Num.Del",
-        )
+        ).map { it.uppercase() }
 
-        var keymap = KeyMap("keyboard 75", rows.zip(rows.indices).map { (row, j) ->
-            row.split(" ").zip(row.split(" ").indices).map { (key, i) ->
-                Keycap(listOf(
-                    Key(key[0].code.toByte(),key).right()
-                ))
+        val keymap = KeyMap("keyboard 100", rows.zip(rows.indices).map { (row, j) ->
+            row.split(" ").zip(row.split(" ").indices).flatMap { (key, i) ->
+                if(key.isEmpty())
+                    emptyList<Keycap>()
+                else
+                    listOf(Keycap(listOf(
+                        Key(key[0].code.toByte(),key).right()
+                    )))
             }
         })
         keymap
-            .setKeyWidth(1,keymap.keycaps[0].size-1, KeycapWidth.SIZE_2U)   //backspace
+            .setKeyWidth(1,keymap.keycaps[1].size-1, KeycapWidth.SIZE_2U)   //backspace
 
             .setKeyWidth(2,0, KeycapWidth.SIZE_15U)                        //tab
-            .setKeyWidth(2,keymap.keycaps[1].size-1, KeycapWidth.SIZE_15U) //backslash
+            .setKeyWidth(2,keymap.keycaps[2].size-1, KeycapWidth.SIZE_15U) //backslash
 
             .setKeyWidth(3,0, KeycapWidth.SIZE_175U)                        //caps lock
-            .setKeyWidth(3,keymap.keycaps[2].size-1, KeycapWidth.SIZE_225U) //enter
+            .setKeyWidth(3,keymap.keycaps[3].size-1, KeycapWidth.SIZE_225U) //enter
 
             .setKeyWidth(4,0, KeycapWidth.SIZE_225U)                        //left shift
-            .setKeyWidth(4,keymap.keycaps[3].size-1, KeycapWidth.SIZE_275U) //right shift
+            .setKeyWidth(4,keymap.keycaps[4].size-1, KeycapWidth.SIZE_275U) //right shift
 
             .setKeyWidth(5,0, KeycapWidth.SIZE_125U)                        //left ctrl
             .setKeyWidth(5,1, KeycapWidth.SIZE_125U)                        //left win
