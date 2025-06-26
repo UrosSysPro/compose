@@ -64,6 +64,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
                 Keycap
             )
             ResetButton()
+            SoundTest()
         }
     }
 }
