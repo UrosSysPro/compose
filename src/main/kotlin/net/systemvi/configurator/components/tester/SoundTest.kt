@@ -2,14 +2,7 @@ package net.systemvi.configurator.components.tester
 
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
-import kotlinx.coroutines.delay
+import androidx.compose.runtime.*
 import kotlinx.coroutines.launch
 import javax.sound.midi.MidiChannel
 import javax.sound.midi.MidiSystem
@@ -31,10 +24,10 @@ import javax.sound.midi.Synthesizer
         onClick = {scope.launch {
             if(down){
                 down = false
-                channels?.get(0)!!.noteOn(60, 93)
+                channels?.get(0)!!.noteOff(60)
             }else{
                 down=true
-                channels?.get(0)!!.noteOff(60)
+                channels?.get(0)!!.noteOn(60, 93)
             }
         }}
     ){

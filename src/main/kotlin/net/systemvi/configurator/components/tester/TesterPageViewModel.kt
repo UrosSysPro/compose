@@ -6,6 +6,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.focus.FocusRequester
 import androidx.lifecycle.ViewModel
 import net.systemvi.configurator.model.Key
+import javax.sound.midi.MidiChannel
+import javax.sound.midi.MidiSystem
+import javax.sound.midi.Synthesizer
 
 class TesterPageViewModel : ViewModel() {
 
@@ -18,4 +21,7 @@ class TesterPageViewModel : ViewModel() {
         wasDownKeys = emptySet()
         focusRequester.requestFocus()
     }
+
+    val synth:Synthesizer? = MidiSystem.getSynthesizer().apply { open()}
+    val channels:Array<MidiChannel>? = synth?.getChannels()
 }

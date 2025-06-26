@@ -16,26 +16,27 @@ import arrow.core.toOption
 import net.systemvi.configurator.components.common.AutoSizingBox
 import net.systemvi.configurator.data.allKeys
 
-private data class GridItem(val value:String,val width:Float,val height:Float)
+private data class GridItem(val value:String,val width:Float,val height:Float, val x:Int, val y:Int)
 
 data class AutoSizingBoxItemPosition(val x: Dp, val y:Dp)
 
 @Composable fun Grid(items:List<String>, keycap:@Composable (String, Boolean, Boolean)->Unit) {
     val viewModel = viewModel{ TesterPageViewModel() }
 
-    val filteredItems = items.map {
-        it.split(" ").map {
+    val filteredItems = items.mapIndexed { j, row ->
+        row.split(" ").mapIndexed {i, it ->
             val matches = "%(.*),([0-9]+.[0-9]+),([0-9]+.[0-9]+)".toRegex().find(it);
             if (matches == null) {
-                GridItem(it, 1f, 1f)
+                GridItem(it, 1f, 1f, i, j)
             } else {
                 val (name, width, height) = matches.destructured
-                GridItem(name.replace("\\s", " "), width.toFloat(), height.toFloat())
+                GridItem(name.replace("\\s", " "), width.toFloat(), height.toFloat(), i, j)
             }
         }
     }
     val size = 50f
     var minSize = 1f
+
     val onKeyEvent:(KeyEvent) -> Boolean = {
         if(it.type!= KeyEventType.Unknown){
             if(it.type ==  KeyEventType.KeyDown){
@@ -47,9 +48,23 @@ data class AutoSizingBoxItemPosition(val x: Dp, val y:Dp)
                     KeyEventType.KeyDown -> {
                         viewModel.currentlyDownKeys += key
                         viewModel.wasDownKeys += key
+                        for(row in filteredItems){
+                            for(item in row){
+                                if(item.value.uppercase() == key.name.uppercase()){
+                                    viewModel.channels?.get(0)?.noteOn(item.x + item.y * 12, 93)
+                                }
+                            }
+                        }
                     }
                     KeyEventType.KeyUp -> {
                         viewModel.currentlyDownKeys -= key
+                        for(row in filteredItems){
+                            for(item in row){
+                                if(item.value.uppercase() == key.name.uppercase()){
+                                    viewModel.channels?.get(0)?.noteOff(item.x + item.y * 12)
+                                }
+                            }
+                        }
                     }
 
                 }
