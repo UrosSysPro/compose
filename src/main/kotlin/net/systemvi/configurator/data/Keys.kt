@@ -5,7 +5,6 @@ import net.systemvi.configurator.model.Key
 private val alphabetSmall="q w e r t y u i o p a s d f g h j k l z x c v b n m"
 private val alphabetBig=alphabetSmall.uppercase()
 private val numbers="1 2 3 4 5 6 7 8 9 0"
-private val symbols=""
 
 val alphabetKeys: List<Key> = alphabetSmall.split(" ").map { Key(it[0].code.toByte(),it,it[0].code.toLong()) }
     .plus(Key(' '.code.toByte(),"Space",' '.code.toLong()))
@@ -125,8 +124,8 @@ val mediaKeys:List<Key> = listOf(
 )
 
 val allKeys:List<Key> = listOf(
-    alphabetKeys,
     alphabetBigKeys,
+    alphabetKeys,
     numberKeys,
     symbolKeys,
     fKeys,

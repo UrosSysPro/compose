@@ -68,16 +68,16 @@ fun defaultKeymaps()=listOf(
             }
         })
         keymap
-            .setKeyWidth(1,keymap.keycaps[1].size-1, KeycapWidth.SIZE_2U)   //backspace
+            .setKeyWidth(1,keymap.keycaps[1].size-2, KeycapWidth.SIZE_2U)   //backspace
 
             .setKeyWidth(2,0, KeycapWidth.SIZE_15U)                        //tab
-            .setKeyWidth(2,keymap.keycaps[2].size-1, KeycapWidth.SIZE_15U) //backslash
+            .setKeyWidth(2,keymap.keycaps[2].size-2, KeycapWidth.SIZE_15U) //backslash
 
             .setKeyWidth(3,0, KeycapWidth.SIZE_175U)                        //caps lock
-            .setKeyWidth(3,keymap.keycaps[3].size-1, KeycapWidth.SIZE_225U) //enter
+            .setKeyWidth(3,keymap.keycaps[3].size-2, KeycapWidth.SIZE_225U) //enter
 
             .setKeyWidth(4,0, KeycapWidth.SIZE_225U)                        //left shift
-            .setKeyWidth(4,keymap.keycaps[4].size-1, KeycapWidth.SIZE_275U) //right shift
+            .setKeyWidth(4,keymap.keycaps[4].size-2, KeycapWidth.SIZE_275U) //right shift
 
             .setKeyWidth(5,0, KeycapWidth.SIZE_125U)                        //left ctrl
             .setKeyWidth(5,1, KeycapWidth.SIZE_125U)                        //left win
