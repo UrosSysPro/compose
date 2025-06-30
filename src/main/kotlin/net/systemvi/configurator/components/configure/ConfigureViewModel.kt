@@ -17,11 +17,11 @@ data class KeycapPosition(val x:Int,val y:Int)
 
 class ConfigureViewModel(): ViewModel() {
     var savedKeymaps by mutableStateOf<List<KeyMap>>(listOf(
-        placeholderKeymap("keymap 1"),
-        placeholderKeymap("keymap 2"),
-        placeholderKeymap("keymap 3"),
+//        placeholderKeymap("keymap 1"),
+//        placeholderKeymap("keymap 2"),
+//        placeholderKeymap("keymap 3"),
     ))
-    var keymap by mutableStateOf<KeyMap?>(savedKeymaps[0])
+    var keymap by mutableStateOf<KeyMap?>(null)
     val serialApi=KeyboardSerialApi()
     var currentlyPressedKeycaps:Set<KeycapMatrixPosition> by mutableStateOf(emptySet())
 

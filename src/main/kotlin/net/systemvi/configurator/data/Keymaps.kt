@@ -9,14 +9,14 @@ import net.systemvi.configurator.model.setKeyWidth
 
 fun defaultKeymaps()=listOf(
     {
-        val row0 = "` 1 2 3 4 5 6 7 8 9 0 - = 8:3:0"
+        val row0 = "` 1 2 3 4 5 6 7 8 9 0 - = 8:3:0 44"
         val row1 = "Tab q w e r t y u i o p [ ] \\"
         val row2 = "Caps a s d f g h j k l ; ' Enter"
         val row3 = "Shift z x c v b n m , . / Shift"
         val row4 = "Ctrl Win Alt Space Fn Win Alt Ctrl"
         val rows = listOf(row0, row1, row2, row3, row4).map { it.uppercase() }
 
-        val keymap = KeyMap("keyboard 60", rows.zip(rows.indices).map { (row, j) ->
+        val keymap = KeyMap("Keyboard 60", rows.zip(rows.indices).map { (row, j) ->
             row.split(" ").zip(row.split(" ").indices).flatMap { (key, i) ->
                 if(key.isEmpty())
                     emptyList<Keycap>()
@@ -57,7 +57,7 @@ fun defaultKeymaps()=listOf(
             "Ctrl Win Alt Space Fn Win Alt Ctrl Idk",
         ).map { it.uppercase() }
 
-        val keymap = KeyMap("keyboard 75", rows.zip(rows.indices).map { (row, j) ->
+        val keymap = KeyMap("Keyboard 75", rows.zip(rows.indices).map { (row, j) ->
             row.split(" ").zip(row.split(" ").indices).flatMap { (key, i) ->
                 if(key.isEmpty())
                     emptyList<Keycap>()
@@ -98,7 +98,7 @@ fun defaultKeymaps()=listOf(
             "Ctrl Win Alt Space Fn Win Alt Ctrl Idk 0 Num.Del",
         ).map { it.uppercase() }
 
-        val keymap = KeyMap("keyboard 100", rows.zip(rows.indices).map { (row, j) ->
+        val keymap = KeyMap("Keyboard 100", rows.zip(rows.indices).map { (row, j) ->
             row.split(" ").zip(row.split(" ").indices).flatMap { (key, i) ->
                 if(key.isEmpty())
                     emptyList<Keycap>()

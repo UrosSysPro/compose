@@ -33,7 +33,7 @@ import net.systemvi.configurator.model.Keycap
 import kotlin.collections.minus
 import kotlin.collections.plus
 
-@Composable fun Grid2(keymap: KeyMap,keycapComponent: @Composable (String, Boolean, Boolean)->Unit) {
+@Composable fun Grid2(keymap: KeyMap,keycapComponent: @Composable (String, Boolean, Boolean)->Unit,oneUSize:Int=50) {
     data class GridItem(val keycap: Keycap, val x:Int, val y:Int)
 
     val viewModel = viewModel{ TesterPageViewModel() }
@@ -53,7 +53,6 @@ import kotlin.collections.plus
             GridItem(keycap,i,j)
         }
     }
-    val size = 50f
     var minSize = 1f
 
     val passKey=alphabetKeys.last()
@@ -121,14 +120,14 @@ import kotlin.collections.plus
                     Box(
                         modifier = Modifier
                             .layoutId(AutoSizingBoxItemPosition(currentX.dp, currentY.dp))
-                            .size((size * keycap.width.size).dp, (size * height).dp)
+                            .size((oneUSize * keycap.width.size).dp, (oneUSize * height).dp)
                     ) {
                         keycapComponent(key.name, wasDownCodes.contains(key.value), currentlyDownCodes.contains(key.value))
                     }
-                    currentX += size * width
+                    currentX += oneUSize * width
                 }
                 currentX = 0f
-                currentY += minSize * size
+                currentY += minSize * oneUSize
                 minSize = 1f
             }
         }
