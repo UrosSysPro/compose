@@ -89,7 +89,7 @@ fun defaultKeymaps()=listOf(
     }(),
     {
         val rows = listOf(
-            "B1:0:0: C2 C3 C4 C5 C6 C7 C8 C9 CA CB CC CD CE CF D0",
+            "B1:0:0 C2 C3 C4 C5 C6 C7 C8 C9 CA CB CC CD CE CF D0",
             "` 1 2 3 4 5 6 7 8 9 0 - = B2:4:0 D3 DB DC DD DE",
             "B3:2:0 q w e r t y u i o p [ ] 5C:2:0 D4 D5 D6 E7 E8 E9 DF",
             "C1:3:0 a s d f g h j k l ; ' B0:5:0 E4 E5 E6",
