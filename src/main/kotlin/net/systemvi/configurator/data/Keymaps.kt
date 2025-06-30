@@ -8,7 +8,7 @@ import net.systemvi.configurator.model.*
 @OptIn(ExperimentalStdlibApi::class)
 fun defaultKeymaps()=listOf(
     {
-        val row0 = "` 1 2 3 4 5 6 7 8 9 0 - = 8:3:0 44"
+        val row0 = "` 1 2 3 4 5 6 7 8 9 0 - = 8:3:0"
         val row1 = "Tab q w e r t y u i o p [ ] \\"
         val row2 = "Caps a s d f g h j k l ; ' Enter"
         val row3 = "Shift z x c v b n m , . / Shift"
