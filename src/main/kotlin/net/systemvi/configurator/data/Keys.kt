@@ -125,7 +125,6 @@ val mediaKeys:List<Key> = listOf(
 
 val allKeys:List<Key> = listOf(
     alphabetBigKeys,
-    alphabetKeys,
     numberKeys,
     symbolKeys,
     fKeys,
@@ -133,4 +132,5 @@ val allKeys:List<Key> = listOf(
     modifierKeys,
     miscKeys,
     mediaKeys,
+    alphabetKeys,
 ).flatten()

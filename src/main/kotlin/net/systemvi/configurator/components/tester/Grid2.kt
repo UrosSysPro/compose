@@ -33,20 +33,10 @@ import net.systemvi.configurator.model.Keycap
 import kotlin.collections.minus
 import kotlin.collections.plus
 
-@Composable fun Grid2(keymap: KeyMap,keycapComponent: @Composable (String, Boolean, Boolean)->Unit,oneUSize:Int=50) {
+@Composable fun Grid2(keymap: KeyMap,keycapComponent: @Composable (String, Boolean, Boolean)->Unit, oneUSize:Int=50) {
     data class GridItem(val keycap: Keycap, val x:Int, val y:Int)
 
     val viewModel = viewModel{ TesterPageViewModel() }
-
-    var currentlyDownCodes by remember { mutableStateOf(emptySet<Byte>()) }
-    var wasDownCodes by remember { mutableStateOf(emptySet<Byte>()) }
-
-    LaunchedEffect(viewModel.currentlyDownKeys){
-       currentlyDownCodes = viewModel.currentlyDownKeys.map{ it.value }.toSet()
-    }
-    LaunchedEffect(viewModel.wasDownKeys){
-        wasDownCodes = viewModel.wasDownKeys.map{ it.value }.toSet()
-    }
 
     val filteredItems= keymap.keycaps.mapIndexed { j,row->
         row.mapIndexed { i,keycap->
@@ -54,10 +44,12 @@ import kotlin.collections.plus
         }
     }
     var minSize = 1f
+    var maxPadding = 0f
 
     val passKey=alphabetKeys.last()
 
     fun processEvent(type: KeyEventType,key: Key){
+        println(key)
         when (type){
             KeyEventType.KeyDown -> {
                 viewModel.currentlyDownKeys += key
@@ -114,21 +106,26 @@ import kotlin.collections.plus
                     val keycap=item.keycap
                     val width=keycap.width.size
                     val height=keycap.height.size
+                    val paddingLeft = keycap.padding.left
+                    val paddingBottom = keycap.padding.bottom
                     val key=keycap.layers[0].getOrElse { passKey }
                     minSize = minSize.coerceAtMost(height)
+                    maxPadding = maxPadding.coerceAtLeast(paddingBottom)
+                    currentX += oneUSize * paddingLeft
 
                     Box(
                         modifier = Modifier
                             .layoutId(AutoSizingBoxItemPosition(currentX.dp, currentY.dp))
-                            .size((oneUSize * keycap.width.size).dp, (oneUSize * height).dp)
+                            .size((oneUSize * width).dp, (oneUSize * height).dp)
                     ) {
-                        keycapComponent(key.name, wasDownCodes.contains(key.value), currentlyDownCodes.contains(key.value))
+                        keycapComponent(key.name, viewModel.wasDownKeys.contains(key), viewModel.currentlyDownKeys.contains(key))
                     }
                     currentX += oneUSize * width
                 }
                 currentX = 0f
-                currentY += minSize * oneUSize
+                currentY += (minSize + maxPadding) * oneUSize
                 minSize = 1f
+                maxPadding = 0f
             }
         }
         LaunchedEffect(Unit) {

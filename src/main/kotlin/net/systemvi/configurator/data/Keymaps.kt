@@ -89,7 +89,7 @@ fun defaultKeymaps()=listOf(
     }(),
     {
         val rows = listOf(
-            "B1 C2:0:0:1:0 C3 C4 C5 C6 C7 C8 C9 CA CB CC CD CE CF D0",
+            "B1 C2:0:0:1:0.5 C3 C4 C5 C6:0:0:0.5:0 C7 C8 C9 CA:0:0:0.5:0 CB CC CD CE:0:0:0.25:0 CF D0",
             "` 1 2 3 4 5 6 7 8 9 0 - = B2:4:0 D3 DB DC DD DE",
             "B3:2:0 q w e r t y u i o p [ ] 5C:2:0 D4 D5 D6 E7 E8 E9 DF",
             "C1:3:0 a s d f g h j k l ; ' B0:5:0 E4 E5 E6",
@@ -107,8 +107,8 @@ fun defaultKeymaps()=listOf(
                 val width = KeycapWidth.entries[splitKey.getOrNull(1)?.toInt().toOption().getOrElse { 0 }]
                 val height = KeycapHeight.entries[splitKey.getOrNull(2)?.toInt().toOption().getOrElse { 0 }]
                 val padding = KeycapPadding(
-                    splitKey.getOrNull(3)?.toFloat().toOption().getOrElse { 0f },
-                    splitKey.getOrNull(4)?.toFloat().toOption().getOrElse { 0f }
+                    left = splitKey.getOrNull(3)?.toFloat().toOption().getOrElse { 0f },
+                    bottom = splitKey.getOrNull(4)?.toFloat().toOption().getOrElse { 0f }
                 )
                 Keycap(
                     listOf(keyItem),

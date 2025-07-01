@@ -29,7 +29,7 @@ enum class KeycapHeight(val size:Float){
 
 @optics data class KeycapMatrixPosition(val x:Int,val y:Int){companion object}
 
-@optics data class KeycapPadding(val top:Float = 0f, val left:Float = 0f){companion object}
+@optics data class KeycapPadding(val bottom:Float = 0f, val left:Float = 0f){companion object}
 
 @optics data class Keycap(
     val layers:List<Either<Macro,Key>>,
