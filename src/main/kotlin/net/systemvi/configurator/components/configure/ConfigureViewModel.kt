@@ -2,6 +2,7 @@ package net.systemvi.configurator.components.configure
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import arrow.core.right
@@ -42,14 +43,20 @@ enum class KeyboardKeysPages(val title:String,val keys:List<Key>){
 }
 
 class ConfigureViewModel(): ViewModel() {
-    var savedKeymaps by mutableStateOf<List<KeyMap>>(listOf(
-//        placeholderKeymap("keymap 1"),
-//        placeholderKeymap("keymap 2"),
-//        placeholderKeymap("keymap 3"),
-    ))
+    var savedKeymaps by mutableStateOf<List<KeyMap>>(emptyList())
     var keymap by mutableStateOf<KeyMap?>(null)
     val serialApi=KeyboardSerialApi()
     var currentlyPressedKeycaps:Set<KeycapMatrixPosition> by mutableStateOf(emptySet())
+    var currentKeyboardLayoutPage: KeyboardLayoutPages by mutableStateOf(KeyboardLayoutPages.Keymap)
+    var currentKeyboardKeysPage: KeyboardKeysPages by mutableStateOf(KeyboardKeysPages.All)
+
+    fun setKeyboardLayoutPage(page: KeyboardLayoutPages){
+        currentKeyboardLayoutPage=page
+    }
+
+    fun setKeyboardKeysPage(page: KeyboardKeysPages){
+        currentKeyboardKeysPage=page
+    }
 
     private var selectedLayer by mutableStateOf(0)
     private var selectedKeycapPositon by mutableStateOf<KeycapPosition?>(null)
@@ -115,6 +122,7 @@ class ConfigureViewModel(): ViewModel() {
             }
         }
         this.keymap=keymap
+        setKeyboardLayoutPage(KeyboardLayoutPages.Keymap)
     }
 
     fun keymapSave(keymap: KeyMap){

@@ -6,6 +6,8 @@ import androidx.compose.runtime.remember
 import net.systemvi.configurator.components.common.BorderVertical
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.viewmodel.compose.viewModel
+import net.systemvi.configurator.components.configure.ConfigureViewModel
 import net.systemvi.configurator.components.configure.KeyboardKeysPages
 import net.systemvi.configurator.data.allKeys
 import net.systemvi.configurator.data.alphabetKeys
@@ -19,10 +21,10 @@ import net.systemvi.configurator.data.symbolKeys
 import net.systemvi.configurator.model.Key
 
 @Composable fun KeyboardKeys() {
-    var currentPage: KeyboardKeysPages by remember { mutableStateOf(KeyboardKeysPages.All) }
+    val viewModel= viewModel { ConfigureViewModel() }
     Row {
-        SidePanel(currentPage,{page -> currentPage=page})
+        SidePanel(viewModel.currentKeyboardKeysPage,{page -> viewModel.setKeyboardKeysPage(page)})
         BorderVertical()
-        Keys(currentPage.keys)
+        Keys(viewModel.currentKeyboardKeysPage.keys)
     }
 }
