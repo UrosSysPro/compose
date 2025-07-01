@@ -12,7 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import net.systemvi.configurator.components.common.keycaps.Keycap
+import net.systemvi.configurator.components.common.keycaps.FlatKeycap
 import net.systemvi.configurator.data.defaultKeymaps
 
 @Composable
@@ -37,7 +37,7 @@ fun ResetButton() {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
-        Grid(defaultKeymaps()[2], Keycap)
+        Grid(defaultKeymaps()[2], FlatKeycap)
         ResetButton()
     }
 }
