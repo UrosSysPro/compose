@@ -1,3 +1,4 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
 plugins {
@@ -5,6 +6,7 @@ plugins {
     id("org.jetbrains.compose") version "1.8.1"
     id("org.jetbrains.kotlin.plugin.compose")
     id("com.google.devtools.ksp") version "2.1.20-2.0.0"
+    id("com.gradleup.shadow") version "9.0.0-beta17"
 }
 
 group = "net.systemvi"
@@ -13,6 +15,7 @@ version = "1.0-SNAPSHOT"
 repositories {
     mavenCentral()
     maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
+    gradlePluginPortal()
     google()
 }
 
@@ -29,12 +32,19 @@ dependencies {
     implementation(compose.material3)
 }
 
+tasks.withType<Jar> {
+    manifest {
+        attributes["Class-Path"] = configurations.runtimeClasspath.get().files.joinToString(" ") { it.name }
+        attributes["Main-Class"] = "net.systemvi.configurator.MainKt"
+    }
+}
+
 compose.desktop {
     application {
         mainClass = "net.systemvi.configurator.MainKt"
 
         nativeDistributions {
-            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
+            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb, TargetFormat.Exe, TargetFormat.Pkg)
             packageName = "compose"
             packageVersion = "1.0.0"
         }
