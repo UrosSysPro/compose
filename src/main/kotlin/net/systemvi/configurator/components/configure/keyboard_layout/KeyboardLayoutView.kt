@@ -10,10 +10,10 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import net.systemvi.configurator.components.common.BorderHorizontal
 import net.systemvi.configurator.components.common.BorderVertical
+import net.systemvi.configurator.components.common.keycaps.Keycap
 import net.systemvi.configurator.components.configure.ConfigureViewModel
 import net.systemvi.configurator.components.configure.KeyboardLayoutPages
-import net.systemvi.configurator.components.tester.Grid2
-import net.systemvi.configurator.components.tester.Keycap
+import net.systemvi.configurator.components.tester.Grid
 
 
 @Composable
@@ -36,7 +36,7 @@ fun KeyboardLayoutView() {
                             .verticalScroll(rememberScrollState())
                     ) {
                         if(viewModel.keymap!=null){
-                            Grid2(viewModel.keymap!!, Keycap)
+                            Grid(viewModel.keymap!!, Keycap)
                         }
                     }
                 }
