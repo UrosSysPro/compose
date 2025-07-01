@@ -5,7 +5,8 @@ import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import net.systemvi.configurator.components.tester.AutoSizingBoxItemPosition
+
+data class AutoSizingBoxItemPosition(val x:Dp, val y: Dp)
 
 @Composable fun AutoSizingBox(content: @Composable () -> Unit) {
     Layout(content = content) { measurables, constraints ->

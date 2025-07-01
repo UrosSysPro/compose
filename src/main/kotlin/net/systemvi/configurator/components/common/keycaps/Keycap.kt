@@ -1,4 +1,4 @@
-package net.systemvi.configurator.components.tester
+package net.systemvi.configurator.components.common.keycaps
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
