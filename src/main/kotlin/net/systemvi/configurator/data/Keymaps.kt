@@ -6,6 +6,31 @@ import arrow.core.toOption
 import net.systemvi.configurator.model.*
 
 @OptIn(ExperimentalStdlibApi::class)
+private fun stringToKeyMap(name:String, rows:List<String>): KeyMap{
+    val keymap = KeyMap(name, rows.map { row ->
+        row.split(" ").map { key ->
+            val splitKey = key.split(":")
+            val keyItem = allKeys
+                .find { it.value == if (splitKey[0].length == 1) splitKey[0][0].code.toByte() else splitKey[0].hexToByte() }
+                .toOption()
+                .getOrElse { allKeys[0] }.right()
+            val width = KeycapWidth.entries[splitKey.getOrNull(1)?.toInt().toOption().getOrElse { 0 }]
+            val height = KeycapHeight.entries[splitKey.getOrNull(2)?.toInt().toOption().getOrElse { 0 }]
+            val padding = KeycapPadding(
+                left = splitKey.getOrNull(3)?.toFloat().toOption().getOrElse { 0f },
+                bottom = splitKey.getOrNull(4)?.toFloat().toOption().getOrElse { 0f }
+            )
+            Keycap(
+                listOf(keyItem),
+                width = width,
+                height = height,
+                padding = padding,
+            )
+        }
+    })
+    return keymap
+}
+
 fun defaultKeymaps()=listOf(
     {
         val row0 = "` 1 2 3 4 5 6 7 8 9 0 - = 8:3:0 44"
@@ -87,37 +112,12 @@ fun defaultKeymaps()=listOf(
             .setKeyWidth(5,6, KeycapWidth.SIZE_125U)                        //right win
             .setKeyWidth(5,7, KeycapWidth.SIZE_125U)                        //right ctrl
     }(),
-    {
-        val rows = listOf(
+        stringToKeyMap("100% Keymap", listOf(
             "B1 C2:0:0:1:0.5 C3 C4 C5 C6:0:0:0.5:0 C7 C8 C9 CA:0:0:0.5:0 CB CC CD CE:0:0:0.25:0 CF D0",
             "` 1 2 3 4 5 6 7 8 9 0 - = B2:4:0 D3 DB DC DD DE",
             "B3:2:0 q w e r t y u i o p [ ] 5C:2:0 D4 D5 D6 E7 E8 E9 DF",
             "C1:3:0 a s d f g h j k l ; ' B0:5:0 E4 E5 E6",
             "81:5:0 z x c v b n m , . / 85:6:0 DA E1 E2 E3 E0:0:1",
             "80:1:0 83:1:0 82:1:0 20:7:0 86:1:0 87:1:0 ED:1:0 84:1:0 D8 D9 D7 EA:4:0 .",
-        ).map { it.uppercase() }
-
-        val keymap = KeyMap("Keyboard 100", rows.map { row ->
-            row.split(" ").map { key ->
-                val splitKey = key.split(":")
-                val keyItem = allKeys
-                    .find { it.value == if (splitKey[0].length == 1) splitKey[0][0].code.toByte() else splitKey[0].hexToByte() }
-                    .toOption()
-                    .getOrElse { allKeys[0] }.right()
-                val width = KeycapWidth.entries[splitKey.getOrNull(1)?.toInt().toOption().getOrElse { 0 }]
-                val height = KeycapHeight.entries[splitKey.getOrNull(2)?.toInt().toOption().getOrElse { 0 }]
-                val padding = KeycapPadding(
-                    left = splitKey.getOrNull(3)?.toFloat().toOption().getOrElse { 0f },
-                    bottom = splitKey.getOrNull(4)?.toFloat().toOption().getOrElse { 0f }
-                )
-                Keycap(
-                    listOf(keyItem),
-                    width = width,
-                    height = height,
-                    padding = padding,
-                )
-            }
-        })
-        keymap
-    }(),
+        ).map { it.uppercase() })
 )
