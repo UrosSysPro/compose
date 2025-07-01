@@ -12,12 +12,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import net.systemvi.configurator.components.configure.KeyboardLayoutPages
 
 @Composable
-fun SidePanel(currentPage: CurrentPage,onSelect: (CurrentPage)->Unit){
+fun SidePanel(currentPage: KeyboardLayoutPages,onSelect: (KeyboardLayoutPages)->Unit){
 
     Column(Modifier.padding(vertical = 8.dp, horizontal = 16.dp).width(170.dp)) {
-        for(page in CurrentPage.entries){
+        for(page in KeyboardLayoutPages.entries){
             val selected=currentPage==page
             TextButton(
                 border = if(selected)

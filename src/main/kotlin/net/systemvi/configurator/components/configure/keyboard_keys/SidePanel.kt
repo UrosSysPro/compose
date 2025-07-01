@@ -13,9 +13,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.selects.select
+import net.systemvi.configurator.components.configure.KeyboardKeysPages
 
-@Composable fun SidePanel(currentPage: CurrentPage,onSelect: (CurrentPage) -> Unit) {
-    val pages= CurrentPage.entries
+@Composable fun SidePanel(currentPage: KeyboardKeysPages,onSelect: (KeyboardKeysPages) -> Unit) {
+    val pages= KeyboardKeysPages.entries
     Column(Modifier.padding(vertical = 8.dp, horizontal = 16.dp).width(170.dp)) {
         for(page in pages){
             val selected=currentPage==page

@@ -26,7 +26,7 @@ val keycap=@Composable { key: String, wasDown: Boolean, isDown: Boolean ->
             .clipToBounds()
             .padding(end = 10.dp)
             .size(300.dp,150.dp)
-            .clickable(onClick = {viewModel.loadKeymap(keymap)})
+            .clickable(onClick = {viewModel.keymapLoad(keymap)})
         ,
     ) {
        Column(
