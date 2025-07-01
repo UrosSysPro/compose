@@ -32,92 +32,29 @@ private fun stringToKeyMap(name:String, rows:List<String>): KeyMap{
 }
 
 fun defaultKeymaps()=listOf(
-    {
-        val row0 = "` 1 2 3 4 5 6 7 8 9 0 - = 8:3:0 44"
-        val row1 = "Tab q w e r t y u i o p [ ] \\"
-        val row2 = "Caps a s d f g h j k l ; ' Enter"
-        val row3 = "Shift z x c v b n m , . / Shift"
-        val row4 = "Ctrl Win Alt Space Fn Win Alt Ctrl"
-        val rows = listOf(row0, row1, row2, row3, row4).map { it.uppercase() }
+    stringToKeyMap("60% Keymap", listOf(
+        "` 1 2 3 4 5 6 7 8 9 0 - = B2:4:0",
+        "B3:2 q w e r t y u i o p [ ] 5C:2",
+        "C1:3 a s d f g h j k l ; ' B0:5",
+        "81:5 z x c v b n m , . / 85:6",
+        "80:1 83:1 82:1 20:7 86:1 87:1 ED:1 84:1",
+    ).map { it.uppercase() }),
 
-        val keymap = KeyMap("Keyboard 60", rows.zip(rows.indices).map { (row, j) ->
-            row.split(" ").zip(row.split(" ").indices).flatMap { (key, i) ->
-                if(key.isEmpty())
-                    emptyList<Keycap>()
-                else
-                listOf(Keycap(listOf(
-                    Key(key[0].code.toByte(),key).right()
-                )))
-            }
-        })
-        keymap
-            .setKeyWidth(0,keymap.keycaps[0].size-1, KeycapWidth.SIZE_2U)   //backspace
+    stringToKeyMap("75% Keymap", listOf(
+        "B1 C2 C3 C4 C5 C6 C7 C8 C9 CA CB CC CD CE D1 D4",
+        "` 1 2 3 4 5 6 7 8 9 0 - = B2:4 D2",
+        "B3:2 q w e r t y u i o p [ ] 5C:2 D5",
+        "C1:3 a s d f g h j k l ; ' B0:5 D3",
+        "81:5 z x c v b n m , . / 85:3 DA D6",
+        "80:1 83:1 82:1 20:7 86 87 84 D8 D9 D7",
+    ).map { it.uppercase() }),
 
-            .setKeyWidth(1,0, KeycapWidth.SIZE_15U)                        //tab
-            .setKeyWidth(1,keymap.keycaps[1].size-1, KeycapWidth.SIZE_15U) //backslash
-
-            .setKeyWidth(2,0, KeycapWidth.SIZE_175U)                        //caps lock
-            .setKeyWidth(2,keymap.keycaps[2].size-1, KeycapWidth.SIZE_225U) //enter
-
-            .setKeyWidth(3,0, KeycapWidth.SIZE_225U)                        //left shift
-            .setKeyWidth(3,keymap.keycaps[3].size-1, KeycapWidth.SIZE_275U) //right shift
-
-            .setKeyWidth(4,0, KeycapWidth.SIZE_125U)                        //left ctrl
-            .setKeyWidth(4,1, KeycapWidth.SIZE_125U)                        //left win
-            .setKeyWidth(4,2, KeycapWidth.SIZE_125U)                        //left alt
-            .setKeyWidth(4,3, KeycapWidth.SIZE_625U)                        //space
-            .setKeyWidth(4,4, KeycapWidth.SIZE_125U)                        //fn
-            .setKeyWidth(4,5, KeycapWidth.SIZE_125U)                        //right alt
-            .setKeyWidth(4,6, KeycapWidth.SIZE_125U)                        //right win
-            .setKeyWidth(4,7, KeycapWidth.SIZE_125U)                        //right ctrl
-    }(),
-    {
-        val rows = listOf(
-            "Esc F1 F2 F3 F4 F5 F6 F7 F8 F9 F10 F11 F12",
-            "` 1 2 3 4 5 6 7 8 9 0 - = Back Pg.Up",
-            "Tab q w e r t y u i o p [ ] \\ Pg.Down",
-            "Caps a s d f g h j k l ; ' Enter Home",
-            "Shift z x c v b n m , . / Shift Pause",
-            "Ctrl Win Alt Space Fn Win Alt Ctrl Idk",
-        ).map { it.uppercase() }
-
-        val keymap = KeyMap("Keyboard 75", rows.zip(rows.indices).map { (row, j) ->
-            row.split(" ").zip(row.split(" ").indices).flatMap { (key, i) ->
-                if(key.isEmpty())
-                    emptyList<Keycap>()
-                else
-                    listOf(Keycap(listOf(
-                        Key(key[0].code.toByte(),key).right()
-                    )))
-            }
-        })
-        keymap
-            .setKeyWidth(1,keymap.keycaps[1].size-2, KeycapWidth.SIZE_2U)   //backspace
-
-            .setKeyWidth(2,0, KeycapWidth.SIZE_15U)                        //tab
-            .setKeyWidth(2,keymap.keycaps[2].size-2, KeycapWidth.SIZE_15U) //backslash
-
-            .setKeyWidth(3,0, KeycapWidth.SIZE_175U)                        //caps lock
-            .setKeyWidth(3,keymap.keycaps[3].size-2, KeycapWidth.SIZE_225U) //enter
-
-            .setKeyWidth(4,0, KeycapWidth.SIZE_225U)                        //left shift
-            .setKeyWidth(4,keymap.keycaps[4].size-2, KeycapWidth.SIZE_275U) //right shift
-
-            .setKeyWidth(5,0, KeycapWidth.SIZE_125U)                        //left ctrl
-            .setKeyWidth(5,1, KeycapWidth.SIZE_125U)                        //left win
-            .setKeyWidth(5,2, KeycapWidth.SIZE_125U)                        //left alt
-            .setKeyWidth(5,3, KeycapWidth.SIZE_625U)                        //space
-            .setKeyWidth(5,4, KeycapWidth.SIZE_125U)                        //fn
-            .setKeyWidth(5,5, KeycapWidth.SIZE_125U)                        //right alt
-            .setKeyWidth(5,6, KeycapWidth.SIZE_125U)                        //right win
-            .setKeyWidth(5,7, KeycapWidth.SIZE_125U)                        //right ctrl
-    }(),
-        stringToKeyMap("100% Keymap", listOf(
-            "B1 C2:0:0:1:0.5 C3 C4 C5 C6:0:0:0.5:0 C7 C8 C9 CA:0:0:0.5:0 CB CC CD CE:0:0:0.25:0 CF D0",
-            "` 1 2 3 4 5 6 7 8 9 0 - = B2:4:0 D3 DB DC DD DE",
-            "B3:2:0 q w e r t y u i o p [ ] 5C:2:0 D4 D5 D6 E7 E8 E9 DF",
-            "C1:3:0 a s d f g h j k l ; ' B0:5:0 E4 E5 E6",
-            "81:5:0 z x c v b n m , . / 85:6:0 DA E1 E2 E3 E0:0:1",
-            "80:1:0 83:1:0 82:1:0 20:7:0 86:1:0 87:1:0 ED:1:0 84:1:0 D8 D9 D7 EA:4:0 .",
-        ).map { it.uppercase() })
+    stringToKeyMap("100% Keymap", listOf(
+        "B1 C2:0:0:1:0.5 C3 C4 C5 C6:0:0:0.5 C7 C8 C9 CA:0:0:0.5 CB CC CD CE:0:0:0.25 CF D0",
+        "` 1 2 3 4 5 6 7 8 9 0 - = B2:4:0 D1:0:0:0.25 D2 D3 DB:0:0:0.25 DC DD DE",
+        "B3:2 q w e r t y u i o p [ ] 5C:2 D4:0:0:0.25 D5 D6 E7:0:0:0.25 E8 E9 DF:0:1",
+        "C1:3 a s d f g h j k l ; ' B0:5 E4:0:0:3.5 E5 E6",
+        "81:5 z x c v b n m , . / 85:6 DA:0:0:1.25 E1:0:0:1.25 E2 E3 E0:0:1",
+        "80:1 83:1 82:1 20:7 86:1 87:1 ED:1 84:1 D8:0:0:0.25 D9 D7 EA:4:0:0.25 .",
+    ).map { it.uppercase() })
 )
