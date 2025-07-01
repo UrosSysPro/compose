@@ -89,47 +89,35 @@ fun defaultKeymaps()=listOf(
     }(),
     {
         val rows = listOf(
-            "B1:0:0 C2 C3 C4 C5 C6 C7 C8 C9 CA CB CC CD CE CF D0",
+            "B1 C2:0:0:1:0 C3 C4 C5 C6 C7 C8 C9 CA CB CC CD CE CF D0",
             "` 1 2 3 4 5 6 7 8 9 0 - = B2:4:0 D3 DB DC DD DE",
             "B3:2:0 q w e r t y u i o p [ ] 5C:2:0 D4 D5 D6 E7 E8 E9 DF",
             "C1:3:0 a s d f g h j k l ; ' B0:5:0 E4 E5 E6",
             "81:5:0 z x c v b n m , . / 85:6:0 DA E1 E2 E3 E0:0:1",
             "80:1:0 83:1:0 82:1:0 20:7:0 86:1:0 87:1:0 ED:1:0 84:1:0 D8 D9 D7 EA:4:0 .",
-        ).map{it.uppercase()}
+        ).map { it.uppercase() }
 
         val keymap = KeyMap("Keyboard 100", rows.map { row ->
             row.split(" ").map { key ->
-                when{
-                    key.split(":").size == 1 ->
-                        if(key.length == 1){
-                            Keycap(
-                                listOf(
-                                    allKeys.find{it.value == key[0].code.toByte()}.toOption().getOrElse{allKeys[0]}.right(),
-                                )
-                            )
-                        }else {
-                            Keycap(
-                                listOf(
-                                    allKeys.find { it.value == key.hexToByte() }.toOption().getOrElse { allKeys[0] }
-                                        .right(),
-                                )
-                            )
-                        }
-                    key.split(":").size == 3 ->
-                        Keycap(
-                        listOf(
-                            allKeys.find{it.value == key.split(":")[0].hexToByte()}.toOption().getOrElse{allKeys[0]}.right(),
-                        ),
-                        width = KeycapWidth.entries[key.split(":")[1].toInt()],
-                        height = KeycapHeight.entries[key.split(":")[2].toInt()]
-                    )
-                    else -> Keycap(
-                        listOf(allKeys[0].right())
-                    )
-                }
+                val splitKey = key.split(":")
+                val keyItem = allKeys
+                    .find { it.value == if (splitKey[0].length == 1) splitKey[0][0].code.toByte() else splitKey[0].hexToByte() }
+                    .toOption()
+                    .getOrElse { allKeys[0] }.right()
+                val width = KeycapWidth.entries[splitKey.getOrNull(1)?.toInt().toOption().getOrElse { 0 }]
+                val height = KeycapHeight.entries[splitKey.getOrNull(2)?.toInt().toOption().getOrElse { 0 }]
+                val padding = KeycapPadding(
+                    splitKey.getOrNull(3)?.toFloat().toOption().getOrElse { 0f },
+                    splitKey.getOrNull(4)?.toFloat().toOption().getOrElse { 0f }
+                )
+                Keycap(
+                    listOf(keyItem),
+                    width = width,
+                    height = height,
+                    padding = padding,
+                )
             }
-        }
-        )
+        })
         keymap
     }(),
 )
