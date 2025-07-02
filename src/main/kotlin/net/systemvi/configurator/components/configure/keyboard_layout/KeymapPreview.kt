@@ -10,7 +10,7 @@ import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import net.systemvi.configurator.components.configure.ConfigureViewModel
-import net.systemvi.configurator.components.tester.Grid
+import net.systemvi.configurator.components.common.keyboard_grid.Grid
 import net.systemvi.configurator.model.KeyMap
 
 val keycap=@Composable { key: String, wasDown: Boolean, isDown: Boolean ->
@@ -36,7 +36,7 @@ val keycap=@Composable { key: String, wasDown: Boolean, isDown: Boolean ->
             .padding(horizontal = 20.dp, vertical = 20.dp)
        ){
            Text(keymap.name,modifier = Modifier.fillMaxWidth())
-           Grid(keymap,keycap,10)
+//           Grid(keymap,keycap,10)
        }
     }
 }

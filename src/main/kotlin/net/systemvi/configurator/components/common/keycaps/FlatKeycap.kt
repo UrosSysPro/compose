@@ -4,7 +4,6 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -17,8 +16,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import arrow.core.getOrElse
+import net.systemvi.configurator.components.common.keyboard_grid.KeycapComponent
+import net.systemvi.configurator.components.common.keyboard_grid.KeycapParam
+import net.systemvi.configurator.components.tester.TesterPageViewModel
+import net.systemvi.configurator.data.allKeys
 
-val FlatKeycap = @Composable { letter: String, wasClicked: Boolean, currentlyClicked: Boolean ->
+val FlatKeycap: KeycapComponent = @Composable {param: KeycapParam ->
+
+    val viewModel = viewModel { TesterPageViewModel() }
+    val key = param.keycap.layers[0].getOrElse { allKeys.last()}
+    val currentlyClicked = viewModel.currentlyDownKeys.contains(key)
+    val wasClicked = viewModel.wasDownKeys.contains(key)
+
     Column(
         verticalArrangement = Arrangement.Center,
         modifier = Modifier
@@ -43,7 +54,7 @@ val FlatKeycap = @Composable { letter: String, wasClicked: Boolean, currentlyCli
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            letter,
+            key.name,
             style = MaterialTheme.typography.bodySmall,
             color =
                 when {

@@ -13,7 +13,7 @@ import net.systemvi.configurator.components.common.BorderVertical
 import net.systemvi.configurator.components.common.keycaps.FlatKeycap
 import net.systemvi.configurator.components.configure.ConfigureViewModel
 import net.systemvi.configurator.components.configure.KeyboardLayoutPages
-import net.systemvi.configurator.components.tester.Grid
+import net.systemvi.configurator.components.common.keyboard_grid.Grid
 
 
 @Composable
