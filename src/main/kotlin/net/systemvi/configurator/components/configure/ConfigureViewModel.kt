@@ -5,8 +5,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import arrow.core.getOrElse
 import arrow.core.right
 import arrow.core.toOption
+import kotlinx.coroutines.delay
 import net.systemvi.configurator.data.allKeys
 import net.systemvi.configurator.data.alphabetKeys
 import net.systemvi.configurator.data.fKeys
@@ -82,13 +84,17 @@ class ConfigureViewModel(): ViewModel() {
             val keymap=this.keymap!!
             val layer=selectedLayer
             this.keymap=keymap.updateKeycap(x,y,layer,key)
-            serialApi.uploadKeycap(
-                keymap!!.keycaps[selectedKeycapPositon!!.x][selectedKeycapPositon!!.y],
-                key,
-                selectedLayer
-            )
+            uploadKeycap(keymap,selectedKeycapPositon!!,layer)
             keymapSave(this.keymap!!)
         }
+    }
+
+    fun uploadKeycap(keymap:KeyMap,position: KeycapPosition,layer:Int){
+        serialApi.uploadKeycap(
+            keymap.keycaps[position.x][position.y],
+            keymap.keycaps[position.x][position.y].layers[layer].getOrElse { allKeys.last()},
+            selectedLayer
+        )
     }
 
     fun readPortNames() = serialApi.getPortNames()
@@ -141,7 +147,14 @@ class ConfigureViewModel(): ViewModel() {
         }
     }
 
-    fun keymapUpload(keymap: KeyMap){
-
+    suspend fun keymapUpload(keymap: KeyMap){
+        keymap.keycaps.forEachIndexed { i,row->
+            row.forEachIndexed { j,keycap->
+                keycap.layers.indices.forEach{ layer ->
+                    uploadKeycap(keymap, KeycapPosition(i,j),layer)
+                    delay(20)
+                }
+            }
+        }
     }
 }
