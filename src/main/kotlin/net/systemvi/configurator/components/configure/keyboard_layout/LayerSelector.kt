@@ -3,14 +3,18 @@ package net.systemvi.configurator.components.configure.keyboard_layout
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ModifierLocalBeyondBoundsLayout
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -18,17 +22,31 @@ import net.systemvi.configurator.components.configure.ConfigureViewModel
 import net.systemvi.configurator.components.configure.serial.SerialPortSelector
 
 @Composable fun UploadKeymapButton(){
+    val viewModel = viewModel{ ConfigureViewModel() }
     OutlinedButton(
-        onClick = {}
+        onClick = {viewModel.keymapUpload(viewModel.keymap!!)},
+        modifier = Modifier.padding(end = 16.dp),
     ){
-
+        Text("Upload")
     }
 }
 @Composable fun SaveAs(){
-
+    val viewModel = viewModel{ ConfigureViewModel() }
+    OutlinedButton(
+        onClick = {println("save as")},
+        modifier = Modifier.padding(end = 16.dp),
+    ){
+        Text("Save As")
+    }
 }
 @Composable fun SaveButton(){
-
+    val viewModel = viewModel{ ConfigureViewModel() }
+    OutlinedButton(
+        onClick = {viewModel.keymapSave(viewModel.keymap!!)},
+        modifier = Modifier.padding(end = 16.dp),
+    ){
+        Text("Save")
+    }
 }
 
 @Composable
@@ -72,7 +90,11 @@ fun LayerSelector(configureViewModel: ConfigureViewModel = viewModel { Configure
                 }
             }
         }
-        Row{
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .height(IntrinsicSize.Min)
+        ){
             UploadKeymapButton()
             SaveButton()
             SaveAs()

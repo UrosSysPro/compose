@@ -31,7 +31,7 @@ import net.systemvi.configurator.components.configure.ConfigureViewModel
     }
     Box(
         modifier = Modifier
-            .padding(16.dp)
+            .padding(end=16.dp)
     ) {
         OutlinedButton(onClick = {
             configureViewModel.readPortNames()

@@ -140,4 +140,8 @@ class ConfigureViewModel(): ViewModel() {
             savedKeymaps+=keymap
         }
     }
+
+    fun keymapUpload(keymap: KeyMap){
+
+    }
 }
