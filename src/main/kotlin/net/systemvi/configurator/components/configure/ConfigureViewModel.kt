@@ -1,6 +1,7 @@
 package net.systemvi.configurator.components.configure
 
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -68,6 +69,10 @@ class ConfigureViewModel(): ViewModel() {
         selectedKeycapPositon = KeycapPosition(i,j)
     }
 
+    fun unselectKeycap(){
+        selectedKeycapPositon = null
+    }
+
     fun selectLayer(layer:Int){
         selectedLayer = layer
     }
@@ -118,6 +123,7 @@ class ConfigureViewModel(): ViewModel() {
     fun keymapLoad(keymap: KeyMap){
         if(this.keymap!=null)keymapSave(this.keymap!!)
         this.keymap=keymap
+        unselectKeycap()
         setKeyboardLayoutPage(KeyboardLayoutPages.Keymap)
     }
 
@@ -134,6 +140,7 @@ class ConfigureViewModel(): ViewModel() {
                 println("[ERROR] keymap with same name exists, nothing is saved")
             }
             .onNone {
+                this.keymap = keymap
                 savedKeymaps+=keymap
             }
     }
