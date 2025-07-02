@@ -9,7 +9,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -30,13 +34,14 @@ import net.systemvi.configurator.components.configure.serial.SerialPortSelector
     }
 }
 @Composable fun SaveAsButton(){
-    val viewModel = viewModel{ ConfigureViewModel() }
+    var openDialog by remember { mutableStateOf(false) }
     OutlinedButton(
-        onClick = {println("save as")},
+        onClick = {openDialog=true},
         modifier = Modifier.padding(end = 16.dp),
     ){
         Text("Save As")
     }
+    if(openDialog) SaveAsDialog { openDialog = false }
 }
 @Composable fun SaveButton(){
     val viewModel = viewModel{ ConfigureViewModel() }

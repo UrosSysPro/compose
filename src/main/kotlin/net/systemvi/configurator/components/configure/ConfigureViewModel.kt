@@ -21,10 +21,6 @@ import net.systemvi.configurator.data.symbolKeys
 import net.systemvi.configurator.model.*
 import net.systemvi.configurator.utils.KeyboardSerialApi
 
-fun <T>List<List<T>>.transpose(): List<List<T>> {
-    return (this[0].indices).map { i -> (this.indices).map { j -> this[j][i] } }
-}
-
 data class KeycapPosition(val x:Int,val y:Int)
 
 enum class KeyboardLayoutPages(val title:String){
@@ -106,7 +102,7 @@ class ConfigureViewModel(): ViewModel() {
             this.keymap = keymap
         }
         serialApi.onKeycapPress { keycap->
-           currentlyPressedKeycaps += keycap
+            currentlyPressedKeycaps += keycap
         }
         serialApi.onKeycapRelease { keycap->
             currentlyPressedKeycaps -= keycap
@@ -120,31 +116,30 @@ class ConfigureViewModel(): ViewModel() {
     }
 
     fun keymapLoad(keymap: KeyMap){
-        if(this.keymap!=null){
-            savedKeymaps=savedKeymaps.map {
-                if(it.name==this.keymap!!.name)
-                    this.keymap!!
-                else it
-            }
-        }
+        if(this.keymap!=null)keymapSave(this.keymap!!)
         this.keymap=keymap
         setKeyboardLayoutPage(KeyboardLayoutPages.Keymap)
     }
 
-    fun keymapSave(keymap: KeyMap){
-        if(this.keymap!=null){
-            savedKeymaps=savedKeymaps.map {
-                if(it.name==this.keymap!!.name)
-                    this.keymap!!
-                else it
-            }
+    fun keymapSave(keymap: KeyMap) {
+        savedKeymaps = savedKeymaps.map {
+            if (it.name == keymap.name) keymap
+            else it
         }
     }
 
     fun keymapSaveAs(keymap: KeyMap){
-        savedKeymaps.find { it==keymap }.toOption().onNone {
-            savedKeymaps+=keymap
-        }
+        savedKeymaps.find { it==keymap }.toOption()
+            .onSome {
+                println("[ERROR] keymap with same name exists, nothing is saved")
+            }
+            .onNone {
+                savedKeymaps+=keymap
+            }
+    }
+
+    fun keymapSaveToDisk(){
+
     }
 
     suspend fun keymapUpload(keymap: KeyMap){
