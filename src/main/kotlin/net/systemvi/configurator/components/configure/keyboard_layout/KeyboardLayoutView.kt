@@ -36,7 +36,7 @@ fun KeyboardLayoutView() {
                             .verticalScroll(rememberScrollState())
                     ) {
                         if(viewModel.keymap!=null){
-                            Grid(viewModel.keymap!!, FlatKeycap)
+                            Grid(viewModel.keymap!!, ConfiguratorKeycapComponent,70)
                         }
                     }
                 }
