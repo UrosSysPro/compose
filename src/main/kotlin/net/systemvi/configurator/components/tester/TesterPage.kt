@@ -40,6 +40,7 @@ fun ResetButton() {
 @Composable fun TesterPage(modifier: Modifier) {
 
     val viewModel = viewModel { TesterPageViewModel() }
+    val passKey = alphabetKeys.last()
 
     fun processEvent(type: KeyEventType, key: Key) {
         println(key)
@@ -47,32 +48,12 @@ fun ResetButton() {
             KeyEventType.KeyDown -> {
                 viewModel.currentlyDownKeys += key
                 viewModel.wasDownKeys += key
-//                for (row in filteredItems) {
-//                    for (item in row) {
-//                        val currentKey = item.keycap.layers[0].getOrElse { passKey }
-//                        if (currentKey.value == key.value) {
-//                            viewModel.channels?.get(0)?.noteOn(item.x + item.y * 12, 93)
-//                        }
-//                    }
-//                }
             }
 
-            KeyEventType.KeyUp -> {
+            KeyEventType.KeyUp ->
                 viewModel.currentlyDownKeys -= key
-//                for (row in filteredItems) {
-//                    for (item in row) {
-//                        val currentKey = item.keycap.layers[0].getOrElse { passKey }
-//                        if (currentKey.value == key.value) {
-//                            viewModel.channels?.get(0)?.noteOff(item.x + item.y * 12)
-//                        }
-//                    }
-//                }
-            }
-
         }
     }
-
-    val passKey = alphabetKeys.last()
 
     val onKeyEvent: (KeyEvent) -> Boolean = { event ->
         if (event.type == KeyEventType.Unknown) {
@@ -96,7 +77,6 @@ fun ResetButton() {
             .focusable().then(modifier),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
-
     ) {
         Grid(defaultKeymaps()[2], FlatKeycap)
         ResetButton()

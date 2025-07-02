@@ -11,6 +11,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -29,6 +30,14 @@ val FlatKeycap: KeycapComponent = @Composable {param: KeycapParam ->
     val key = param.keycap.layers[0].getOrElse { allKeys.last()}
     val currentlyClicked = viewModel.currentlyDownKeys.contains(key)
     val wasClicked = viewModel.wasDownKeys.contains(key)
+
+    LaunchedEffect(currentlyClicked) {
+        if(currentlyClicked){
+            viewModel.channels?.get(0)?.noteOn(param.position.x + param.position.y * 12, 93)
+        }else{
+            viewModel.channels?.get(0)?.noteOff(param.position.x + param.position.y * 12, 93)
+        }
+    }
 
     Column(
         verticalArrangement = Arrangement.Center,
