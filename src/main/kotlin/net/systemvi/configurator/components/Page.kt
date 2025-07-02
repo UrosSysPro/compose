@@ -32,7 +32,7 @@ class ApplicationViewModel: ViewModel() {
         Color(0x140F2D),
     )
 
-    private var isDark by mutableStateOf(true)
+    private var isDark by mutableStateOf(false)
     private var currentColor by mutableStateOf(colorSeeds[5])
     var colorScheme by mutableStateOf(dynamicColorScheme(currentColor, isDark))
 

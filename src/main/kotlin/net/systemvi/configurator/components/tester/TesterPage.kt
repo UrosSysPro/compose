@@ -15,6 +15,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import arrow.core.getOrElse
 import arrow.core.toOption
 import net.systemvi.configurator.components.common.keyboard_grid.Grid
+import net.systemvi.configurator.components.common.keycaps.ElevatedKeycap
 import net.systemvi.configurator.components.common.keycaps.FlatKeycap
 import net.systemvi.configurator.data.allKeys
 import net.systemvi.configurator.data.alphabetKeys
@@ -78,7 +79,7 @@ fun ResetButton() {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
-        Grid(defaultKeymaps()[2], FlatKeycap)
+        Grid(defaultKeymaps()[2], ElevatedKeycap)
         ResetButton()
     }
     LaunchedEffect(Unit) {
