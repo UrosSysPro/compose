@@ -32,10 +32,13 @@ val FlatKeycap: KeycapComponent = @Composable {param: KeycapParam ->
     val wasClicked = viewModel.wasDownKeys.contains(key)
 
     LaunchedEffect(currentlyClicked) {
+        val note=param.position.x + param.position.y * 12+40
+        val velocity=93
         if(currentlyClicked){
-            viewModel.channels?.get(0)?.noteOn(param.position.x + param.position.y * 12, 93)
+            println(note)
+            viewModel.channels?.get(0)?.noteOn(note, velocity)
         }else{
-            viewModel.channels?.get(0)?.noteOff(param.position.x + param.position.y * 12, 93)
+            viewModel.channels?.get(0)?.noteOff(note, velocity)
         }
     }
 
