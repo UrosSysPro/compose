@@ -79,8 +79,9 @@ fun ResetButton() {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
-        Grid(defaultKeymaps()[2], ElevatedKeycap)
+        Grid(defaultKeymaps()[2], viewModel.selectedKeycap)
         ResetButton()
+        KeycapSelector()
     }
     LaunchedEffect(Unit) {
         viewModel.focusRequester.requestFocus()

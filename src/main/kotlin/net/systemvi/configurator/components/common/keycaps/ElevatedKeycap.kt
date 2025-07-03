@@ -12,15 +12,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import arrow.core.getOrElse
+import net.systemvi.configurator.components.common.keyboard_grid.KeycapComponent
 import net.systemvi.configurator.components.common.keyboard_grid.KeycapParam
 import net.systemvi.configurator.components.tester.TesterPageViewModel
 import net.systemvi.configurator.data.allKeys
 
-val ElevatedKeycap = @Composable { param: KeycapParam ->
+val ElevatedKeycap: KeycapComponent = @Composable { param: KeycapParam ->
     val viewModel = viewModel { TesterPageViewModel() }
     val key = param.keycap.layers[0].getOrElse { allKeys.last() }
     val currentlyClicked = viewModel.currentlyDownKeys.contains(key)
@@ -65,14 +65,14 @@ val ElevatedKeycap = @Composable { param: KeycapParam ->
             )
     ) {
         Column(
+            Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
         ) {
             Text(
                 key.name,
                 style = MaterialTheme.typography.bodySmall,
-                color = textColor,
-                textAlign = TextAlign.Center
+                color = textColor
             )
         }
     }

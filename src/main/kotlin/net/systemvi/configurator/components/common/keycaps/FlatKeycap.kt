@@ -1,5 +1,6 @@
 package net.systemvi.configurator.components.common.keycaps
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -12,6 +13,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -31,6 +33,22 @@ val FlatKeycap: KeycapComponent = @Composable {param: KeycapParam ->
     val currentlyClicked = viewModel.currentlyDownKeys.contains(key)
     val wasClicked = viewModel.wasDownKeys.contains(key)
 
+    val containerColor by animateColorAsState(
+        targetValue = when {
+            currentlyClicked -> MaterialTheme.colorScheme.tertiary
+            wasClicked -> MaterialTheme.colorScheme.primary
+            else -> MaterialTheme.colorScheme.primaryContainer
+        }
+    )
+
+    val textColor by animateColorAsState(
+        targetValue = when {
+            currentlyClicked -> MaterialTheme.colorScheme.tertiaryContainer
+            wasClicked -> MaterialTheme.colorScheme.primaryContainer
+            else -> MaterialTheme.colorScheme.primary
+        }
+    )
+
     LaunchedEffect(currentlyClicked) {
         val note=param.position.x + param.position.y * 12+40
         val velocity=93
@@ -49,12 +67,7 @@ val FlatKeycap: KeycapComponent = @Composable {param: KeycapParam ->
             .padding(2.dp)
             .clip(RoundedCornerShape(10.dp))
             .background(
-                color =
-                    when {
-                        currentlyClicked -> MaterialTheme.colorScheme.tertiary
-                        wasClicked -> MaterialTheme.colorScheme.primary
-                        else -> MaterialTheme.colorScheme.primaryContainer
-                    }
+                color = containerColor
             )
             .border(
                 BorderStroke(
@@ -68,12 +81,7 @@ val FlatKeycap: KeycapComponent = @Composable {param: KeycapParam ->
         Text(
             key.name,
             style = MaterialTheme.typography.bodySmall,
-            color =
-                when {
-                    currentlyClicked -> MaterialTheme.colorScheme.tertiaryContainer
-                    wasClicked -> MaterialTheme.colorScheme.primaryContainer
-                    else -> MaterialTheme.colorScheme.primary
-                },
+            color = textColor,
             textAlign = TextAlign.Center
         )
     }
