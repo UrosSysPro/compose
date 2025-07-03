@@ -146,14 +146,21 @@ class ConfigureViewModel(): ViewModel() {
                 this.keymap = keymap
                 savedKeymaps+=keymap
             }
+        keymapSaveToDisk()
     }
 
     fun keymapSaveToDisk(){
-        val format=Json { serializersModule = ArrowModule }
-        val json=format.encodeToString(savedKeymaps)
-        val fileWriter= FileWriter("keymaps.json")
-        fileWriter.write(json)
-        fileWriter.close()
+        try {
+            val format=Json { serializersModule = ArrowModule }
+            val json=format.encodeToString(savedKeymaps)
+            val fileWriter= FileWriter("keymaps.json")
+            fileWriter.write(json)
+            fileWriter.close()
+            println("[Success]Saved keymaps to disk")
+        }catch (e:Exception){
+            println("[ERROR]Error saving keymaps to disk")
+            e.printStackTrace()
+        }
     }
     fun keymapLoadFromDisk():List<KeyMap>{
         val file= File("keymaps.json")
@@ -162,8 +169,12 @@ class ConfigureViewModel(): ViewModel() {
             val builder= StringBuilder()
             val scanner= Scanner(file)
             while (scanner.hasNextLine())builder.append(scanner.nextLine())
-            return format.decodeFromString<List<KeyMap>>(builder.toString())
+            val keymaps=format.decodeFromString<List<KeyMap>>(builder.toString())
+            println("[Success]keymaps loaded from disk")
+            return keymaps
         }catch (e:Exception){
+            println("[ERROR] error loading keymaps from disk")
+            e.printStackTrace()
             return emptyList()
         }
     }
