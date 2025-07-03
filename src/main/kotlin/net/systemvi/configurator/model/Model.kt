@@ -6,6 +6,9 @@ import arrow.core.right
 import arrow.optics.*
 import arrow.optics.dsl.index
 import arrow.optics.typeclasses.Index
+import eu.mihosoft.jcsg.CSG
+import eu.mihosoft.jcsg.Cube
+import java.io.FileWriter
 
 enum class KeycapWidth(val size:Float){
     SIZE_1U(1f),
@@ -64,3 +67,10 @@ fun KeyMap.updateKeycap(x:Int,y:Int,layer:Int,key:Key): KeyMap=
         .index(Index.list(),y)
         .layers.index(Index.list(),layer)
         .set(this,key.right())
+
+fun KeyMap.exportStl(name:String){
+    val topPlate= Cube(30.0)
+    val fileWriter= FileWriter(name)
+    fileWriter.write(topPlate.toCSG().toStlString())
+    fileWriter.close()
+}

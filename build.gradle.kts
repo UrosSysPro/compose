@@ -1,4 +1,3 @@
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
 plugins {
@@ -7,6 +6,7 @@ plugins {
     id("org.jetbrains.kotlin.plugin.compose")
     id("com.google.devtools.ksp") version "2.1.20-2.0.0"
     id("com.gradleup.shadow") version "9.0.0-beta17"
+    id("org.openjfx.javafxplugin") version "0.0.7"
 }
 
 group = "net.systemvi"
@@ -30,6 +30,13 @@ dependencies {
     ksp("io.arrow-kt:arrow-optics-ksp-plugin:2.1.0")
     implementation("com.materialkolor:material-kolor:3.0.0-alpha04")
     implementation(compose.material3)
+    implementation("eu.mihosoft.vvecmath:vvecmath:0.3.8")
+    implementation("org.slf4j:slf4j-simple:1.6.1")
+    implementation(files("./libs/jcsg.jar"))
+}
+
+javafx {
+    modules = listOf( "javafx.graphics", "javafx.fxml")
 }
 
 tasks.withType<Jar> {
