@@ -7,7 +7,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import com.materialkolor.dynamicColorScheme
+import kotlinx.serialization.Serializable
 
+@Serializable
 sealed class Page
 object ConfigurePage:Page()
 object TesterPage:Page()
