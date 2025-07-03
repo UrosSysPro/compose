@@ -7,6 +7,7 @@ plugins {
     id("com.google.devtools.ksp") version "2.1.20-2.0.0"
     id("com.gradleup.shadow") version "9.0.0-beta17"
     id("org.openjfx.javafxplugin") version "0.0.7"
+    kotlin("plugin.serialization") version "2.1.20"
 }
 
 group = "net.systemvi"
@@ -24,14 +25,15 @@ dependencies {
 	implementation("io.github.java-native:jssc:2.9.6")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.1")
     implementation("org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose:2.9.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1")
     implementation("org.slf4j:slf4j-simple:2.0.17")
     implementation("io.arrow-kt:arrow-core:2.1.2")
+    implementation("io.arrow-kt:arrow-core-serialization:2.1.2")
     implementation("io.arrow-kt:arrow-optics:2.1.2")
     ksp("io.arrow-kt:arrow-optics-ksp-plugin:2.1.0")
     implementation("com.materialkolor:material-kolor:3.0.0-alpha04")
     implementation(compose.material3)
     implementation("eu.mihosoft.vvecmath:vvecmath:0.3.8")
-    implementation("org.slf4j:slf4j-simple:1.6.1")
     implementation(files("./libs/jcsg.jar"))
 }
 

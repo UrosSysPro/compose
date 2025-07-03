@@ -1,15 +1,14 @@
 package net.systemvi.configurator.components.configure
 
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import arrow.core.getOrElse
-import arrow.core.right
+import arrow.core.serialization.ArrowModule
 import arrow.core.toOption
 import kotlinx.coroutines.delay
+import kotlinx.serialization.json.Json
 import net.systemvi.configurator.data.allKeys
 import net.systemvi.configurator.data.alphabetKeys
 import net.systemvi.configurator.data.fKeys
@@ -21,6 +20,9 @@ import net.systemvi.configurator.data.numpadKeys
 import net.systemvi.configurator.data.symbolKeys
 import net.systemvi.configurator.model.*
 import net.systemvi.configurator.utils.KeyboardSerialApi
+import java.io.File
+import java.io.FileWriter
+import java.util.Scanner
 
 data class KeycapPosition(val x:Int,val y:Int)
 
@@ -42,7 +44,7 @@ enum class KeyboardKeysPages(val title:String,val keys:List<Key>){
 }
 
 class ConfigureViewModel(): ViewModel() {
-    var savedKeymaps by mutableStateOf<List<KeyMap>>(emptyList())
+    var savedKeymaps by mutableStateOf(keymapLoadFromDisk())
     var keymap by mutableStateOf<KeyMap?>(null)
     val serialApi=KeyboardSerialApi()
     var currentlyPressedKeycaps:Set<KeycapMatrixPosition> by mutableStateOf(emptySet())
@@ -132,6 +134,7 @@ class ConfigureViewModel(): ViewModel() {
             if (it.name == keymap.name) keymap
             else it
         }
+        keymapSaveToDisk()
     }
 
     fun keymapSaveAs(keymap: KeyMap){
@@ -146,7 +149,23 @@ class ConfigureViewModel(): ViewModel() {
     }
 
     fun keymapSaveToDisk(){
-
+        val format=Json { serializersModule = ArrowModule }
+        val json=format.encodeToString(savedKeymaps)
+        val fileWriter= FileWriter("keymaps.json")
+        fileWriter.write(json)
+        fileWriter.close()
+    }
+    fun keymapLoadFromDisk():List<KeyMap>{
+        val file= File("keymaps.json")
+        val format=Json { serializersModule = ArrowModule }
+        try {
+            val builder= StringBuilder()
+            val scanner= Scanner(file)
+            while (scanner.hasNextLine())builder.append(scanner.nextLine())
+            return format.decodeFromString<List<KeyMap>>(builder.toString())
+        }catch (e:Exception){
+            return emptyList()
+        }
     }
 
     suspend fun keymapUpload(keymap: KeyMap){
