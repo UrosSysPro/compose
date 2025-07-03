@@ -19,6 +19,7 @@ import net.systemvi.configurator.components.configure.KeycapPosition
 import net.systemvi.configurator.data.allKeys
 import net.systemvi.configurator.model.Keycap
 import androidx.compose.ui.Modifier
+import net.systemvi.configurator.model.Key
 
 @Composable
 fun KeycapSelector() {
@@ -42,7 +43,7 @@ fun KeycapSelector() {
                         Box(modifier = Modifier.size(width = 50.dp, height = 50.dp)) {
                             component(
                                 KeycapParam(
-                                    Keycap(listOf(allKeys[0].right())),
+                                    Keycap(listOf(Key(0.toByte(),"Q",0).right())),
                                     KeycapPosition(0, 0)
                                 )
                             )

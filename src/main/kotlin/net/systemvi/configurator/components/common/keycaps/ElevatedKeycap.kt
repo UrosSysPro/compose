@@ -7,7 +7,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,16 +37,7 @@ val ElevatedKeycap: KeycapComponent = @Composable { param: KeycapParam ->
         else -> MaterialTheme.colorScheme.primaryContainer
     }
 
-    LaunchedEffect(currentlyClicked) {
-        val note = param.position.x + param.position.y * 12 + 40
-        val velocity = 93
-        if (currentlyClicked) {
-            println(note)
-            viewModel.channels?.get(0)?.noteOn(note, velocity)
-        } else {
-            viewModel.channels?.get(0)?.noteOff(note, velocity)
-        }
-    }
+    viewModel.noteEffect(currentlyClicked, param.position.x + param.position.y * 12+40)
 
     Box(
         modifier = Modifier.padding(4.dp).fillMaxSize()

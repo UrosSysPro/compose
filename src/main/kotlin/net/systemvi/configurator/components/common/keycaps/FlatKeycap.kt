@@ -12,7 +12,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -49,16 +48,7 @@ val FlatKeycap: KeycapComponent = @Composable {param: KeycapParam ->
         }
     )
 
-    LaunchedEffect(currentlyClicked) {
-        val note=param.position.x + param.position.y * 12+40
-        val velocity=93
-        if(currentlyClicked){
-            println(note)
-            viewModel.channels?.get(0)?.noteOn(note, velocity)
-        }else{
-            viewModel.channels?.get(0)?.noteOff(note, velocity)
-        }
-    }
+    viewModel.noteEffect(currentlyClicked, param.position.x + param.position.y * 12+40)
 
     Column(
         verticalArrangement = Arrangement.Center,
@@ -88,6 +78,14 @@ val FlatKeycap: KeycapComponent = @Composable {param: KeycapParam ->
 }
 
 val FlatKeycapName = @Composable {
-    Text("Flat Keycap")
+    Text(
+        "Flat Keycap",
+        modifier = Modifier
+            .border(
+                BorderStroke(2.dp, MaterialTheme.colorScheme.secondary),
+                shape = RoundedCornerShape(10.dp)
+            )
+            .padding(horizontal = 8.dp, vertical = 4.dp)
+    )
 }
 

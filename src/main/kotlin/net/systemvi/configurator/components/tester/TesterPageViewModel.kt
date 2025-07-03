@@ -1,5 +1,7 @@
 package net.systemvi.configurator.components.tester
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -39,5 +41,18 @@ class TesterPageViewModel : ViewModel() {
         Pair(ElevatedKeycapName,ElevatedKeycap),
         Pair(RGBWaveKeycapName, RGBWaveKeycap)
     )
+
+    @Composable
+    fun noteEffect(currentlyDown: Boolean, note: Int){
+        LaunchedEffect(currentlyDown) {
+            val velocity=93
+            if(currentlyDown){
+                println(note)
+                channels?.get(0)?.noteOn(note, velocity)
+            }else{
+                channels?.get(0)?.noteOff(note, velocity)
+            }
+        }
+    }
 
 }
