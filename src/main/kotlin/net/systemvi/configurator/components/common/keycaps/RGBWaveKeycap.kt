@@ -97,3 +97,28 @@ val RGBWaveKeycap: KeycapComponent = @Composable {param: KeycapParam ->
         )
     }
 }
+
+val RGBWaveKeycapName = @Composable {
+    val infiniteTransition = rememberInfiniteTransition(label = "infinite")
+    val animatedFloat by infiniteTransition.animateFloat(
+        initialValue = 0F,
+        targetValue = 360f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 3000, easing = LinearEasing),
+            repeatMode = RepeatMode.Restart
+        ),
+        label = "animatedFloat"
+    )
+
+    val color = Color.hsl(
+        hue = animatedFloat,
+        saturation = 1f,
+        lightness = 0.5f
+    )
+
+    Text(
+        "RGB Wave Keycap",
+        color = color
+    )
+}
+

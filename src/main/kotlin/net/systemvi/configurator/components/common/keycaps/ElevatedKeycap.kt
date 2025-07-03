@@ -78,3 +78,7 @@ val ElevatedKeycap: KeycapComponent = @Composable { param: KeycapParam ->
     }
 }
 
+val ElevatedKeycapName = @Composable {
+    Text("Elevated Keycap")
+}
+

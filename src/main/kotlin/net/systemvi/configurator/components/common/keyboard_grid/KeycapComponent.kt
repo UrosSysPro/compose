@@ -7,3 +7,5 @@ import net.systemvi.configurator.model.Keycap
 data class KeycapParam(val keycap: Keycap, val position: KeycapPosition)
 
 typealias KeycapComponent = @Composable (KeycapParam) -> Unit
+
+typealias KeycapNameComponent = @Composable () -> Unit

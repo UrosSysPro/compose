@@ -48,7 +48,7 @@ fun KeycapSelector() {
                             )
                         }
                     },
-                    text = { Text(name) },
+                    text = { name() },
                     onClick = {
                         viewModel.selectedKeycap = component
                         viewModel.focusRequester.requestFocus()

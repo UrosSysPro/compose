@@ -6,9 +6,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.focus.FocusRequester
 import androidx.lifecycle.ViewModel
 import net.systemvi.configurator.components.common.keyboard_grid.KeycapComponent
+import net.systemvi.configurator.components.common.keyboard_grid.KeycapNameComponent
 import net.systemvi.configurator.components.common.keycaps.ElevatedKeycap
+import net.systemvi.configurator.components.common.keycaps.ElevatedKeycapName
 import net.systemvi.configurator.components.common.keycaps.FlatKeycap
+import net.systemvi.configurator.components.common.keycaps.FlatKeycapName
 import net.systemvi.configurator.components.common.keycaps.RGBWaveKeycap
+import net.systemvi.configurator.components.common.keycaps.RGBWaveKeycapName
 import net.systemvi.configurator.model.Key
 import javax.sound.midi.MidiChannel
 import javax.sound.midi.MidiSystem
@@ -30,10 +34,10 @@ class TesterPageViewModel : ViewModel() {
 
     val channels:Array<MidiChannel>? = synth?.getChannels()
 
-    val allKeycaps: List<Pair<String, KeycapComponent>> = listOf(
-        Pair("Flat Keycap", FlatKeycap),
-        Pair("Elevated Keycap",ElevatedKeycap),
-        Pair("RGB Wave Keycap", RGBWaveKeycap)
+    val allKeycaps: List<Pair<KeycapNameComponent, KeycapComponent>> = listOf(
+        Pair(FlatKeycapName, FlatKeycap),
+        Pair(ElevatedKeycapName,ElevatedKeycap),
+        Pair(RGBWaveKeycapName, RGBWaveKeycap)
     )
 
 }

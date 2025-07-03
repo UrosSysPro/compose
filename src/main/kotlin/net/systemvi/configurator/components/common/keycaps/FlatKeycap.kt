@@ -86,3 +86,8 @@ val FlatKeycap: KeycapComponent = @Composable {param: KeycapParam ->
         )
     }
 }
+
+val FlatKeycapName = @Composable {
+    Text("Flat Keycap")
+}
+
