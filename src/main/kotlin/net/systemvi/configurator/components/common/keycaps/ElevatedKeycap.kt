@@ -37,7 +37,7 @@ val ElevatedKeycap: KeycapComponent = @Composable { param: KeycapParam ->
         else -> MaterialTheme.colorScheme.primaryContainer
     }
 
-    viewModel.noteEffect(currentlyClicked, param.position.x + param.position.y * 12+40)
+    viewModel.noteEffect(currentlyClicked, param.position.x + param.position.y * 12+24)
 
     Box(
         modifier = Modifier.padding(4.dp).fillMaxSize()

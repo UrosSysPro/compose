@@ -45,7 +45,7 @@ class TesterPageViewModel : ViewModel() {
     @Composable
     fun noteEffect(currentlyDown: Boolean, note: Int){
         LaunchedEffect(currentlyDown) {
-            val velocity=93
+            val velocity=1000
             if(currentlyDown){
                 println(note)
                 channels?.get(0)?.noteOn(note, velocity)

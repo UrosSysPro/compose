@@ -40,7 +40,7 @@ val RGBWaveKeycap: KeycapComponent = @Composable {param: KeycapParam ->
         }
     )
 
-    viewModel.noteEffect(currentlyClicked, param.position.x + param.position.y * 12+40)
+    viewModel.noteEffect(currentlyClicked, param.position.x + param.position.y * 12+24)
 
     Column(
         verticalArrangement = Arrangement.Center,
