@@ -35,13 +35,12 @@ enum class KeyboardKeysPages(val title:String,val keys:List<Key>){
     ModifierKeys("Modifier Keys", modifierKeys),
     MiscKeys("Misc", miscKeys),
     MediaKeys("Media Keys", mediaKeys),
+    MacroKeys("Macros",emptyList()),
 }
 
 class ConfigureViewModel(): ViewModel() {
     val serialApi = KeyboardSerialApi()
     val keymapApi = KeymapApi()
-//    var savedKeymaps by mutableStateOf(keymapLoadFromDisk())
-//    var keymap by mutableStateOf<KeyMap?>(null)
     var currentlyPressedKeycaps:Set<KeycapMatrixPosition> by mutableStateOf(emptySet())
     var currentKeyboardLayoutPage: KeyboardLayoutPages by mutableStateOf(KeyboardLayoutPages.Keymap)
     var currentKeyboardKeysPage: KeyboardKeysPages by mutableStateOf(KeyboardKeysPages.All)
@@ -87,7 +86,6 @@ class ConfigureViewModel(): ViewModel() {
             }
         }
     }
-
 
     fun readPortNames() = serialApi.getPortNames()
 
