@@ -4,6 +4,8 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -17,7 +19,11 @@ import net.systemvi.configurator.components.configure.KeyboardKeysPages
 
 @Composable fun SidePanel(currentPage: KeyboardKeysPages,onSelect: (KeyboardKeysPages) -> Unit) {
     val pages= KeyboardKeysPages.entries
-    Column(Modifier.padding(vertical = 8.dp, horizontal = 16.dp).width(170.dp)) {
+    Column(Modifier
+        .padding(vertical = 8.dp, horizontal = 16.dp)
+        .width(170.dp)
+        .verticalScroll(rememberScrollState())
+    ) {
         for(page in pages){
             val selected=currentPage==page
             TextButton(

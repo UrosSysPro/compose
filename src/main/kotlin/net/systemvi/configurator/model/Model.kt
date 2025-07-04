@@ -63,7 +63,7 @@ enum class MacroActionType(val id:Int){
 @Serializable
 @optics data class MacroAction(val key:Key,val action:MacroActionType){companion object}
 @Serializable
-@optics data class Macro(val actions:List<MacroAction>){companion object}
+@optics data class Macro(val name:String,val actions:List<MacroAction>){companion object}
 
 @Serializable
 @optics data class KeyMap(val name:String,val keycaps:List<List<Keycap>>){companion object}
