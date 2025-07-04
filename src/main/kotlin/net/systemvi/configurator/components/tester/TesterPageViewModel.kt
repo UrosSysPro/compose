@@ -1,20 +1,11 @@
 package net.systemvi.configurator.components.tester
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.focus.FocusRequester
 import androidx.lifecycle.ViewModel
 import net.systemvi.configurator.components.common.keyboard_grid.KeycapComponent
 import net.systemvi.configurator.components.common.keyboard_grid.KeycapNameComponent
-import net.systemvi.configurator.components.common.keycaps.ElevatedKeycap
-import net.systemvi.configurator.components.common.keycaps.ElevatedKeycapName
-import net.systemvi.configurator.components.common.keycaps.FlatKeycap
-import net.systemvi.configurator.components.common.keycaps.FlatKeycapName
-import net.systemvi.configurator.components.common.keycaps.RGBWaveKeycap
-import net.systemvi.configurator.components.common.keycaps.RGBWaveKeycapName
+import net.systemvi.configurator.components.common.keycaps.*
 import net.systemvi.configurator.model.Key
 import javax.sound.midi.MidiChannel
 import javax.sound.midi.MidiSystem
@@ -26,6 +17,18 @@ class TesterPageViewModel : ViewModel() {
     var wasDownKeys by mutableStateOf(emptySet<Key>())
     val focusRequester by mutableStateOf(FocusRequester())
     var selectedKeycap by mutableStateOf(FlatKeycap)
+    var muteOn by mutableStateOf(false)
+    var selectedInstrument by mutableStateOf(0)
+    var showBottomSheet by mutableStateOf(false)
+
+    var instruments: List<Pair<String, Int>> = listOf(
+        Pair("Acoustic Grand Piano", 0),
+        Pair("Nylon Acoustic Guitar", 24),
+        Pair("Violin", 40),
+        Pair("Trumpet", 56),
+        Pair("Flute", 73),
+        Pair("Synth Drum", 118)
+    )
 
     fun resetKeys(){
         currentlyDownKeys = emptySet()
@@ -43,14 +46,18 @@ class TesterPageViewModel : ViewModel() {
     )
 
     @Composable
-    fun noteEffect(currentlyDown: Boolean, note: Int){
-        LaunchedEffect(currentlyDown) {
-            val velocity=1000
-            if(currentlyDown){
-                println(note)
-                channels?.get(0)?.noteOn(note, velocity)
-            }else{
-                channels?.get(0)?.noteOff(note, velocity)
+    fun noteEffect(currentlyDown: Boolean, note: Int) {
+        val channel = channels?.get(0)
+        channel?.programChange(selectedInstrument)
+        if (!muteOn) {
+            LaunchedEffect(currentlyDown) {
+                val velocity = 1000
+                if (currentlyDown) {
+                    println(note)
+                    channel?.noteOn(note, velocity)
+                } else {
+                    channel?.noteOff(note, velocity)
+                }
             }
         }
     }

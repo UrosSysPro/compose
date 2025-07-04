@@ -29,6 +29,7 @@ dependencies {
     implementation("org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose:2.9.0")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1")
     implementation("org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose:2.9.1")
+    implementation("org.jetbrains.compose.material:material-icons-core:1.7.3")
     //logger
     implementation("org.slf4j:slf4j-simple:2.0.17")
     //arrow kt
