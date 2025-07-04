@@ -54,7 +54,7 @@ import net.systemvi.configurator.model.Keycap
 fun KeyboardLayoutGridView(
     configureViewModel: ConfigureViewModel=viewModel{ConfigureViewModel()}
 ) {
-    val keys=configureViewModel.keymap
+    val keymap=configureViewModel.keymapApi.keymap
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -64,15 +64,17 @@ fun KeyboardLayoutGridView(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Column{
-            keys?.keycaps?.forEachIndexed { i,row->
-                Row{
-                    row.forEachIndexed { j,key->
-                        Keycap(
-                            key,
-                            selected = configureViewModel.isKeycapSelected(i,j),
-                            onClick = { configureViewModel.selectKeycap(i,j) },
-                            pressed = configureViewModel.currentlyPressedKeycaps.contains(key.matrixPosition),
-                        )
+            keymap.onSome { keymap ->
+                keymap.keycaps.forEachIndexed { i,row->
+                    Row{
+                        row.forEachIndexed { j,key->
+                            Keycap(
+                                key,
+                                selected = configureViewModel.isKeycapSelected(i,j),
+                                onClick = { configureViewModel.selectKeycap(i,j) },
+                                pressed = configureViewModel.currentlyPressedKeycaps.contains(key.matrixPosition),
+                            )
+                        }
                     }
                 }
             }

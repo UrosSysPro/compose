@@ -35,6 +35,7 @@ import net.systemvi.configurator.model.KeyMap
 
 @Composable fun SaveAndLoad(){
     val viewModel= viewModel { ConfigureViewModel() }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -42,6 +43,6 @@ import net.systemvi.configurator.model.KeyMap
             .padding(20.dp)
     ){
         KeymapsRow("Default",defaultKeymaps())
-        KeymapsRow("Saved",viewModel.savedKeymaps)
+        KeymapsRow("Saved",viewModel.keymapApi.savedKeymaps)
     }
 }

@@ -35,12 +35,43 @@ class KeyboardSerialApi {
 
     fun getPortNames():List<String> = SerialPortList.getPortNames().toList()
 
-    fun uploadKeycap(keycap: Keycap,key: Key,layer:Int) {
+//    fun uploadKeycap(keycap: Keycap,key: Key,layer:Int) {
+//        port.onSome { port->
+//            println("key: $key layer: $layer keycap: $keycap")
+//            val bytes: ByteArray = arrayOf(
+//                'l'.code.toByte(),
+//                keycap.matrixPosition.x.toByte(),
+//                keycap.matrixPosition.y.toByte(),
+//                layer.toByte(),
+//                key.value,
+//            ).toByteArray()
+//            port.writeBytes(bytes)
+//        }.onNone {
+//            println("[ERROR] upload key called, and port is not opened")
+//        }
+//    }
+
+    fun setKey(layers:List<Key>,matrixPosition: KeycapMatrixPosition){
+//        port.onSome { port->
+//            val bytes: ByteArray = arrayOf(
+//                'l'.code.toByte(),
+//                keycap.matrixPosition.x.toByte(),
+//                keycap.matrixPosition.y.toByte(),
+//                layer.toByte(),
+//                key.value,
+//            ).toByteArray()
+//            port.writeBytes(bytes)
+//        }.onNone {
+//            println("[ERROR] upload key called, and port is not opened")
+//        }
+        TODO("Implement uploading keys on all layers")
+    }
+    fun setKeyOnLayer(key:Key,layer:Int,matrixPosition: KeycapMatrixPosition){
         port.onSome { port->
             val bytes: ByteArray = arrayOf(
                 'l'.code.toByte(),
-                keycap.matrixPosition.x.toByte(),
-                keycap.matrixPosition.y.toByte(),
+                matrixPosition.x.toByte(),
+                matrixPosition.y.toByte(),
                 layer.toByte(),
                 key.value,
             ).toByteArray()

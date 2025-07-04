@@ -35,8 +35,8 @@ fun KeyboardLayoutView() {
                             .horizontalScroll(rememberScrollState())
                             .verticalScroll(rememberScrollState())
                     ) {
-                        if(viewModel.keymap!=null){
-                            Grid(viewModel.keymap!!, ConfiguratorKeycapComponent,70)
+                        viewModel.keymapApi.keymap.onSome { keymap ->
+                            Grid(keymap, ConfiguratorKeycapComponent,70)
                         }
                     }
                 }

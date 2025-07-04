@@ -26,11 +26,13 @@ import net.systemvi.configurator.components.configure.serial.SerialPortSelector
 @Composable fun UploadKeymapButton(){
     val viewModel = viewModel{ ConfigureViewModel() }
     val scope=rememberCoroutineScope()
-    OutlinedButton(
-        onClick = {scope.launch { viewModel.keymapUpload(viewModel.keymap!!)}},
-        modifier = Modifier.padding(end = 16.dp),
-    ){
-        Text("Upload")
+    viewModel.keymapApi.keymap.onSome { keymap ->
+        OutlinedButton(
+            onClick = {scope.launch { viewModel.keymapUpload(keymap)}},
+            modifier = Modifier.padding(end = 16.dp),
+        ){
+            Text("Upload")
+        }
     }
 }
 @Composable fun SaveAsButton(){
@@ -45,11 +47,13 @@ import net.systemvi.configurator.components.configure.serial.SerialPortSelector
 }
 @Composable fun SaveButton(){
     val viewModel = viewModel{ ConfigureViewModel() }
-    OutlinedButton(
-        onClick = {viewModel.keymapSave(viewModel.keymap!!)},
-        modifier = Modifier.padding(end = 16.dp),
-    ){
-        Text("Save")
+    viewModel.keymapApi.keymap.onSome { keymap ->
+        OutlinedButton(
+            onClick = {viewModel.keymapSave(keymap)},
+            modifier = Modifier.padding(end = 16.dp),
+        ){
+            Text("Save")
+        }
     }
 }
 

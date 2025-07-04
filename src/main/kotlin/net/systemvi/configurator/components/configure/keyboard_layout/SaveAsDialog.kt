@@ -29,40 +29,41 @@ import net.systemvi.configurator.model.name
 
 @Composable fun SaveAsDialog(onDismiss: () -> Unit) {
     val viewModel=viewModel { ConfigureViewModel() }
-    val keymap=viewModel.keymap!!
-    var name by remember { mutableStateOf("") }
-    Dialog(onDismissRequest = onDismiss) {
-        Card(
-            modifier = Modifier.width(400.dp).height(200.dp),
-            shape = RoundedCornerShape(16.dp),
+    viewModel.keymapApi.keymap.onSome { keymap ->
+        var name by remember { mutableStateOf("") }
+        Dialog(onDismissRequest = onDismiss) {
+            Card(
+                modifier = Modifier.width(400.dp).height(200.dp),
+                shape = RoundedCornerShape(16.dp),
 
-        ) {
-            Column(
-                verticalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.fillMaxSize().padding(30.dp)
-            ) {
-                Box(
-                    Modifier.weight(1f,)
-                ){
-                    OutlinedTextField(
-                        value = name,
-                        onValueChange = { name = it },
-                        label = { Text("New keymap name") },
-                    )
-                }
-                Row(
-                    horizontalArrangement = Arrangement.End,
-                    modifier = Modifier.fillMaxWidth()
-                ){
-                    OutlinedButton(onClick = onDismiss) {
-                        Text("Cancel")
+                ) {
+                Column(
+                    verticalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier.fillMaxSize().padding(30.dp)
+                ) {
+                    Box(
+                        Modifier.weight(1f,)
+                    ){
+                        OutlinedTextField(
+                            value = name,
+                            onValueChange = { name = it },
+                            label = { Text("New keymap name") },
+                        )
                     }
-                    Box(Modifier.width(20.dp)){}
-                    OutlinedButton(onClick = {
-                        viewModel.keymapSaveAs(KeyMap.name.set(keymap,name))
-                        onDismiss()
-                    }) {
-                        Text("Save Copy")
+                    Row(
+                        horizontalArrangement = Arrangement.End,
+                        modifier = Modifier.fillMaxWidth()
+                    ){
+                        OutlinedButton(onClick = onDismiss) {
+                            Text("Cancel")
+                        }
+                        Box(Modifier.width(20.dp)){}
+                        OutlinedButton(onClick = {
+                            viewModel.keymapSaveAs(KeyMap.name.set(keymap,name))
+                            onDismiss()
+                        }) {
+                            Text("Save Copy")
+                        }
                     }
                 }
             }
