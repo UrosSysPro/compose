@@ -31,7 +31,7 @@ val RGBWaveKeycap: KeycapComponent = @Composable {param: KeycapParam ->
     val viewModel = viewModel { TesterPageViewModel() }
     val key = param.keycap.layers[0].getOrElse { allKeys.last()}
     val currentlyClicked = viewModel.currentlyDownKeys.contains(key)
-    val color = rememberRainbowColor(3000, param.position.x * 50)
+    val color = rememberRainbowColor(5000, param.position.x * 10)
 
     val containerColor by animateColorAsState(
         targetValue = when {
@@ -72,7 +72,7 @@ val RGBWaveKeycap: KeycapComponent = @Composable {param: KeycapParam ->
 val RGBWaveKeycapName = @Composable {
     Text(
         "RGB Wave Keycap",
-        color = rememberRainbowColor(3000)
+        color = rememberRainbowColor(5000)
     )
 }
 

@@ -10,20 +10,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
 
-@Composable fun rememberRainbowColor(durationMillis: Int, delayMillis: Int=0): Color {
+@Composable fun rememberRainbowColor(durationMillis: Int, degOffset: Int=0): Color {
     val infiniteTransition = rememberInfiniteTransition(label = "infinite")
     val animatedFloat by infiniteTransition.animateFloat(
-        initialValue = 0F,
-        targetValue = 360f,
+        initialValue = 360F,
+        targetValue = 0f,
         animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = durationMillis, delayMillis = delayMillis, easing = LinearEasing),
+            animation = tween(durationMillis = durationMillis, easing = LinearEasing),
             repeatMode = RepeatMode.Restart
         ),
         label = "animatedFloat"
     )
 
     val color = Color.hsl(
-        hue = animatedFloat,
+        hue = (animatedFloat+degOffset.coerceAtLeast(0))%360,
         saturation = 1f,
         lightness = 0.5f
     )
