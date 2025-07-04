@@ -39,13 +39,7 @@ private fun Settings() {
             thickness = dividerThickness
         )
         ChooseInstrumentRow()
-        Divider(
-            modifier = Modifier.fillMaxWidth(),
-            color = dividerColor,
-            thickness = dividerThickness
-        )
     }
-
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

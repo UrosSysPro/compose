@@ -9,6 +9,7 @@ import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -18,6 +19,10 @@ import net.systemvi.configurator.components.tester.TesterPageViewModel
 @Composable
 fun MuteSoundRow() {
     val viewModel = viewModel { TesterPageViewModel() }
+    LaunchedEffect(viewModel.muteOn){
+        viewModel.channels?.get(0)?.allNotesOff()
+    }
+
     Row(
         modifier = Modifier.fillMaxWidth().height(75.dp),
         verticalAlignment = Alignment.CenterVertically,

@@ -33,6 +33,7 @@ class TesterPageViewModel : ViewModel() {
     fun resetKeys(){
         currentlyDownKeys = emptySet()
         wasDownKeys = emptySet()
+        channels?.get(0)?.allNotesOff()
         focusRequester.requestFocus()
     }
     val synth:Synthesizer? = MidiSystem.getSynthesizer().apply { open()}
