@@ -107,7 +107,7 @@ import net.systemvi.configurator.model.keycaps
                             IconButton(
                                 onClick = {
                                     keymap = KeyMap.keycaps.index(i).modify(keymap, {
-                                        it - key
+                                        it.filterIndexed { index,_->index!=j }
                                     })
                                 },
                                 modifier = Modifier
@@ -133,7 +133,7 @@ import net.systemvi.configurator.model.keycaps
                 ElevatedButton(
                     onClick = {
                         keymap = KeyMap.keycaps.modify(keymap, {keycaps ->
-                            keycaps.filterIndexed {index, row -> index != i}
+                            keycaps.filterIndexed {index, _ -> index != i}
                         })
                     },
                     modifier = Modifier
