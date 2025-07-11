@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.onClick
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
@@ -44,6 +45,7 @@ import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.nativeKeyCode
 import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.input.key.type
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import arrow.core.None
 import arrow.core.Option
@@ -68,7 +70,8 @@ import net.systemvi.configurator.model.setName
     ) {
         Text(
             action.key.name,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f).wrapContentSize(Alignment.Center),
+            textAlign = TextAlign.Center,
         )
         Divider()
         Icon(
@@ -84,7 +87,7 @@ import net.systemvi.configurator.model.setName
 }
 
 @OptIn(ExperimentalFoundationApi::class)
-@Composable fun MacroEditor(initialMacro: Option<Macro> = None, onSave:(Macro)->Unit,onSaveCopy:(Macro)->Unit, onCancel:()->Unit){
+@Composable fun MacroEditor(initialMacro: Option<Macro> = None, onSave:(Macro)->Unit, onCancel:()->Unit){
     fun emptyMacro(): Macro= Macro("", emptyList())
     var macro by remember { mutableStateOf( emptyMacro() ) }
     val interactionSource = remember { MutableInteractionSource() }
@@ -148,7 +151,7 @@ import net.systemvi.configurator.model.setName
             horizontalArrangement = Arrangement.End,
         ) {
             OutlinedButton(
-                onClick = { onSaveCopy(macro) },
+                onClick = { onSave(macro) },
             ){
                 Text("Save")
             }
@@ -159,7 +162,4 @@ import net.systemvi.configurator.model.setName
             }
         }
     }
-//    LaunchedEffect(Unit){
-//        focusRequester.requestFocus()
-//    }
 }

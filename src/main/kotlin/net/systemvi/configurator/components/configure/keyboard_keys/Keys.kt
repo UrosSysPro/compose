@@ -21,7 +21,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import net.systemvi.configurator.components.configure.ConfigureViewModel
 import net.systemvi.configurator.model.Key
-import net.systemvi.configurator.model.Keycap
 
 
 @Composable fun Keycap(
@@ -38,7 +37,7 @@ import net.systemvi.configurator.model.Keycap
                 shape = RoundedCornerShape(8.dp)
             )
             .combinedClickable(onClick = {
-                configuratorViewModel.setKeyValue(key)
+                configuratorViewModel.setNormalKey(key)
             })
     ){
         Text(

@@ -1,5 +1,6 @@
 package net.systemvi.configurator.model
 
+import arrow.core.left
 import arrow.core.right
 import arrow.optics.dsl.index
 import arrow.optics.optics
@@ -24,6 +25,14 @@ fun KeyMap.updateKeycap(x:Int,y:Int,layer:Int,key:Key): KeyMap=
         .layers
         .index(layer)
         .set(this,key.right())
+
+fun KeyMap.updateKeycap(x:Int,y:Int,layer:Int,macro:Macro): KeyMap=
+    KeyMap.keycaps
+        .index(x)
+        .index(y)
+        .layers
+        .index(layer)
+        .set(this,macro.left())
 
 fun KeyMap.exportStl(name:String){
     val topPlate= Cube(30.0)

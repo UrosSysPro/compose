@@ -3,16 +3,18 @@ package net.systemvi.configurator.components.configure.keyboard_keys.macro
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
+import androidx.lifecycle.viewmodel.compose.viewModel
 import arrow.core.None
 import arrow.core.Option
+import net.systemvi.configurator.components.configure.ConfigureViewModel
 import net.systemvi.configurator.model.Macro
-import net.systemvi.configurator.model.actions
 
 
 @Composable fun Macros(){
     var macros by remember{mutableStateOf(emptyList<Macro>())}
     var isMacroEditorOpened by remember {mutableStateOf(false)}
     var currentlyEditedMacro by remember { mutableStateOf<Option<Macro>>(None) }
+    var viewModel= viewModel { ConfigureViewModel() }
 
     LaunchedEffect(isMacroEditorOpened) {
         if(!isMacroEditorOpened)currentlyEditedMacro = None
@@ -23,22 +25,20 @@ import net.systemvi.configurator.model.actions
         if(isMacroEditorOpened){
             MacroEditor(
                 initialMacro = currentlyEditedMacro,
-                onSave = {
-                    macros = macros.map { macro -> if(it.name==macro.name) it else macro }
+                onSave = { newMacro->
+                    currentlyEditedMacro
+                        .onSome { edited -> macros = macros.map { macro -> if(edited == macro) newMacro else macro } }
+                        .onNone { macros = macros + newMacro }
                     isMacroEditorOpened = false
                 },
-                onSaveCopy={
-                    macros = macros+it
-                    isMacroEditorOpened=false
-                },
                 onCancel = {
-                    isMacroEditorOpened=false
+                    isMacroEditorOpened = false
                 })
         }else{
             MacroRow(
                 macros=macros,
                 onClick = {
-                    //assign to key
+                    viewModel.setMacroKey(it)
                 },
                 onEdit = {
                     currentlyEditedMacro = it

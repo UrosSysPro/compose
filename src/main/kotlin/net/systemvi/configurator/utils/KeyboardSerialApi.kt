@@ -83,6 +83,20 @@ class KeyboardSerialApi {
             println("[ERROR] upload key called, and port is not opened")
         }
     }
+    fun setKeyOnLayer(macro:Macro,layer:Int,matrixPosition: KeycapMatrixPosition){
+        port.onSome { port->
+//            val bytes: ByteArray = arrayOf(
+//                'l'.code.toByte(),
+//                matrixPosition.x.toByte(),
+//                matrixPosition.y.toByte(),
+//                layer.toByte(),
+//                key.value,
+//            ).toByteArray()
+//            port.writeBytes(bytes)
+        }.onNone {
+            println("[ERROR] upload macro called, and port is not opened")
+        }
+    }
 
     fun selectPort(name:String?){
         closePort()

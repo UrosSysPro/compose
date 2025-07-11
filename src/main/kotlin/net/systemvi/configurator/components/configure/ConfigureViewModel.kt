@@ -1,6 +1,7 @@
 package net.systemvi.configurator.components.configure
 
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -72,17 +73,33 @@ class ConfigureViewModel(): ViewModel() {
     fun selectLayer(layer:Int){
         selectedLayer = layer
     }
+
     fun selectedLayer()=selectedLayer
 
-    fun setKeyValue(key: Key){
+    fun setNormalKey(key: Key){
         keymapApi.keymap.onSome { keymap->
             if(selectedKeycapPositon!=null){
                 val x=selectedKeycapPositon!!.x
                 val y=selectedKeycapPositon!!.y
+                val keycap=keymap.keycaps[x][y]
                 val layer=selectedLayer
                 keymapApi.keymap=keymap.updateKeycap(x,y,layer,key).some()
                 keymapApi.save(keymapApi.keymap.getOrNull()!!)
-                serialApi.setKeyOnLayer(key,layer,keymap.keycaps[selectedKeycapPositon!!.x][selectedKeycapPositon!!.y].matrixPosition)
+                serialApi.setKeyOnLayer(key,layer,keycap.matrixPosition)
+            }
+        }
+    }
+
+    fun setMacroKey(macro:Macro){
+        keymapApi.keymap.onSome { keymap->
+            if(selectedKeycapPositon!=null){
+                val x=selectedKeycapPositon!!.x
+                val y=selectedKeycapPositon!!.y
+                val keycap=keymap.keycaps[x][y]
+                val layer=selectedLayer
+                keymapApi.keymap=keymap.updateKeycap(x,y,layer,macro).some()
+                keymapApi.save(keymapApi.keymap.getOrNull()!!)
+                serialApi.setKeyOnLayer(macro,layer, keycap.matrixPosition)
             }
         }
     }
