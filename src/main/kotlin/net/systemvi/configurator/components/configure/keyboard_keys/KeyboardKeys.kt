@@ -5,6 +5,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import net.systemvi.configurator.components.common.BorderVertical
 import net.systemvi.configurator.components.configure.ConfigureViewModel
 import net.systemvi.configurator.components.configure.KeyboardKeysPages
+import net.systemvi.configurator.components.configure.keyboard_keys.macro.Macros
 
 @Composable fun KeyboardKeys() {
     val viewModel= viewModel { ConfigureViewModel() }

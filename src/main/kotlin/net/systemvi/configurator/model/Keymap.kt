@@ -21,7 +21,8 @@ fun KeyMap.updateKeycap(x:Int,y:Int,layer:Int,key:Key): KeyMap=
     KeyMap.keycaps
         .index(x)
         .index(y)
-        .layers.index(Index.list(),layer)
+        .layers
+        .index(layer)
         .set(this,key.right())
 
 fun KeyMap.exportStl(name:String){

@@ -12,3 +12,5 @@ enum class MacroActionType(val id:Int){
 @optics data class MacroAction(val key:Key,val action:MacroActionType){companion object}
 @Serializable
 @optics data class Macro(val name:String,val actions:List<MacroAction>){companion object}
+
+fun Macro.setName(name:String): Macro = Macro.name.set(this,name)
