@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import arrow.core.Either
@@ -29,6 +30,8 @@ val ConfiguratorKeycapComponent: KeycapComponent=@Composable{params->
     val layer=viewModel.selectedLayer().coerceAtMost(params.keycap.layers.size-1)
     val pressed=viewModel.currentlyPressedKeycaps.contains(params.keycap.matrixPosition)
     val selected=viewModel.isKeycapSelected(params.position.y,params.position.x)
+    val keymap=viewModel.keymapApi.keymap.getOrNull()!!
+    val isLayerKey=keymap.layerKeyPositions.map { it.position }.contains(params.keycap.matrixPosition)
     val key=params.keycap.layers[layer]
 
     val text=when(key){
@@ -41,6 +44,7 @@ val ConfiguratorKeycapComponent: KeycapComponent=@Composable{params->
     }
 
     val backgroundColor=when{
+        isLayerKey-> Color(0xff55eecc)
         pressed-> MaterialTheme.colorScheme.tertiaryContainer
         selected->MaterialTheme.colorScheme.primary
         else->MaterialTheme.colorScheme.primaryContainer
