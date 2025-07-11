@@ -12,11 +12,30 @@ import java.io.FileWriter
 @Serializable
 @optics data class KeyMap(val name:String,val keycaps:List<List<Keycap>>){companion object}
 
-fun KeyMap.setKeyWidth(i:Int,j:Int,width:KeycapWidth): KeyMap=
+fun KeyMap.setKeycapWidth(i:Int, j:Int, width:KeycapWidth): KeyMap=
     KeyMap.keycaps
         .index(i)
         .index(j)
         .set(this,this.keycaps[i][j].overrideWidth(width))
+
+fun KeyMap.setKeycapHeight(i:Int, j:Int, height: KeycapHeight): KeyMap =
+    KeyMap.keycaps
+        .index(i)
+        .index(j)
+        .set(this, this.keycaps[i][j].overrideHeight(height))
+
+fun KeyMap.setKeycapLeftPadding(i:Int, j:Int, padding: KeycapPadding): KeyMap =
+    KeyMap.keycaps
+        .index(i)
+        .index(j)
+        .set(this, this.keycaps[i][j].overrideLeftPadding(padding))
+
+fun KeyMap.setKeycapBottomPadding(i:Int, j:Int, padding: KeycapPadding): KeyMap =
+    KeyMap.keycaps
+        .index(i)
+        .index(j)
+        .set(this, this.keycaps[i][j].overrideBottomPadding(padding))
+
 
 fun KeyMap.updateKeycap(x:Int,y:Int,layer:Int,key:Key): KeyMap=
     KeyMap.keycaps

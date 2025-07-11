@@ -23,14 +23,13 @@ import net.systemvi.configurator.model.KeyMap
     ) {
         AddRowButton(keymap, { keymap = it })
         keymap.keycaps.forEachIndexed { i, row ->
-            val paddingBottom = row.fold(0f){acc, keycap -> acc.coerceAtLeast(keycap.padding.bottom)}
+            val paddingBottom = 50 * row.fold(0f){acc, keycap -> acc.coerceAtLeast(keycap.padding.bottom)}
 
             Row(
                 modifier = Modifier
                     .zIndex(if (selectedKeycap.x == i) 10f else 1f)
-                    .height(70.dp)
-                    .padding(bottom = paddingBottom.dp)
-                    .wrapContentSize(unbounded = true),
+                    .wrapContentSize(unbounded = true)
+                    .padding(bottom = paddingBottom.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             )
@@ -40,15 +39,16 @@ import net.systemvi.configurator.model.KeyMap
                     var showEdit = selectedKeycap.x == i && selectedKeycap.y == j
                     val width = 50 * key.width.size
                     val height = 50 * key.height.size
+                    val leftPadding = 50 * key.padding.left
 
                     Box(
                         modifier = Modifier
                             .zIndex(if (showEdit) 100f else 1f)
+                            .padding(start = leftPadding.dp)
                             .size(width.dp, height.dp)
                             .wrapContentSize(unbounded = true)
-                            .padding(start = key.padding.left.dp)
                     ) {
-                        KeycapDesign(keymap, i, j, { keymap = it }, { selectedKeycap = KeycapPosition(i,j) })
+                        KeycapDesign(keymap, i, j, { keymap = it }, { selectedKeycap = KeycapPosition(i, j) })
                         KeycapEdit(showEdit, keymap, i, j, {keymap = it; selectedKeycap = KeycapPosition(-1, -1)})
                     }
                 }

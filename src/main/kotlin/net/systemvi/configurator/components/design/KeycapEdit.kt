@@ -1,33 +1,17 @@
 package net.systemvi.configurator.components.design
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.width
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ElevatedButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.unit.dp
-import arrow.optics.dsl.index
-import net.systemvi.configurator.model.KeyMap
-import net.systemvi.configurator.model.KeycapHeight
-import net.systemvi.configurator.model.KeycapWidth
-import net.systemvi.configurator.model.bottom
-import net.systemvi.configurator.model.height
-import net.systemvi.configurator.model.keycaps
-import net.systemvi.configurator.model.left
-import net.systemvi.configurator.model.padding
-import net.systemvi.configurator.model.width
+import net.systemvi.configurator.components.common.icons.HeightIcon
+import net.systemvi.configurator.components.common.icons.PaddingIcon
+import net.systemvi.configurator.components.common.icons.WidthIcon
+import net.systemvi.configurator.model.*
 
 @Composable
 fun <F>DropDownButton(list: List<F>, onSelect: (F) -> Unit) {
@@ -53,36 +37,92 @@ fun <F>DropDownButton(list: List<F>, onSelect: (F) -> Unit) {
 }
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun KeycapEdit( show: Boolean, keymap: KeyMap, x: Int, y: Int, onUpdate: (keymap: KeyMap) -> Unit ){
-    if(show){
-        Box(modifier = Modifier
-            .height(300.dp)
-            .width(300.dp)
-            .background(
-                color = MaterialTheme.colorScheme.primary,
-            )
-        ){
-            Column(){
-                Row(modifier = Modifier){
+    val textColor = MaterialTheme.colorScheme.primaryContainer
+
+    if(show) {
+        Box(
+            modifier = Modifier
+                .height(350.dp)
+                .width(300.dp)
+                .background(
+                    color = MaterialTheme.colorScheme.primary,
+                )
+        ) {
+            Column() {
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically,
+                ){
+                    Icon(
+                        imageVector = WidthIcon,
+                        contentDescription = "Width Icon",
+                        tint = textColor,
+                    )
+                    Text(
+                        text = "Width",
+                        color = textColor,
+                    )
                     DropDownButton(KeycapWidth.entries, {
-                       onUpdate (KeyMap.keycaps.index(x).index(y).width.set(keymap, it))
-                    })
-                    DropDownButton(KeycapHeight.entries, {
-                        onUpdate (KeyMap.keycaps.index(x).index(y).height.set(keymap, it))
+                        onUpdate(keymap.setKeycapWidth(x, y, it))
                     })
                 }
-                Row(modifier = Modifier){
-                    DropDownButton(listOf(0.25f, 0.5f, 1f, 1.25f), {
-                        onUpdate (KeyMap.keycaps.index(x).index(y).padding.left.set(keymap, it))
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically,
+                ){
+                    Icon(
+                        imageVector = HeightIcon,
+                        contentDescription = "Height Icon",
+                        tint = textColor,
+                    )
+                    Text(
+                        text = "Height",
+                        color = textColor,
+                    )
+                    DropDownButton(KeycapHeight.entries, {
+                        onUpdate(keymap.setKeycapHeight(x, y, it))
                     })
-                    DropDownButton(listOf(0.25f, 0.5f, 1f, 1.25f), {
-                        onUpdate (KeyMap.keycaps.index(x).index(y).padding.bottom.set(keymap, it))
+                }
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically,
+                ){
+                    Icon(
+                        imageVector = PaddingIcon,
+                        contentDescription = "Left Padding Icon",
+                        tint = textColor
+                    )
+                    Text(
+                        text = "Left Padding",
+                        color = textColor
+                    )
+                    DropDownButton(listOf(0f, 0.25f, 0.5f, 1f, 1.25f), {
+                        onUpdate(keymap.setKeycapLeftPadding(x, y, KeycapPadding(left = it)))
+                    })
+                }
+
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically,
+                ){
+                    Icon(
+                        imageVector = PaddingIcon,
+                        contentDescription = "Bottom Padding Icon",
+                        tint = textColor,
+                        modifier = Modifier.rotate(-90f)
+                    )
+                    Text(
+                        text = "Bottom Padding",
+                        color = textColor
+                    )
+                    DropDownButton(listOf(0f, 0.25f, 0.5f, 1f, 1.25f), {
+                        onUpdate(keymap.setKeycapBottomPadding(x, y, KeycapPadding(bottom = it)))
                     })
                 }
             }
-
         }
     }
-
 }

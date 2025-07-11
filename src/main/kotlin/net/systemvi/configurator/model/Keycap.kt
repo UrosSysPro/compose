@@ -20,3 +20,7 @@ import kotlinx.serialization.Serializable
 fun Keycap.overrideWidth(width: KeycapWidth): Keycap = Keycap.width.modify(this){ width }
 
 fun Keycap.overrideHeight(height: KeycapHeight): Keycap = Keycap.height.modify(this){ height }
+
+fun Keycap.overrideLeftPadding(padding: KeycapPadding): Keycap = Keycap.padding.left.modify(this){ padding.left }
+
+fun Keycap.overrideBottomPadding(padding: KeycapPadding): Keycap = Keycap.padding.bottom.modify(this){ padding.bottom }
