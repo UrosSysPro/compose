@@ -71,6 +71,33 @@ class KeyboardSerialApi {
         }
     }
 
+    fun addLayerKeyPosition(column:Int,row:Int,layer:Int){
+        port.onSome { port->
+            val bytes: ByteArray = arrayOf(
+                'A'.code.toByte(),
+                column.toByte(),
+                row.toByte(),
+                layer.toByte(),
+            ).toByteArray()
+            port.writeBytes(bytes)
+        }.onNone {
+            println("[ERROR] upload macro called, and port is not opened")
+        }
+    }
+
+    fun removeLayerKeyPosition(column:Int,row:Int,layer:Int){
+        port.onSome { port->
+            val bytes: ByteArray = arrayOf(
+                'S'.code.toByte(),
+                column.toByte(),
+                row.toByte(),
+            ).toByteArray()
+            port.writeBytes(bytes)
+        }.onNone {
+            println("[ERROR] upload macro called, and port is not opened")
+        }
+    }
+
     fun selectPort(name:String?){
         closePort()
         if(name!=null){
