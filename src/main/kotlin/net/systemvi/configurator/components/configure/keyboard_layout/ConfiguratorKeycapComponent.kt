@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import arrow.core.Either
 import arrow.core.getOrElse
 import net.systemvi.configurator.components.common.keyboard_grid.KeycapComponent
 import net.systemvi.configurator.components.configure.ConfigureViewModel
@@ -28,7 +29,13 @@ val ConfiguratorKeycapComponent: KeycapComponent=@Composable{params->
     val layer=viewModel.selectedLayer().coerceAtMost(params.keycap.layers.size-1)
     val pressed=viewModel.currentlyPressedKeycaps.contains(params.keycap.matrixPosition)
     val selected=viewModel.isKeycapSelected(params.position.y,params.position.x)
-    val text=params.keycap.layers[layer].map { key:Key ->key.name }.getOrElse { "???" }
+    val key=params.keycap.layers[layer]
+
+    val text=when(key){
+        is Either.Right->key.value.name
+        is Either.Left->key.value.name
+    }
+
     val onClick={
         viewModel.selectKeycap(params.position.y,params.position.x)
     }

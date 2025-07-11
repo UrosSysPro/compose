@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 enum class MacroActionType(val id:Int){
-    KEY_UP(1),KEY_DOWN(0);
+    KEY_UP(0),KEY_DOWN(1);
 }
 @Serializable
 @optics data class MacroAction(val key:Key,val action:MacroActionType){companion object}

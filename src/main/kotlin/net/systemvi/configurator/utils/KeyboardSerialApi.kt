@@ -8,6 +8,7 @@ import arrow.core.None
 import arrow.core.Option
 import arrow.core.Some
 import arrow.core.getOrElse
+import arrow.core.left
 import arrow.core.right
 import arrow.core.some
 import arrow.core.toOption
@@ -27,6 +28,8 @@ import net.systemvi.configurator.model.KeycapHeight
 import net.systemvi.configurator.model.KeycapMatrixPosition
 import net.systemvi.configurator.model.KeycapWidth
 import net.systemvi.configurator.model.Macro
+import net.systemvi.configurator.model.MacroAction
+import net.systemvi.configurator.model.MacroActionType
 
 class KeyboardSerialApi {
     private var selectedPortName by mutableStateOf<String?>(null)
@@ -38,37 +41,6 @@ class KeyboardSerialApi {
 
     fun getPortNames():List<String> = SerialPortList.getPortNames().toList()
 
-//    fun uploadKeycap(keycap: Keycap,key: Key,layer:Int) {
-//        port.onSome { port->
-//            println("key: $key layer: $layer keycap: $keycap")
-//            val bytes: ByteArray = arrayOf(
-//                'l'.code.toByte(),
-//                keycap.matrixPosition.x.toByte(),
-//                keycap.matrixPosition.y.toByte(),
-//                layer.toByte(),
-//                key.value,
-//            ).toByteArray()
-//            port.writeBytes(bytes)
-//        }.onNone {
-//            println("[ERROR] upload key called, and port is not opened")
-//        }
-//    }
-
-    fun setKey(layers:List<Key>,matrixPosition: KeycapMatrixPosition){
-//        port.onSome { port->
-//            val bytes: ByteArray = arrayOf(
-//                'l'.code.toByte(),
-//                keycap.matrixPosition.x.toByte(),
-//                keycap.matrixPosition.y.toByte(),
-//                layer.toByte(),
-//                key.value,
-//            ).toByteArray()
-//            port.writeBytes(bytes)
-//        }.onNone {
-//            println("[ERROR] upload key called, and port is not opened")
-//        }
-        TODO("Implement uploading keys on all layers")
-    }
     fun setKeyOnLayer(key:Key,layer:Int,matrixPosition: KeycapMatrixPosition){
         port.onSome { port->
             val bytes: ByteArray = arrayOf(
@@ -85,14 +57,15 @@ class KeyboardSerialApi {
     }
     fun setKeyOnLayer(macro:Macro,layer:Int,matrixPosition: KeycapMatrixPosition){
         port.onSome { port->
-//            val bytes: ByteArray = arrayOf(
-//                'l'.code.toByte(),
-//                matrixPosition.x.toByte(),
-//                matrixPosition.y.toByte(),
-//                layer.toByte(),
-//                key.value,
-//            ).toByteArray()
-//            port.writeBytes(bytes)
+            val bytes: ByteArray = arrayOf(
+                'm'.code.toByte(),
+                matrixPosition.x.toByte(),
+                matrixPosition.y.toByte(),
+                layer.toByte(),
+                macro.actions.size.toByte(),
+                *macro.actions.flatMap { (key, action) -> listOf(key.value,action.id.toByte()) }.toTypedArray(),
+            ).toByteArray()
+            port.writeBytes(bytes)
         }.onNone {
             println("[ERROR] upload macro called, and port is not opened")
         }
@@ -205,6 +178,7 @@ class KeyboardSerialApi {
             }.toList()
         }.toList())
     }
+
     private fun readKeymapFromBuffer2(buffer:List<Byte>):KeyMap{
         var buffer = buffer
         val columns=buffer[1].toInt()
@@ -235,6 +209,18 @@ class KeyboardSerialApi {
                         val key=buffer[1]
                         buffer=buffer.drop(2)
                         keys[i]=allKeys.find { it.value==key }.toOption().getOrElse { alphabetKeys.last() }.right()
+                    }
+                    'm'->{
+                        val n=buffer[1].toInt()
+                        val actions= MutableList<MacroAction>(n){ MacroAction(alphabetKeys.last(),if(it%2==0) MacroActionType.KEY_DOWN else MacroActionType.KEY_UP) }
+                        buffer=buffer.drop(2)
+                        for(i in 0 until n){
+                            val value=buffer[0]
+                            val type=buffer[1].toInt()
+                            actions[i]=MacroAction(allKeys.find { it.value==value }.toOption().getOrElse { alphabetKeys.last() },if (type==1)MacroActionType.KEY_DOWN else MacroActionType.KEY_UP)
+                            buffer=buffer.drop(2)
+                        }
+                        keys[i] = Macro("macro 0",actions.toList()).left()
                     }
                     else->{
                         println("[ERROR] unknown key type: $keyType")
