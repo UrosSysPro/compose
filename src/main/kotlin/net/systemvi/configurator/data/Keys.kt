@@ -6,9 +6,11 @@ private val alphabetSmall="q w e r t y u i o p a s d f g h j k l z x c v b n m"
 private val alphabetBig=alphabetSmall.uppercase()
 private val numbers="1 2 3 4 5 6 7 8 9 0"
 
+val passKey=Key(0.toByte(),"Pass")
+
 val alphabetKeys: List<Key> = alphabetSmall.split(" ").map { Key(it[0].code.toByte(),it,it[0].code.toLong()) }
     .plus(Key(' '.code.toByte(),"Space",' '.code.toLong()))
-    .plus(Key(0.toByte(),"Pass"))
+    .plus(passKey)
 //    .plus(Key('\n'.code.toByte(),"Enter"))
 
 val alphabetBigKeys=alphabetBig.split(" ").map { Key(it[0].code.toByte(),it,it[0].code.toLong()) }

@@ -1,8 +1,11 @@
 package net.systemvi.configurator.utils
 
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import arrow.core.Either
+import arrow.core.Ior
 import arrow.core.None
 import arrow.core.Option
 import arrow.core.getOrElse
@@ -24,6 +27,19 @@ class KeymapApi{
     var savedKeymaps by mutableStateOf(loadFromDisk())
     var keymap by mutableStateOf<Option<KeyMap>>(None)
     val passKey=allKeys.find { it.value==0.toByte() }!!
+
+    fun macroKeys()=keymap.map { keymap->
+        keymap.keycaps.flatMap { row->
+            row.flatMap { key->
+                key.layers.flatMap { key->
+                    when(key){
+                        is Either.Right -> listOf()
+                        is Either.Left  -> listOf(key.value)
+                    }
+                }
+            }
+        }
+    }.getOrElse { emptyList() }
 
     fun keymapLoad(keymap: KeyMap){
         this.keymap.onSome { save(it) }
@@ -72,7 +88,7 @@ class KeymapApi{
                 keycap.layers.indices.forEach{ layer ->
                     val key=keycap.layers[layer].getOrElse { passKey }
                     serialApi.setKeyOnLayer(key,layer,keycap.matrixPosition)
-                    delay(20)
+                    delay(5)
                 }
             }
         }

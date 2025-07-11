@@ -11,10 +11,10 @@ import net.systemvi.configurator.model.Macro
 
 
 @Composable fun Macros(){
-    var macros by remember{mutableStateOf(emptyList<Macro>())}
     var isMacroEditorOpened by remember {mutableStateOf(false)}
     var currentlyEditedMacro by remember { mutableStateOf<Option<Macro>>(None) }
     var viewModel= viewModel { ConfigureViewModel() }
+    var macros by remember{mutableStateOf(viewModel.keymapApi.macroKeys())}
 
     LaunchedEffect(isMacroEditorOpened) {
         if(!isMacroEditorOpened)currentlyEditedMacro = None

@@ -52,6 +52,8 @@ import arrow.core.Option
 import arrow.core.getOrElse
 import arrow.core.toOption
 import net.systemvi.configurator.data.allKeys
+import net.systemvi.configurator.data.alphabetBigKeys
+import net.systemvi.configurator.data.alphabetKeys
 import net.systemvi.configurator.model.Macro
 import net.systemvi.configurator.model.MacroAction
 import net.systemvi.configurator.model.MacroActionType
@@ -114,7 +116,12 @@ import net.systemvi.configurator.model.setName
             false
         }else{
             allKeys.find { key-> key.nativeCode.toInt() == it.key.nativeKeyCode }.toOption().onSome { key->
-                println("Key ${key.name}")
+                val key=if(alphabetBigKeys.indexOf(key)!=-1){
+                    alphabetKeys[alphabetBigKeys.indexOf(key)]
+                }else{
+                    key
+                }
+                println("Key ${key.name} ${key.value}")
                 val eventType=if(it.type== KeyEventType.KeyUp) MacroActionType.KEY_UP else MacroActionType.KEY_DOWN
                 macro=Macro.actions.modify(macro,{it+ MacroAction(key,eventType)})
             }
