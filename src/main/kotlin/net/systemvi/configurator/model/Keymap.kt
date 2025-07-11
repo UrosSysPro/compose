@@ -8,20 +8,19 @@ import eu.mihosoft.jcsg.Cube
 import kotlinx.serialization.Serializable
 import java.io.FileWriter
 
-
 @Serializable
 @optics data class KeyMap(val name:String,val keycaps:List<List<Keycap>>){companion object}
 
 fun KeyMap.setKeyWidth(i:Int,j:Int,width:KeycapWidth): KeyMap=
     KeyMap.keycaps
-        .index(Index.list(),i)
-        .index(Index.list(),j)
+        .index(i)
+        .index(j)
         .set(this,this.keycaps[i][j].overrideWidth(width))
 
 fun KeyMap.updateKeycap(x:Int,y:Int,layer:Int,key:Key): KeyMap=
     KeyMap.keycaps
-        .index(Index.list(),x)
-        .index(Index.list(),y)
+        .index(x)
+        .index(y)
         .layers.index(Index.list(),layer)
         .set(this,key.right())
 
