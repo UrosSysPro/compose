@@ -5,4 +5,4 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 @optics
-data class SnapTapPair(val first: KeycapMatrixPosition,val second: KeycapMatrixPosition)
+data class SnapTapPair(val first: KeycapMatrixPosition,val second: KeycapMatrixPosition){companion object}

@@ -5,4 +5,4 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 @optics
-data class LayerKeyPosition(val position: KeycapMatrixPosition,val layer:Int)
+data class LayerKeyPosition(val position: KeycapMatrixPosition,val layer:Int){companion object}

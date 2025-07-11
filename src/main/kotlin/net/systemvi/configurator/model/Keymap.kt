@@ -13,8 +13,8 @@ import java.io.FileWriter
 @optics data class KeyMap(
     val name:String,
     val keycaps:List<List<Keycap>>,
-    val layerKeyPositions:List<LayerKeyPosition>,
-    val snapTapPairs:List<SnapTapPair>,
+    val layerKeyPositions:List<LayerKeyPosition> = emptyList(),
+    val snapTapPairs:List<SnapTapPair> = emptyList(),
 ){companion object}
 
 fun KeyMap.setKeycapWidth(i:Int, j:Int, width:KeycapWidth): KeyMap=
@@ -40,7 +40,6 @@ fun KeyMap.setKeycapBottomPadding(i:Int, j:Int, padding: KeycapPadding): KeyMap 
         .index(i)
         .index(j)
         .set(this, this.keycaps[i][j].overrideBottomPadding(padding))
-
 
 fun KeyMap.updateKeycap(x:Int,y:Int,layer:Int,key:Key): KeyMap=
     KeyMap.keycaps
