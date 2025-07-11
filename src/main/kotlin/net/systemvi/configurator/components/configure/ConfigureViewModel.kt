@@ -36,6 +36,7 @@ enum class KeyboardKeysPages(val title:String,val keys:List<Key>){
     ModifierKeys("Modifier Keys", modifierKeys),
     MiscKeys("Misc", miscKeys),
     MediaKeys("Media Keys", mediaKeys),
+    LayerKeys("Layer Keys",emptyList()),
     MacroKeys("Macros",emptyList()),
 }
 
@@ -100,6 +101,17 @@ class ConfigureViewModel(): ViewModel() {
                 keymapApi.keymap=keymap.updateKeycap(x,y,layer,macro).some()
                 keymapApi.save(keymapApi.keymap.getOrNull()!!)
                 serialApi.setKeyOnLayer(macro,layer, keycap.matrixPosition)
+            }
+        }
+    }
+
+    fun setLayerKey(layer:Int){
+        keymapApi.keymap.onSome { keymap->
+            if(selectedKeycapPositon!=null){
+                val x=selectedKeycapPositon!!.x
+                val y=selectedKeycapPositon!!.y
+                val keycap=keymap.keycaps[x][y]
+                serialApi.addLayerKeyPosition(keycap.matrixPosition.x,keycap.matrixPosition.y,layer)
             }
         }
     }
