@@ -38,6 +38,9 @@ import net.systemvi.configurator.model.actions
             MacroRow(
                 macros=macros,
                 onClick = {
+                    //assign to key
+                },
+                onEdit = {
                     currentlyEditedMacro = it
                     isMacroEditorOpened = true
                 }

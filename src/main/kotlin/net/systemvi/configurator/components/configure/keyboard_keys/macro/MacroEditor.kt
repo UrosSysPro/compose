@@ -85,7 +85,8 @@ import net.systemvi.configurator.model.setName
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable fun MacroEditor(initialMacro: Option<Macro> = None, onSave:(Macro)->Unit,onSaveCopy:(Macro)->Unit, onCancel:()->Unit){
-    var macro by remember { mutableStateOf( Macro("untitled",listOf()) ) }
+    fun emptyMacro(): Macro= Macro("", emptyList())
+    var macro by remember { mutableStateOf( emptyMacro() ) }
     val interactionSource = remember { MutableInteractionSource() }
     val focused by interactionSource.collectIsFocusedAsState()
     val focusRequester = remember { FocusRequester() }
@@ -102,7 +103,7 @@ import net.systemvi.configurator.model.setName
     )
 
     LaunchedEffect(initialMacro){
-        macro = initialMacro.getOrElse { Macro("untitled",listOf()) }
+        macro = initialMacro.getOrElse { emptyMacro() }
     }
 
     val onKeyEvent:(KeyEvent)->Boolean={
@@ -147,7 +148,7 @@ import net.systemvi.configurator.model.setName
             horizontalArrangement = Arrangement.End,
         ) {
             OutlinedButton(
-                onClick = { onSave(macro) },
+                onClick = { onSaveCopy(macro) },
             ){
                 Text("Save")
             }
