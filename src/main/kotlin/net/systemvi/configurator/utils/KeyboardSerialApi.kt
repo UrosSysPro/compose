@@ -3,6 +3,7 @@ package net.systemvi.configurator.utils
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import arrow.core.Either
 import arrow.core.None
 import arrow.core.Option
 import arrow.core.Some
@@ -18,12 +19,14 @@ import jssc.SerialPort.STOPBITS_1
 import jssc.SerialPortList
 import net.systemvi.configurator.components.configure.KeycapPosition
 import net.systemvi.configurator.data.allKeys
+import net.systemvi.configurator.data.alphabetKeys
 import net.systemvi.configurator.model.Key
 import net.systemvi.configurator.model.KeyMap
 import net.systemvi.configurator.model.Keycap
 import net.systemvi.configurator.model.KeycapHeight
 import net.systemvi.configurator.model.KeycapMatrixPosition
 import net.systemvi.configurator.model.KeycapWidth
+import net.systemvi.configurator.model.Macro
 
 class KeyboardSerialApi {
     private var selectedPortName by mutableStateOf<String?>(null)
@@ -139,7 +142,7 @@ class KeyboardSerialApi {
     private fun processMessage(buffer:List<Byte>){
         val cmd = buffer[0].toInt().toChar()
         when(cmd){
-            'l' -> onKeymapRead(readKeymapFromBuffer(buffer))
+            'l' -> onKeymapRead(readKeymapFromBuffer2(buffer))
             'p' -> onKeycapPress(KeycapMatrixPosition(buffer[1].toInt(), buffer[2].toInt()))
             'r' -> onKeycapRelease(KeycapMatrixPosition(buffer[1].toInt(), buffer[2].toInt()))
             else -> println("[ERROR] unknown serial command: $cmd")
@@ -179,6 +182,59 @@ class KeyboardSerialApi {
                 matrixPosition = KeycapMatrixPosition(x,y)
             )
         }
+        return KeyMap("untitled",keycaps.map {
+            it.flatMap { key->
+                if (key!=null)
+                    listOf(key)
+                else
+                    emptyList()
+            }.toList()
+        }.toList())
+    }
+    private fun readKeymapFromBuffer2(buffer:List<Byte>):KeyMap{
+        var buffer = buffer
+        val columns=buffer[1].toInt()
+        val rows=buffer[2].toInt()
+        buffer=buffer.drop(3)
+        val keycaps:MutableList<MutableList<Keycap?>> = MutableList(rows){
+            MutableList(columns){
+                null
+            }
+        }
+
+        while(buffer.isNotEmpty()){
+            val column=buffer[1].toInt()
+            val row=buffer[2].toInt()
+            val width=buffer[3].toInt()
+            val height=buffer[4].toInt()
+            val physicalX=buffer[5].toInt()
+            val physicalY=buffer[6].toInt()
+            buffer=buffer.drop(7)
+            val keys= MutableList<Either<Macro, Key>>(4){
+                alphabetKeys.last().right()
+            }
+            for(i in 0 until 4){
+                val keyType= buffer[0].toInt().toChar()
+
+                when(keyType){
+                    'n'->{
+                        val key=buffer[1]
+                        buffer=buffer.drop(2)
+                        keys[i]=allKeys.find { it.value==key }.toOption().getOrElse { alphabetKeys.last() }.right()
+                    }
+                    else->{
+                        println("[ERROR] unknown key type: $keyType")
+                    }
+                }
+            }
+            keycaps[physicalY][physicalX] = Keycap(
+                layers=keys,
+                width=KeycapWidth.entries[width],
+                height=KeycapHeight.entries[height],
+                matrixPosition = KeycapMatrixPosition(column,row)
+            )
+        }
+
         return KeyMap("untitled",keycaps.map {
             it.flatMap { key->
                 if (key!=null)
