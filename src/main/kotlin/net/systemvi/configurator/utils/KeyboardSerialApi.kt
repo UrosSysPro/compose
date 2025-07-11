@@ -98,6 +98,25 @@ class KeyboardSerialApi {
         }
     }
 
+    fun addSnapTapPair(first: KeycapMatrixPosition,second: KeycapMatrixPosition){
+        port.onSome { port->
+            val bytes: ByteArray = arrayOf(
+                'E'.code.toByte(),
+                first.x.toByte(),
+                first.y.toByte(),
+                second.x.toByte(),
+                second.y.toByte(),
+            ).toByteArray()
+            port.writeBytes(bytes)
+        }.onNone {
+            println("[ERROR] upload macro called, and port is not opened")
+        }
+    }
+
+    fun removeSnapTapPair(first: KeycapMatrixPosition,second: KeycapMatrixPosition){
+        println("[ERROR] remove snap tap not implemented")
+    }
+
     fun selectPort(name:String?){
         closePort()
         if(name!=null){
