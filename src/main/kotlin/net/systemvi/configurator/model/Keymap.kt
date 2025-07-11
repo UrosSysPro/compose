@@ -10,7 +10,12 @@ import kotlinx.serialization.Serializable
 import java.io.FileWriter
 
 @Serializable
-@optics data class KeyMap(val name:String,val keycaps:List<List<Keycap>>){companion object}
+@optics data class KeyMap(
+    val name:String,
+    val keycaps:List<List<Keycap>>,
+    val layerKeyPositions:List<LayerKeyPosition>,
+    val snapTapPairs:List<SnapTapPair>,
+){companion object}
 
 fun KeyMap.setKeycapWidth(i:Int, j:Int, width:KeycapWidth): KeyMap=
     KeyMap.keycaps
