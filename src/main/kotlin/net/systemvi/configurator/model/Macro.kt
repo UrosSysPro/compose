@@ -1,0 +1,14 @@
+package net.systemvi.configurator.model
+
+import arrow.optics.optics
+import kotlinx.serialization.Serializable
+
+
+@Serializable
+enum class MacroActionType(val id:Int){
+    KEY_UP(1),KEY_DOWN(0);
+}
+@Serializable
+@optics data class MacroAction(val key:Key,val action:MacroActionType){companion object}
+@Serializable
+@optics data class Macro(val name:String,val actions:List<MacroAction>){companion object}
