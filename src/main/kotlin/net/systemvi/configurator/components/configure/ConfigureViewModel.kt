@@ -1,7 +1,6 @@
 package net.systemvi.configurator.components.configure
 
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -41,12 +40,16 @@ enum class KeyboardKeysPages(val title:String,val keys:List<Key>){
     MacroKeys("Macros",emptyList()),
 }
 
+data class CurrentlySelectedSnapTapKeys(var first: KeycapMatrixPosition? = null,var second: KeycapMatrixPosition? = null)
+
 class ConfigureViewModel(): ViewModel() {
     val serialApi = KeyboardSerialApi()
     val keymapApi = KeymapApi()
     var currentlyPressedKeycaps:Set<KeycapMatrixPosition> by mutableStateOf(emptySet())
     var currentKeyboardLayoutPage: KeyboardLayoutPages by mutableStateOf(KeyboardLayoutPages.Keymap)
     var currentKeyboardKeysPage: KeyboardKeysPages by mutableStateOf(KeyboardKeysPages.All)
+    var currentlySelectingSnapTapPair by mutableStateOf(false)
+    var currentlySelectedSnapTapKeys by mutableStateOf(CurrentlySelectedSnapTapKeys())
 
     fun setKeyboardLayoutPage(page: KeyboardLayoutPages){
         currentKeyboardLayoutPage=page
@@ -116,6 +119,14 @@ class ConfigureViewModel(): ViewModel() {
                 keymapApi.save(keymapApi.keymap.getOrNull()!!)
                 serialApi.addLayerKeyPosition(keycap.matrixPosition,layer)
             }
+        }
+    }
+
+    fun setSnapTapPair(pair: SnapTapPair){
+        keymapApi.keymap.onSome { keymap->
+            keymapApi.keymap=keymap.addSnapTapPair(pair).some()
+            keymapApi.save(keymapApi.keymap.getOrNull()!!)
+            serialApi.addSnapTapPair(pair)
         }
     }
 

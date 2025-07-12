@@ -61,6 +61,9 @@ fun KeyMap.updateKeycap(x:Int,y:Int,layer:Int,macro:Macro): KeyMap=
 fun KeyMap.addLayerKey(layerKeyPosition: LayerKeyPosition): KeyMap=
     KeyMap.layerKeyPositions.modify(this) { layerkeys -> layerkeys + layerKeyPosition }
 
+fun KeyMap.addSnapTapPair(pair: SnapTapPair): KeyMap=
+    KeyMap.snapTapPairs.modify(this) { snappairs -> snappairs + pair }
+
 fun KeyMap.exportStl(name:String){
     val topPlate= Cube(30.0)
     val fileWriter= FileWriter(name)

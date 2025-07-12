@@ -5,12 +5,10 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.onClick
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -24,13 +22,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import arrow.core.Either
-import arrow.core.getOrElse
 import com.materialkolor.ktx.blend
-import com.materialkolor.ktx.darken
 import net.systemvi.configurator.components.common.keyboard_grid.KeycapComponent
 import net.systemvi.configurator.components.configure.ConfigureViewModel
+import net.systemvi.configurator.components.configure.CurrentlySelectedSnapTapKeys
 import net.systemvi.configurator.data.LayerKeyColors
-import net.systemvi.configurator.model.Key
+import net.systemvi.configurator.model.SnapTapPair
 
 @OptIn(ExperimentalFoundationApi::class)
 val ConfiguratorKeycapComponent: KeycapComponent=@Composable{ params->
@@ -44,7 +41,7 @@ val ConfiguratorKeycapComponent: KeycapComponent=@Composable{ params->
     val key=params.keycap.layers[layer]
 
     val text=when{
-        isLayerKey->"L${layerKeyLayer}"
+        isLayerKey->"L${layerKeyLayer+1}"
         key is Either.Right->key.value.name
         key is Either.Left->key.value.name
         else -> {"[ERROR]"}
@@ -52,7 +49,21 @@ val ConfiguratorKeycapComponent: KeycapComponent=@Composable{ params->
 
 
     val onClick={
-        viewModel.selectKeycap(params.position.y,params.position.x)
+        if(viewModel.currentlySelectingSnapTapPair){
+            if(viewModel.currentlySelectedSnapTapKeys.first==null){
+                viewModel.currentlySelectedSnapTapKeys.first=params.keycap.matrixPosition
+            }else{
+                viewModel.currentlySelectedSnapTapKeys.second=params.keycap.matrixPosition
+                viewModel.setSnapTapPair(SnapTapPair(
+                    viewModel.currentlySelectedSnapTapKeys.first!!,
+                    viewModel.currentlySelectedSnapTapKeys.second!!,
+                ))
+                viewModel.currentlySelectedSnapTapKeys = CurrentlySelectedSnapTapKeys()
+                viewModel.currentlySelectingSnapTapPair=false
+            }
+        }else{
+            viewModel.selectKeycap(params.position.y,params.position.x)
+        }
     }
 
     val backgroundColor by animateColorAsState(when{

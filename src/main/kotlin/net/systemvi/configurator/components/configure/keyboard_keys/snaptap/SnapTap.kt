@@ -10,7 +10,6 @@ import androidx.compose.material.Divider
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -23,7 +22,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import arrow.core.Either
 import arrow.core.flatten
-import arrow.core.toOption
 import net.systemvi.configurator.components.configure.ConfigureViewModel
 import net.systemvi.configurator.model.KeyMap
 import net.systemvi.configurator.model.SnapTapPair
@@ -66,7 +64,7 @@ fun SnapTap(){
     val viewModel= viewModel { ConfigureViewModel() }
     val keymap=viewModel.keymapApi.keymap
     FlowRow(){
-        FilledIconButton(onClick = {}){
+        FilledIconButton(onClick = {viewModel.currentlySelectingSnapTapPair = true}){
             Icon(Icons.Filled.Add,"add snap tap pair")
         }
         keymap.onSome { keymap->

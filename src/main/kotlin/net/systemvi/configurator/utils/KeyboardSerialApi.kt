@@ -102,14 +102,14 @@ class KeyboardSerialApi {
         }
     }
 
-    fun addSnapTapPair(first: KeycapMatrixPosition,second: KeycapMatrixPosition){
+    fun addSnapTapPair(pair: SnapTapPair){
         port.onSome { port->
             val bytes: ByteArray = arrayOf(
                 'E'.code.toByte(),
-                first.x.toByte(),
-                first.y.toByte(),
-                second.x.toByte(),
-                second.y.toByte(),
+                pair.first.x.toByte(),
+                pair.first.y.toByte(),
+                pair.second.x.toByte(),
+                pair.second.y.toByte(),
             ).toByteArray()
             port.writeBytes(bytes)
         }.onNone {
