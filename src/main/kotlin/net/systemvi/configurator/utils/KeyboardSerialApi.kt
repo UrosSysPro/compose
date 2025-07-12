@@ -21,15 +21,18 @@ import jssc.SerialPortList
 import net.systemvi.configurator.components.configure.KeycapPosition
 import net.systemvi.configurator.data.allKeys
 import net.systemvi.configurator.data.alphabetKeys
+import net.systemvi.configurator.data.passKey
 import net.systemvi.configurator.model.Key
 import net.systemvi.configurator.model.KeyMap
 import net.systemvi.configurator.model.Keycap
 import net.systemvi.configurator.model.KeycapHeight
 import net.systemvi.configurator.model.KeycapMatrixPosition
 import net.systemvi.configurator.model.KeycapWidth
+import net.systemvi.configurator.model.LayerKeyPosition
 import net.systemvi.configurator.model.Macro
 import net.systemvi.configurator.model.MacroAction
 import net.systemvi.configurator.model.MacroActionType
+import net.systemvi.configurator.model.SnapTapPair
 
 class KeyboardSerialApi {
     private var selectedPortName by mutableStateOf<String?>(null)
@@ -235,60 +238,85 @@ class KeyboardSerialApi {
                 null
             }
         }
+        val layerKeyPositions = mutableListOf<LayerKeyPosition>()
+        val snapTapPairs = mutableListOf<SnapTapPair>()
 
         while(buffer.isNotEmpty()){
-            val column=buffer[1].toInt()
-            val row=buffer[2].toInt()
-            val width=buffer[3].toInt()
-            val height=buffer[4].toInt()
-            val physicalX=buffer[5].toInt()
-            val physicalY=buffer[6].toInt()
-            buffer=buffer.drop(7)
-            val keys= MutableList<Either<Macro, Key>>(4){
-                alphabetKeys.last().right()
-            }
-            for(i in 0 until 4){
-                val keyType= buffer[0].toInt().toChar()
+            val type=buffer[0].toInt().toChar()
+            when(type){
+                'c'->{
+                    val column=buffer[1].toInt()
+                    val row=buffer[2].toInt()
+                    val width=buffer[3].toInt()
+                    val height=buffer[4].toInt()
+                    val physicalX=buffer[5].toInt()
+                    val physicalY=buffer[6].toInt()
+                    buffer=buffer.drop(7)
+                    val keys= MutableList<Either<Macro, Key>>(4){ passKey.right() }
+                    for(i in 0 until 4){
+                        val keyType= buffer[0].toInt().toChar()
 
-                when(keyType){
-                    'n'->{
-                        val key=buffer[1]
-                        buffer=buffer.drop(2)
-                        keys[i]=allKeys.find { it.value==key }.toOption().getOrElse { alphabetKeys.last() }.right()
-                    }
-                    'm'->{
-                        val n=buffer[1].toInt()
-                        val actions= MutableList<MacroAction>(n){ MacroAction(alphabetKeys.last(),if(it%2==0) MacroActionType.KEY_DOWN else MacroActionType.KEY_UP) }
-                        buffer=buffer.drop(2)
-                        for(i in 0 until n){
-                            val value=buffer[0]
-                            val type=buffer[1].toInt()
-                            actions[i]=MacroAction(allKeys.find { it.value==value }.toOption().getOrElse { alphabetKeys.last() },if (type==1)MacroActionType.KEY_DOWN else MacroActionType.KEY_UP)
-                            buffer=buffer.drop(2)
+                        when(keyType){
+                            'n'->{
+                                val key=buffer[1]
+                                buffer=buffer.drop(2)
+                                keys[i]=allKeys.find { it.value==key }.toOption().getOrElse { alphabetKeys.last() }.right()
+                            }
+                            'm'->{
+                                val n=buffer[1].toInt()
+                                val actions= MutableList(n){ MacroAction(passKey, if(it%2==0) MacroActionType.KEY_DOWN else MacroActionType.KEY_UP) }
+                                buffer=buffer.drop(2)
+                                for(i in 0 until n){
+                                    val value=buffer[0]
+                                    val type=buffer[1].toInt()
+                                    actions[i]=MacroAction(allKeys.find { it.value==value }.toOption().getOrElse { alphabetKeys.last() },if (type==1)MacroActionType.KEY_DOWN else MacroActionType.KEY_UP)
+                                    buffer=buffer.drop(2)
+                                }
+                                keys[i] = Macro("macro 0",actions.toList()).left()
+                            }
+                            else->{
+                                println("[ERROR] unknown key type: $keyType")
+                            }
                         }
-                        keys[i] = Macro("macro 0",actions.toList()).left()
                     }
-                    else->{
-                        println("[ERROR] unknown key type: $keyType")
-                    }
+                    keycaps[physicalY][physicalX] = Keycap(
+                        layers=keys,
+                        width=KeycapWidth.entries[width],
+                        height=KeycapHeight.entries[height],
+                        matrixPosition = KeycapMatrixPosition(column,row)
+                    )
+                }
+                'l'->{
+                    val column=buffer[1].toInt()
+                    val row=buffer[2].toInt()
+                    val layer=buffer[3].toInt()
+                    buffer=buffer.drop(4)
+                    layerKeyPositions += LayerKeyPosition(KeycapMatrixPosition(column,row),layer)
+                }
+                's'->{
+                    val column0=buffer[1].toInt()
+                    val row0=buffer[2].toInt()
+                    val column1=buffer[3].toInt()
+                    val row1=buffer[4].toInt()
+                    buffer=buffer.drop(5)
+                    snapTapPairs += SnapTapPair(KeycapMatrixPosition(column0,row0), KeycapMatrixPosition(column1,row1))
                 }
             }
-            keycaps[physicalY][physicalX] = Keycap(
-                layers=keys,
-                width=KeycapWidth.entries[width],
-                height=KeycapHeight.entries[height],
-                matrixPosition = KeycapMatrixPosition(column,row)
-            )
         }
 
-        return KeyMap("untitled",keycaps.map {
-            it.flatMap { key->
-                if (key!=null)
-                    listOf(key)
-                else
-                    emptyList()
-            }.toList()
-        }.toList())
+        return KeyMap(
+            name = "untitled",
+            keycaps = keycaps.map {
+                it.flatMap { key->
+                    if (key!=null)
+                        listOf(key)
+                    else
+                        emptyList()
+                }.toList()
+            }.toList(),
+            layerKeyPositions = layerKeyPositions,
+            snapTapPairs = snapTapPairs
+        ).apply { println(this.layerKeyPositions);println(this.snapTapPairs) }
     }
 
     fun closePort(){
