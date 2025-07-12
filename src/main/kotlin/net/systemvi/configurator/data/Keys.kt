@@ -62,7 +62,7 @@ val numpadKeys:List<Key> = listOf(
     Key(0xDD.toByte(),"Num. *", 106),
     Key(0xDE.toByte(),"Num. -", 109),
     Key(0xDF.toByte(),"Num. +", 107),
-    Key(0xE0.toByte(),"Num. Enter", 10),
+    Key(0xE0.toByte(),"Num. Enter"),
     Key(0xE1.toByte(),"Num. 1", 35),
     Key(0xE2.toByte(),"Num. 2", 225),
     Key(0xE3.toByte(),"Num. 3", 34),

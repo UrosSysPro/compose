@@ -3,6 +3,7 @@ package net.systemvi.configurator.utils
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.Matrix
 import arrow.core.Either
 import arrow.core.None
 import arrow.core.Option
@@ -74,12 +75,12 @@ class KeyboardSerialApi {
         }
     }
 
-    fun addLayerKeyPosition(column:Int,row:Int,layer:Int){
+    fun addLayerKeyPosition(position: KeycapMatrixPosition, layer:Int){
         port.onSome { port->
             val bytes: ByteArray = arrayOf(
                 'A'.code.toByte(),
-                column.toByte(),
-                row.toByte(),
+                position.x.toByte(),
+                position.y.toByte(),
                 layer.toByte(),
             ).toByteArray()
             port.writeBytes(bytes)
@@ -88,12 +89,12 @@ class KeyboardSerialApi {
         }
     }
 
-    fun removeLayerKeyPosition(column:Int,row:Int,layer:Int){
+    fun removeLayerKeyPosition(position: KeycapMatrixPosition, layer:Int){
         port.onSome { port->
             val bytes: ByteArray = arrayOf(
                 'S'.code.toByte(),
-                column.toByte(),
-                row.toByte(),
+                position.x.toByte(),
+                position.y.toByte(),
             ).toByteArray()
             port.writeBytes(bytes)
         }.onNone {

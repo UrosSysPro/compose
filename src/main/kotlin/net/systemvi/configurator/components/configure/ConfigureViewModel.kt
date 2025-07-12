@@ -111,7 +111,9 @@ class ConfigureViewModel(): ViewModel() {
                 val x=selectedKeycapPositon!!.x
                 val y=selectedKeycapPositon!!.y
                 val keycap=keymap.keycaps[x][y]
-                serialApi.addLayerKeyPosition(keycap.matrixPosition.x,keycap.matrixPosition.y,layer)
+                keymapApi.keymap=keymap.addLayerKey(LayerKeyPosition(keycap.matrixPosition,layer)).some()
+                keymapApi.save(keymapApi.keymap.getOrNull()!!)
+                serialApi.addLayerKeyPosition(keycap.matrixPosition,layer)
             }
         }
     }
