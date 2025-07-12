@@ -7,6 +7,7 @@ import arrow.optics.optics
 import arrow.optics.typeclasses.Index
 import eu.mihosoft.jcsg.Cube
 import kotlinx.serialization.Serializable
+import net.systemvi.configurator.components.configure.KeycapPosition
 import java.io.FileWriter
 import javax.swing.text.Keymap
 
@@ -61,8 +62,14 @@ fun KeyMap.updateKeycap(x:Int,y:Int,layer:Int,macro:Macro): KeyMap=
 fun KeyMap.addLayerKey(layerKeyPosition: LayerKeyPosition): KeyMap=
     KeyMap.layerKeyPositions.modify(this) { layerkeys -> layerkeys + layerKeyPosition }
 
+fun KeyMap.removeLayerKey(position: KeycapMatrixPosition): KeyMap=
+    KeyMap.layerKeyPositions.modify(this) { layerkeys -> layerkeys.filter { it.position!=position } }
+
 fun KeyMap.addSnapTapPair(pair: SnapTapPair): KeyMap=
     KeyMap.snapTapPairs.modify(this) { snappairs -> snappairs + pair }
+
+fun KeyMap.removeSnapTapPair(pair: SnapTapPair): KeyMap=
+    KeyMap.snapTapPairs.modify(this) { snappairs -> snappairs.filter { it != pair } }
 
 fun KeyMap.exportStl(name:String){
     val topPlate= Cube(30.0)

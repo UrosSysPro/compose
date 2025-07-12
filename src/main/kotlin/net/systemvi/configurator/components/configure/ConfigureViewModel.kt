@@ -122,11 +122,32 @@ class ConfigureViewModel(): ViewModel() {
         }
     }
 
+    fun removeLayerKey(){
+        keymapApi.keymap.onSome { keymap->
+            if(selectedKeycapPositon!=null){
+                val x=selectedKeycapPositon!!.x
+                val y=selectedKeycapPositon!!.y
+                val keycap=keymap.keycaps[x][y]
+                keymapApi.keymap=keymap.removeLayerKey(keycap.matrixPosition).some()
+                keymapApi.save(keymapApi.keymap.getOrNull()!!)
+                serialApi.removeLayerKeyPosition(keycap.matrixPosition)
+            }
+        }
+    }
+
     fun setSnapTapPair(pair: SnapTapPair){
         keymapApi.keymap.onSome { keymap->
             keymapApi.keymap=keymap.addSnapTapPair(pair).some()
             keymapApi.save(keymapApi.keymap.getOrNull()!!)
             serialApi.addSnapTapPair(pair)
+        }
+    }
+
+    fun removeSnapTapPair(pair: SnapTapPair){
+        keymapApi.keymap.onSome { keymap->
+            keymapApi.keymap=keymap.removeSnapTapPair(pair).some()
+            keymapApi.save(keymapApi.keymap.getOrNull()!!)
+            serialApi.removeSnapTapPair(pair)
         }
     }
 

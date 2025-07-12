@@ -89,7 +89,7 @@ class KeyboardSerialApi {
         }
     }
 
-    fun removeLayerKeyPosition(position: KeycapMatrixPosition, layer:Int){
+    fun removeLayerKeyPosition(position: KeycapMatrixPosition){
         port.onSome { port->
             val bytes: ByteArray = arrayOf(
                 'S'.code.toByte(),
@@ -117,7 +117,7 @@ class KeyboardSerialApi {
         }
     }
 
-    fun removeSnapTapPair(first: KeycapMatrixPosition,second: KeycapMatrixPosition){
+    fun removeSnapTapPair(pair: SnapTapPair){
         println("[ERROR] remove snap tap not implemented")
     }
 
@@ -185,6 +185,7 @@ class KeyboardSerialApi {
             else -> println("[ERROR] unknown serial command: $cmd")
         }
     }
+
     private fun readKeymapFromBuffer(buffer:List<Byte>):KeyMap{
         val height=buffer[1].toInt()
         val width=buffer[2].toInt()
@@ -316,7 +317,7 @@ class KeyboardSerialApi {
                 }.toList()
             }.toList(),
             layerKeyPositions = layerKeyPositions,
-            snapTapPairs = snapTapPairs
+            snapTapPairs = snapTapPairs.filterIndexed { index, _ -> index%2 == 0 }
         ).apply { println(this.layerKeyPositions);println(this.snapTapPairs) }
     }
 

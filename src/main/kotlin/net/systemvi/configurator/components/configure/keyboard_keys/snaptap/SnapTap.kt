@@ -15,6 +15,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,6 +29,7 @@ import net.systemvi.configurator.model.SnapTapPair
 
 @Composable
 fun SnapTapItem(keymap: KeyMap, pair: SnapTapPair){
+    val viewModel=viewModel { ConfigureViewModel() }
     val first = keymap.keycaps.flatten().find { key-> key.matrixPosition==pair.first }!!.layers[0]
     val firstText=when (first) {
         is Either.Left -> first.value.name
@@ -50,9 +52,9 @@ fun SnapTapItem(keymap: KeyMap, pair: SnapTapPair){
     ){
         Text(firstText)
         Text(secondText)
-        Divider()
+        VerticalDivider()
         IconButton(onClick = {
-
+            viewModel.removeSnapTapPair(pair)
         }){
             Icon(Icons.Filled.Delete,"delete snap tap pair")
         }
