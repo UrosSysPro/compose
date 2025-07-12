@@ -7,6 +7,7 @@ import net.systemvi.configurator.components.configure.ConfigureViewModel
 import net.systemvi.configurator.components.configure.KeyboardKeysPages
 import net.systemvi.configurator.components.configure.keyboard_keys.layers.LayerKeys
 import net.systemvi.configurator.components.configure.keyboard_keys.macro.Macros
+import net.systemvi.configurator.components.configure.keyboard_keys.snaptap.SnapTap
 
 @Composable fun KeyboardKeys() {
     val viewModel= viewModel { ConfigureViewModel() }
@@ -16,6 +17,7 @@ import net.systemvi.configurator.components.configure.keyboard_keys.macro.Macros
         when(viewModel.currentKeyboardKeysPage) {
             KeyboardKeysPages.MacroKeys -> Macros()
             KeyboardKeysPages.LayerKeys -> LayerKeys()
+            KeyboardKeysPages.SnapTapKeys -> SnapTap()
             else -> Keys(viewModel.currentKeyboardKeysPage.keys)
         }
     }

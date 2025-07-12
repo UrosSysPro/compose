@@ -37,6 +37,7 @@ enum class KeyboardKeysPages(val title:String,val keys:List<Key>){
     MiscKeys("Misc", miscKeys),
     MediaKeys("Media Keys", mediaKeys),
     LayerKeys("Layer Keys",emptyList()),
+    SnapTapKeys("Snap tap",emptyList()),
     MacroKeys("Macros",emptyList()),
 }
 
