@@ -1,26 +1,38 @@
 package net.systemvi.configurator.components.design
 
+import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.pointer.PointerEventType
+import androidx.compose.ui.input.pointer.onPointerEvent
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.lifecycle.viewmodel.compose.viewModel
 import net.systemvi.configurator.components.common.icons.HeightIcon
 import net.systemvi.configurator.components.common.icons.PaddingIcon
+import net.systemvi.configurator.components.common.icons.SettingsIcon
 import net.systemvi.configurator.components.common.icons.WidthIcon
 import net.systemvi.configurator.model.*
 
 @Composable
-fun <F>DropDownButton(list: List<F>, onSelect: (F) -> Unit) {
+fun <F>DropDownButton(list: List<F>, onSelect: (F) -> Unit, property: F) {
     var showDropdown by remember { mutableStateOf(false) }
+
     Box() {
         ElevatedButton(
             onClick = { showDropdown = true },
         ) {
-            Text("${list[0]}")
+            Text("$property")
         }
         DropdownMenu(
             expanded = showDropdown,
@@ -29,99 +41,119 @@ fun <F>DropDownButton(list: List<F>, onSelect: (F) -> Unit) {
             for (item in list) {
                 DropdownMenuItem(
                     text = { Text("$item") },
-                    onClick = {onSelect(item); showDropdown = false }
+                    onClick = { onSelect(item); showDropdown = false}
                 )
             }
         }
     }
 }
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun KeycapEdit( show: Boolean, keymap: KeyMap, x: Int, y: Int, onUpdate: (keymap: KeyMap) -> Unit ){
+fun IconWithText(text: String, icon: ImageVector, textColor: Color, modifier: Modifier = Modifier) {
+    Row(modifier = Modifier.padding(horizontal = 4.dp)){
+        Icon(
+            imageVector = icon,
+            contentDescription = "$text Icon",
+            tint = textColor,
+            modifier = modifier
+        )
+        Text(
+            text = text,
+            color = textColor,
+        )
+    }
+}
+
+@OptIn(ExperimentalComposeUiApi::class)
+@Composable
+fun RowWithIconAndDropdown(iconContent: @Composable () -> Unit, dropdownContent: @Composable () -> Unit){
+    var isHovered by remember { mutableStateOf(false) }
+    val borderWidth by animateDpAsState(targetValue = if (isHovered) 3.dp else 0.dp)
+    val borderColor = MaterialTheme.colorScheme.primaryContainer
+
+    Row(
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.fillMaxWidth()
+            .padding(horizontal = 15.dp)
+            .onPointerEvent(PointerEventType.Enter) {
+                isHovered = true
+            }
+            .onPointerEvent(PointerEventType.Exit) {
+                isHovered = false
+            }
+            .then(
+                if(borderWidth > 0.dp) Modifier.border(borderWidth, borderColor)
+                else Modifier
+            )
+    ){
+        iconContent()
+        dropdownContent()
+    }
+}
+
+@Composable
+fun KeycapEdit(keymap: KeyMap, x: Int, y: Int, onUpdate: (keymap: KeyMap) -> Unit ){
     val textColor = MaterialTheme.colorScheme.primaryContainer
+    val contentColor = MaterialTheme.colorScheme.primary
+    val viewModel = viewModel { DesignPageViewModel() }
 
-    if(show) {
-        Box(
-            modifier = Modifier
-                .height(350.dp)
-                .width(300.dp)
-                .background(
-                    color = MaterialTheme.colorScheme.primary,
-                )
+    if(viewModel.showEdit) {
+        Dialog(
+            onDismissRequest = { viewModel.showEdit = false }
         ) {
-            Column() {
-                Row(
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically,
-                ){
-                    Icon(
-                        imageVector = WidthIcon,
-                        contentDescription = "Width Icon",
-                        tint = textColor,
+            Column(
+                verticalArrangement = Arrangement.SpaceAround,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .size(400.dp)
+                    .background(
+                        color = contentColor,
                     )
-                    Text(
-                        text = "Width",
-                        color = textColor,
-                    )
-                    DropDownButton(KeycapWidth.entries, {
-                        onUpdate(keymap.setKeycapWidth(x, y, it))
-                    })
-                }
-                Row(
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically,
-                ){
-                    Icon(
-                        imageVector = HeightIcon,
-                        contentDescription = "Height Icon",
-                        tint = textColor,
-                    )
-                    Text(
-                        text = "Height",
-                        color = textColor,
-                    )
-                    DropDownButton(KeycapHeight.entries, {
-                        onUpdate(keymap.setKeycapHeight(x, y, it))
-                    })
-                }
-                Row(
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically,
-                ){
-                    Icon(
-                        imageVector = PaddingIcon,
-                        contentDescription = "Left Padding Icon",
-                        tint = textColor
-                    )
-                    Text(
-                        text = "Left Padding",
-                        color = textColor
-                    )
-                    DropDownButton(listOf(0f, 0.25f, 0.5f, 1f, 1.25f), {
-                        onUpdate(keymap.setKeycapLeftPadding(x, y, KeycapPadding(left = it)))
-                    })
-                }
-
-                Row(
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically,
-                ){
-                    Icon(
-                        imageVector = PaddingIcon,
-                        contentDescription = "Bottom Padding Icon",
-                        tint = textColor,
-                        modifier = Modifier.rotate(-90f)
-                    )
-                    Text(
-                        text = "Bottom Padding",
-                        color = textColor
-                    )
-                    DropDownButton(listOf(0f, 0.25f, 0.5f, 1f, 1.25f), {
-                        onUpdate(keymap.setKeycapBottomPadding(x, y, KeycapPadding(bottom = it)))
-                    })
-                }
+                    .border(1.dp, textColor)
+            ) {
+                IconWithText(text = "Settings", icon = SettingsIcon, textColor = textColor)
+                RowWithIconAndDropdown(
+                    iconContent = {
+                        IconWithText("Width", icon = WidthIcon, textColor = textColor)
+                    },
+                    dropdownContent = {
+                        DropDownButton(KeycapWidth.entries, {
+                            onUpdate(keymap.setKeycapWidth(x, y, it))
+                        }, keymap.keycaps[x][y].width)
+                    }
+                )
+                RowWithIconAndDropdown(
+                    iconContent = {
+                        IconWithText("Height", icon = HeightIcon, textColor = textColor)
+                    },
+                    dropdownContent = {
+                        DropDownButton(KeycapHeight.entries, {
+                            onUpdate(keymap.setKeycapHeight(x, y, it))
+                        }, keymap.keycaps[x][y].height)
+                    }
+                )
+                RowWithIconAndDropdown(
+                    iconContent = {
+                        IconWithText("Left Padding", icon = PaddingIcon, textColor = textColor)
+                    },
+                    dropdownContent = {
+                        DropDownButton(listOf(0f, 0.25f, 0.5f, 1f, 1.25f), {
+                            onUpdate(keymap.setKeycapLeftPadding(x, y, KeycapPadding(left = it)))
+                        }, keymap.keycaps[x][y].padding.left)
+                    }
+                )
+                RowWithIconAndDropdown(
+                    iconContent = {
+                        IconWithText("Bottom padding", PaddingIcon, textColor, Modifier.rotate(-90f))
+                    },
+                    dropdownContent = {
+                        DropDownButton(listOf(0f, 0.25f, 0.5f, 1f, 1.25f), {
+                            onUpdate(keymap.setKeycapBottomPadding(x, y, KeycapPadding(bottom = it)))
+                        }, keymap.keycaps[x][y].padding.bottom)
+                    }
+                )
             }
         }
     }
