@@ -1,16 +1,15 @@
 package net.systemvi.configurator.components.design
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
@@ -27,14 +26,11 @@ import net.systemvi.configurator.utils.KeymapService
 fun SaveAsButton(keymap: KeyMap, onNameChange: (String) -> Unit) {
     val keymapService = viewModel { KeymapService() }
     val viewModel = viewModel { DesignPageViewModel() }
-    val textColor = MaterialTheme.colorScheme.primaryContainer
-    val contentColor = MaterialTheme.colorScheme.primary
-    val color = MaterialTheme.colorScheme.onPrimaryContainer
+    val textColor = MaterialTheme.colorScheme.primary
 
     ElevatedButton(
         onClick = {
             viewModel.showSaveButton = true
-            keymapService.keymapApi.saveAs(keymap)
         }
     ) {
         Text(text = "Save as")
@@ -44,41 +40,39 @@ fun SaveAsButton(keymap: KeyMap, onNameChange: (String) -> Unit) {
         Dialog(
             onDismissRequest = { viewModel.showSaveButton = false },
         ) {
-            Column(
-                verticalArrangement = Arrangement.SpaceAround,
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier
-                    .size(400.dp)
-                    .background(
-                        color = contentColor,
-                    )
-                    .border(width = 1.dp, color = textColor, shape = RoundedCornerShape(10.dp))
-            ) {
-                OutlinedTextField(
-                    value = keymap.name,
-                    onValueChange = onNameChange,
-                    label = { Text(text = "New Keymap", color = color) },
-                    colors =  TextFieldDefaults.colors(focusedTextColor = contentColor),
-                )
-                Row(
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically,
+            Card() {
+                Column(
+                    verticalArrangement = Arrangement.SpaceAround,
+                    horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 30.dp)
+                        .size(400.dp)
                 ) {
-                    ElevatedButton(
-                        onClick = { viewModel.showSaveButton = false }
+                    OutlinedTextField(
+                        value = keymap.name,
+                        onValueChange = onNameChange,
+                        label = { Text(text = "New Keymap", color = textColor) },
+                        colors = TextFieldDefaults.colors(focusedTextColor = textColor),
+                    )
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 50.dp)
                     ) {
-                        Text("Cancel", color = contentColor)
-                    }
-                    ElevatedButton(
-                        onClick = {
-                            keymapService.keymapApi.saveAs(keymap)
-                            viewModel.showSaveButton = false
+                        OutlinedButton(
+                            onClick = { viewModel.showSaveButton = false }
+                        ) {
+                            Text("Cancel", color = textColor)
                         }
-                    ) {
-                        Text("Save", color = contentColor)
+                        OutlinedButton(
+                            onClick = {
+                                keymapService.keymapApi.saveAs(keymap)
+                                viewModel.showSaveButton = false
+                            }
+                        ) {
+                            Text("Save", color = textColor)
+                        }
                     }
                 }
             }

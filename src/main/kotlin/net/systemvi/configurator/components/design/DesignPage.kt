@@ -25,7 +25,7 @@ import net.systemvi.configurator.model.changeName
     ) {
         Row(){
             AddRowButton(keymap, { keymap = it })
-            SaveAsButton(keymap, { keymap = keymap.changeName(it)})
+            SaveAsButton(keymap, { keymap = keymap.changeName(it) })
         }
         keymap.keycaps.forEachIndexed { i, row ->
             val paddingBottom = 50 * row.fold(0f){acc, keycap -> acc.coerceAtLeast(keycap.padding.bottom)}
