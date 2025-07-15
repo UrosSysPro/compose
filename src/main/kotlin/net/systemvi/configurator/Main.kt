@@ -19,21 +19,23 @@ import net.systemvi.configurator.components.tester.TesterPage
 import net.systemvi.configurator.components.settings.SettingsPage
 import net.systemvi.configurator.components.design.DesignPage
 import net.systemvi.configurator.utils.KeymapService
+import net.systemvi.configurator.utils.SerialApiService
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 @Preview
 fun App(appViewModel: ApplicationViewModel= viewModel { ApplicationViewModel() }) {
+
 	val keymapService = viewModel { KeymapService() }
-	val configureViewModel = viewModel { ConfigureViewModel() }
+	val serialService = viewModel { SerialApiService() }
 
 	DisposableEffect(Unit){
 		keymapService.onStart()
-		configureViewModel.onStart(keymapService.keymapApi)
+		serialService.onStart()
 		onDispose {
 			keymapService.onStop()
-			configureViewModel.onStop()
+			serialService.onStop()
 		}
 	}
 

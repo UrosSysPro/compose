@@ -43,7 +43,7 @@ enum class KeyboardKeysPages(val title:String,val keys:List<Key>){
 data class CurrentlySelectedSnapTapKeys(var first: KeycapMatrixPosition? = null,var second: KeycapMatrixPosition? = null)
 
 class ConfigureViewModel(): ViewModel() {
-    val serialApi = KeyboardSerialApi()
+    lateinit var serialApi:KeyboardSerialApi
     lateinit var keymapApi: KeymapApi
     var currentlyPressedKeycaps:Set<KeycapMatrixPosition> by mutableStateOf(emptySet())
     var currentKeyboardLayoutPage: KeyboardLayoutPages by mutableStateOf(KeyboardLayoutPages.Keymap)
@@ -51,8 +51,9 @@ class ConfigureViewModel(): ViewModel() {
     var currentlySelectingSnapTapPair by mutableStateOf(false)
     var currentlySelectedSnapTapKeys by mutableStateOf(CurrentlySelectedSnapTapKeys())
 
-    fun onStart(keymapApi: KeymapApi) {
-        this.keymapApi=keymapApi
+    fun onStart(keymapApi: KeymapApi,serialApi: KeyboardSerialApi) {
+        this.keymapApi = keymapApi
+        this.serialApi = serialApi
         println("configure view model start")
     }
 
