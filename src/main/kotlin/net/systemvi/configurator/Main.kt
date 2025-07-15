@@ -14,15 +14,29 @@ import net.systemvi.configurator.components.ApplicationViewModel
 import net.systemvi.configurator.components.SettingsPage
 import net.systemvi.configurator.components.TesterPage
 import net.systemvi.configurator.components.configure.ConfigurePage
+import net.systemvi.configurator.components.configure.ConfigureViewModel
 import net.systemvi.configurator.components.tester.TesterPage
 import net.systemvi.configurator.components.settings.SettingsPage
 import net.systemvi.configurator.components.design.DesignPage
+import net.systemvi.configurator.utils.KeymapService
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 @Preview
 fun App(appViewModel: ApplicationViewModel= viewModel { ApplicationViewModel() }) {
+	val keymapService = viewModel { KeymapService() }
+	val configureViewModel = viewModel { ConfigureViewModel() }
+
+	DisposableEffect(Unit){
+		keymapService.onStart()
+		configureViewModel.onStart(keymapService.keymapApi)
+		onDispose {
+			keymapService.onStop()
+			configureViewModel.onStop()
+		}
+	}
+
 	MaterialTheme (
 		colorScheme = appViewModel.colorScheme
 	){

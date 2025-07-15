@@ -16,6 +16,7 @@ import kotlinx.coroutines.delay
 import kotlinx.serialization.json.Json
 import net.systemvi.configurator.components.configure.KeyboardLayoutPages
 import net.systemvi.configurator.data.allKeys
+import net.systemvi.configurator.data.passKey
 import net.systemvi.configurator.model.KeyMap
 import java.io.File
 import java.io.FileWriter
@@ -26,7 +27,6 @@ class KeymapApi{
 
     var savedKeymaps by mutableStateOf(loadFromDisk())
     var keymap by mutableStateOf<Option<KeyMap>>(None)
-    val passKey=allKeys.find { it.value==0.toByte() }!!
 
     fun macroKeys()=keymap.map { keymap->
         keymap.keycaps.flatMap { row->

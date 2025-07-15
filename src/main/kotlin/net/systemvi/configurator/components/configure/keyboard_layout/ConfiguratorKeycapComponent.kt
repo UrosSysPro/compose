@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.onClick
@@ -22,8 +23,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ModifierLocalBeyondBoundsLayout
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import arrow.core.Either
 import arrow.core.getOrElse
@@ -36,6 +39,7 @@ import net.systemvi.configurator.data.LayerKeyColors
 import net.systemvi.configurator.data.SnapTapKeyColors
 import net.systemvi.configurator.data.modifierKeys
 import net.systemvi.configurator.model.SnapTapPair
+import net.systemvi.configurator.model.padding
 
 @OptIn(ExperimentalFoundationApi::class)
 val ConfiguratorKeycapComponent: KeycapComponent=@Composable{ params->
@@ -54,8 +58,8 @@ val ConfiguratorKeycapComponent: KeycapComponent=@Composable{ params->
     val isCurrentlySelectingSnapTapKeys=viewModel.currentlySelectingSnapTapPair
     val snapTapPair=keymap.snapTapPairs.find { it.first==keycap.matrixPosition || it.second==keycap.matrixPosition }.toOption()
     val isSnapTapKey=snapTapPair.isSome()
-    val isFirstSnapTapKey=snapTapPair.map { it.first }.getOrNull()!=null
-    val isSecondSnapTapKey=snapTapPair.map { it.second }.getOrNull()!=null
+    val isFirstSnapTapKey=snapTapPair.map { it.first==keycap.matrixPosition }.getOrNull()?:false
+    val isSecondSnapTapKey=snapTapPair.map { it.second==keycap.matrixPosition }.getOrNull()?:false
     val snapTapPairIndex=snapTapPair.map { keymap.snapTapPairs.indexOf(it) }.getOrElse { -1 }
 
     val onClick={
@@ -112,9 +116,29 @@ val ConfiguratorKeycapComponent: KeycapComponent=@Composable{ params->
         else->2.dp
     })
 
+    val snapTapText:@Composable ()->Unit=
+        when{
+            isSnapTapKey-> {{
+                Column(
+                    verticalArrangement = Arrangement.Top,
+                    horizontalAlignment = Alignment.End,
+                    modifier = Modifier.fillMaxSize().padding()
+                ) {
+                    Text(
+                        if(isFirstSnapTapKey)"1st" else "2nd",
+                        modifier = Modifier
+                            .background(borderColor, shape = RoundedCornerShape(bottomStart = 4.dp))
+                            .padding(vertical = 0.dp,horizontal = 8.dp),
+                        color = Color.White,
+                        fontSize = 8.sp,
+                    )
+                }
+            }}
+            else ->  {{}}
+        }
+
+
     Box(
-//        verticalArrangement = Arrangement.Center,
-//        horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxSize()
             .padding(2.dp)
@@ -135,5 +159,6 @@ val ConfiguratorKeycapComponent: KeycapComponent=@Composable{ params->
             modifier = Modifier.fillMaxSize().wrapContentSize(Alignment.Center),
             textAlign = TextAlign.Center
         )
+        snapTapText()
     }
 }
