@@ -64,7 +64,7 @@ fun SnapTapItem(keymap: KeyMap, pair: SnapTapPair){
 @Composable
 fun SnapTap(){
     val viewModel= viewModel { ConfigureViewModel() }
-    val keymap=viewModel.keymapApi.keymap
+    val keymap=viewModel.keymap
     FlowRow(){
         FilledIconButton(onClick = {viewModel.currentlySelectingSnapTapPair = true}){
             Icon(Icons.Filled.Add,"add snap tap pair")

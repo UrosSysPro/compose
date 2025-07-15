@@ -18,6 +18,7 @@ import net.systemvi.configurator.components.configure.KeyboardLayoutPages
 import net.systemvi.configurator.data.allKeys
 import net.systemvi.configurator.data.passKey
 import net.systemvi.configurator.model.KeyMap
+import net.systemvi.configurator.model.Macro
 import java.io.File
 import java.io.FileWriter
 import java.util.Scanner
@@ -26,24 +27,24 @@ import kotlin.collections.plus
 class KeymapApi{
 
     var savedKeymaps by mutableStateOf(loadFromDisk())
-    var keymap by mutableStateOf<Option<KeyMap>>(None)
 
-    fun macroKeys()=keymap.map { keymap->
-        keymap.keycaps.flatMap { row->
-            row.flatMap { key->
-                key.layers.flatMap { key->
-                    when(key){
-                        is Either.Right -> listOf()
-                        is Either.Left  -> listOf(key.value)
-                    }
-                }
-            }
-        }
-    }.getOrElse { emptyList() }
+    fun macroKeys()=emptyList<Macro>()
+//        keymap.map { keymap->
+//        keymap.keycaps.flatMap { row->
+//            row.flatMap { key->
+//                key.layers.flatMap { key->
+//                    when(key){
+//                        is Either.Right -> listOf()
+//                        is Either.Left  -> listOf(key.value)
+//                    }
+//                }
+//            }
+//        }
+//    }.getOrElse { emptyList() }
 
     fun keymapLoad(keymap: KeyMap){
-        this.keymap.onSome { save(it) }
-        this.keymap=keymap.some()
+//        this.keymap.onSome { save(it) }
+//        this.keymap=keymap.some()
 //        unselectKeycap()
 //        setKeyboardLayoutPage(KeyboardLayoutPages.Keymap)
     }
@@ -61,7 +62,7 @@ class KeymapApi{
                 println("[ERROR] keymap with same name exists, nothing is saved")
             }
             .onNone {
-                this.keymap = keymap.some()
+//                this.keymap = keymap.some()
                 savedKeymaps+=keymap
             }
     }

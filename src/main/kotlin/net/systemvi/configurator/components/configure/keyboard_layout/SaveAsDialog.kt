@@ -29,7 +29,7 @@ import net.systemvi.configurator.model.name
 
 @Composable fun SaveAsDialog(onDismiss: () -> Unit) {
     val viewModel=viewModel { ConfigureViewModel() }
-    viewModel.keymapApi.keymap.onSome { keymap ->
+    viewModel.keymap.onSome { keymap ->
         var name by remember { mutableStateOf("") }
         Dialog(onDismissRequest = onDismiss) {
             Card(

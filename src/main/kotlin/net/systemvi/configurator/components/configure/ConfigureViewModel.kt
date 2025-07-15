@@ -1,10 +1,12 @@
 package net.systemvi.configurator.components.configure
 
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import arrow.core.None
+import arrow.core.Option
 import arrow.core.some
 import net.systemvi.configurator.data.allKeys
 import net.systemvi.configurator.data.alphabetKeys
@@ -46,6 +48,7 @@ data class CurrentlySelectedSnapTapKeys(var first: KeycapMatrixPosition? = null,
 class ConfigureViewModel(): ViewModel() {
     lateinit var serialApi:KeyboardSerialApi
     lateinit var keymapApi: KeymapApi
+    var keymap by mutableStateOf<Option<KeyMap>>(None)
     var currentlyPressedKeycaps:Set<KeycapMatrixPosition> by mutableStateOf(emptySet())
     var currentKeyboardLayoutPage: KeyboardLayoutPages by mutableStateOf(KeyboardLayoutPages.Keymap)
     var currentKeyboardKeysPage: KeyboardKeysPages by mutableStateOf(KeyboardKeysPages.All)
@@ -59,8 +62,8 @@ class ConfigureViewModel(): ViewModel() {
     }
 
     fun onStop(){
-        keymapApi.keymap.onSome { keymap->keymapApi.save(keymap) }
-        keymapApi.keymap = None
+        keymap.onSome { keymap->keymapApi.save(keymap) }
+        keymap = None
         println("configure view model stop")
     }
 
@@ -95,71 +98,71 @@ class ConfigureViewModel(): ViewModel() {
     fun selectedLayer()=selectedLayer
 
     fun setNormalKey(key: Key){
-        keymapApi.keymap.onSome { keymap->
+        keymap.onSome { keymap->
             if(selectedKeycapPositon!=null){
                 val x=selectedKeycapPositon!!.x
                 val y=selectedKeycapPositon!!.y
                 val keycap=keymap.keycaps[x][y]
                 val layer=selectedLayer
-                keymapApi.keymap=keymap.updateKeycap(x,y,layer,key).some()
-                keymapApi.save(keymapApi.keymap.getOrNull()!!)
+                this.keymap=keymap.updateKeycap(x,y,layer,key).some()
+                keymapApi.save(this.keymap.getOrNull()!!)
                 serialApi.setKeyOnLayer(key,layer,keycap.matrixPosition)
             }
         }
     }
 
     fun setMacroKey(macro:Macro){
-        keymapApi.keymap.onSome { keymap->
+        keymap.onSome { keymap->
             if(selectedKeycapPositon!=null){
                 val x=selectedKeycapPositon!!.x
                 val y=selectedKeycapPositon!!.y
                 val keycap=keymap.keycaps[x][y]
                 val layer=selectedLayer
-                keymapApi.keymap=keymap.updateKeycap(x,y,layer,macro).some()
-                keymapApi.save(keymapApi.keymap.getOrNull()!!)
+                this.keymap=keymap.updateKeycap(x,y,layer,macro).some()
+                keymapApi.save(this.keymap.getOrNull()!!)
                 serialApi.setKeyOnLayer(macro,layer, keycap.matrixPosition)
             }
         }
     }
 
     fun setLayerKey(layer:Int){
-        keymapApi.keymap.onSome { keymap->
+        keymap.onSome { keymap->
             if(selectedKeycapPositon!=null){
                 val x=selectedKeycapPositon!!.x
                 val y=selectedKeycapPositon!!.y
                 val keycap=keymap.keycaps[x][y]
-                keymapApi.keymap=keymap.addLayerKey(LayerKeyPosition(keycap.matrixPosition,layer)).some()
-                keymapApi.save(keymapApi.keymap.getOrNull()!!)
+                this.keymap=keymap.addLayerKey(LayerKeyPosition(keycap.matrixPosition,layer)).some()
+                keymapApi.save(this.keymap.getOrNull()!!)
                 serialApi.addLayerKeyPosition(keycap.matrixPosition,layer)
             }
         }
     }
 
     fun removeLayerKey(){
-        keymapApi.keymap.onSome { keymap->
+        this.keymap.onSome { keymap->
             if(selectedKeycapPositon!=null){
                 val x=selectedKeycapPositon!!.x
                 val y=selectedKeycapPositon!!.y
                 val keycap=keymap.keycaps[x][y]
-                keymapApi.keymap=keymap.removeLayerKey(keycap.matrixPosition).some()
-                keymapApi.save(keymapApi.keymap.getOrNull()!!)
+                this.keymap=keymap.removeLayerKey(keycap.matrixPosition).some()
+                keymapApi.save(this.keymap.getOrNull()!!)
                 serialApi.removeLayerKeyPosition(keycap.matrixPosition)
             }
         }
     }
 
     fun setSnapTapPair(pair: SnapTapPair){
-        keymapApi.keymap.onSome { keymap->
-            keymapApi.keymap=keymap.addSnapTapPair(pair).some()
-            keymapApi.save(keymapApi.keymap.getOrNull()!!)
+        this.keymap.onSome { keymap->
+            this.keymap=keymap.addSnapTapPair(pair).some()
+            keymapApi.save(this.keymap.getOrNull()!!)
             serialApi.addSnapTapPair(pair)
         }
     }
 
     fun removeSnapTapPair(pair: SnapTapPair){
-        keymapApi.keymap.onSome { keymap->
-            keymapApi.keymap=keymap.removeSnapTapPair(pair).some()
-            keymapApi.save(keymapApi.keymap.getOrNull()!!)
+        this.keymap.onSome { keymap->
+            this.keymap=keymap.removeSnapTapPair(pair).some()
+            keymapApi.save(this.keymap.getOrNull()!!)
             serialApi.removeSnapTapPair(pair)
         }
     }
@@ -170,7 +173,7 @@ class ConfigureViewModel(): ViewModel() {
         serialApi.selectPort(name)
         serialApi.onKeymapRead { keymap->
             println("new keymap read")
-            keymapApi.keymap=keymap.some()
+            this.keymap=keymap.some()
         }
         serialApi.onKeycapPress { keycap->
             currentlyPressedKeycaps += keycap
@@ -187,7 +190,7 @@ class ConfigureViewModel(): ViewModel() {
     }
 
     fun keymapLoad(keymap: KeyMap){
-        keymapApi.keymapLoad(keymap)
+        this.keymap= keymap.some()
         unselectKeycap()
         setKeyboardLayoutPage(KeyboardLayoutPages.Keymap)
     }

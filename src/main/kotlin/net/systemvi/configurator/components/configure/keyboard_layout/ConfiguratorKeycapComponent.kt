@@ -44,7 +44,7 @@ import net.systemvi.configurator.model.padding
 @OptIn(ExperimentalFoundationApi::class)
 val ConfiguratorKeycapComponent: KeycapComponent=@Composable{ params->
     val viewModel= viewModel { ConfigureViewModel() }
-    val keymap=viewModel.keymapApi.keymap.getOrNull()!!
+    val keymap=viewModel.keymap.getOrNull()!!
     val layer=viewModel.selectedLayer().coerceAtMost(params.keycap.layers.size-1)
     val keycap=params.keycap
     val key=keycap.layers[layer]
