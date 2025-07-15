@@ -4,6 +4,7 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.getValue
@@ -22,6 +23,7 @@ import net.systemvi.configurator.components.common.icons.HeightIcon
 import net.systemvi.configurator.components.common.icons.PaddingIcon
 import net.systemvi.configurator.components.common.icons.SettingsIcon
 import net.systemvi.configurator.components.common.icons.WidthIcon
+import net.systemvi.configurator.components.configure.KeycapPosition
 import net.systemvi.configurator.model.*
 
 @Composable
@@ -84,7 +86,7 @@ fun RowWithIconAndDropdown(iconContent: @Composable () -> Unit, dropdownContent:
                 isHovered = false
             }
             .then(
-                if(borderWidth > 0.dp) Modifier.border(borderWidth, borderColor)
+                if(borderWidth > 0.dp) Modifier.border(width = borderWidth, color = borderColor, shape = RoundedCornerShape(10.dp))
                 else Modifier
             )
     ){
@@ -94,14 +96,16 @@ fun RowWithIconAndDropdown(iconContent: @Composable () -> Unit, dropdownContent:
 }
 
 @Composable
-fun KeycapEdit(keymap: KeyMap, x: Int, y: Int, onUpdate: (keymap: KeyMap) -> Unit ){
+fun KeycapEdit(keymap: KeyMap, selectedKeycap: KeycapPosition, onUpdate: (keymap: KeyMap) -> Unit ){
     val textColor = MaterialTheme.colorScheme.primaryContainer
     val contentColor = MaterialTheme.colorScheme.primary
     val viewModel = viewModel { DesignPageViewModel() }
+    val x = selectedKeycap.x
+    val y = selectedKeycap.y
 
-    if(viewModel.showEdit) {
+    if(viewModel.selectedKeycap != null) {
         Dialog(
-            onDismissRequest = { viewModel.showEdit = false }
+            onDismissRequest = { viewModel.selectedKeycap = null }
         ) {
             Column(
                 verticalArrangement = Arrangement.SpaceAround,
@@ -111,7 +115,7 @@ fun KeycapEdit(keymap: KeyMap, x: Int, y: Int, onUpdate: (keymap: KeyMap) -> Uni
                     .background(
                         color = contentColor,
                     )
-                    .border(1.dp, textColor)
+                    .border(width = 1.dp, color = textColor, shape = RoundedCornerShape(10.dp))
             ) {
                 IconWithText(text = "Settings", icon = SettingsIcon, textColor = textColor)
                 RowWithIconAndDropdown(

@@ -7,6 +7,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import net.systemvi.configurator.components.configure.KeycapPosition
 import net.systemvi.configurator.model.KeyMap
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -45,12 +46,15 @@ import net.systemvi.configurator.model.KeyMap
                             .size(width.dp, height.dp)
                             .wrapContentSize(unbounded = true),
                     ) {
-                        KeycapDesign(keymap, i, j, { keymap = it }, { viewModel.showEdit = true; })
-                        KeycapEdit(keymap, i, j, { keymap = it })
+                        KeycapDesign(keymap, i, j, { keymap = it }, {
+                            viewModel.selectedKeycap = KeycapPosition(i,j) })
                     }
                 }
                 RemoveRowButton(keymap, i, { keymap = it })
             }
         }
+    }
+    if(viewModel.selectedKeycap != null) {
+        KeycapEdit(keymap, viewModel.selectedKeycap!!, { keymap = it })
     }
 }
