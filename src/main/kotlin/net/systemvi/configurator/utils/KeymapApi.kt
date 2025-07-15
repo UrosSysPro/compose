@@ -63,14 +63,31 @@ class KeymapApi{
     }
 
     suspend fun upload(serialApi: KeyboardSerialApi, keymap: KeyMap){
+        serialApi.deleteKeymap()
+
+        delay(5)
+
         keymap.keycaps.forEach { row->
             row.forEach { keycap->
                 keycap.layers.indices.forEach{ layer ->
-                    val key=keycap.layers[layer].getOrElse { passKey }
-                    serialApi.setKeyOnLayer(key,layer,keycap.matrixPosition)
+                    val key=keycap.layers[layer]
+                    when(key){
+                        is Either.Left -> serialApi.setKeyOnLayer(key.value,layer,keycap.matrixPosition)
+                        is Either.Right -> serialApi.setKeyOnLayer(key.value,layer,keycap.matrixPosition)
+                    }
                     delay(5)
                 }
             }
+        }
+
+        keymap.snapTapPairs.forEach { snapTapPair->
+            serialApi.addSnapTapPair(snapTapPair)
+            delay(5)
+        }
+
+        keymap.layerKeyPositions.forEach { layerKeyPosition->
+            serialApi.addLayerKeyPosition(layerKeyPosition.position,layerKeyPosition.layer)
+            delay(5)
         }
     }
 

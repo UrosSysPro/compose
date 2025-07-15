@@ -296,7 +296,17 @@ class KeyboardSerialApi {
             }.toList(),
             layerKeyPositions = layerKeyPositions,
             snapTapPairs = snapTapPairs
-        ).apply { println(this.layerKeyPositions);println(this.snapTapPairs) }
+        )
+            .apply { println(this.layerKeyPositions);println(this.snapTapPairs) }
+            .apply { println(this.keycaps) }
+    }
+
+    fun deleteKeymap(){
+        port.onSome { port->
+            port.writeString("R")
+        }.onNone {
+            println("[ERROR] trying to delete keymap, not port opened")
+        }
     }
 
     fun closePort(){
