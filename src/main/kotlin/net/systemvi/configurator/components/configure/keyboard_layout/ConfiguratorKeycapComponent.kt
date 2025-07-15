@@ -100,14 +100,7 @@ val ConfiguratorKeycapComponent: KeycapComponent=@Composable{ params->
     }
 
     val borderColor by animateColorAsState(when{
-        isSnapTapKey -> SnapTapKeyColors[snapTapPairIndex]
-//        isLayerKey-> LayerKeyColors[layerKeyLayer-1].blend(Color.Black,when{
-//            pressed->0.1f
-//            selected->0.2f
-//            else-> 0f
-//        })
-//        pressed-> MaterialTheme.colorScheme.tertiaryContainer
-//        selected->MaterialTheme.colorScheme.primary
+        isSnapTapKey -> SnapTapKeyColors[snapTapPairIndex%SnapTapKeyColors.size]
         else -> MaterialTheme.colorScheme.secondary
     })
 

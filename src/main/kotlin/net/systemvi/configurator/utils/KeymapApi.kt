@@ -53,7 +53,6 @@ class KeymapApi{
             if (it.name == keymap.name) keymap
             else it
         }
-        saveToDisk()
     }
 
     fun saveAs(keymap: KeyMap){
@@ -65,7 +64,6 @@ class KeymapApi{
                 this.keymap = keymap.some()
                 savedKeymaps+=keymap
             }
-        saveToDisk()
     }
 
     fun saveToDisk(){

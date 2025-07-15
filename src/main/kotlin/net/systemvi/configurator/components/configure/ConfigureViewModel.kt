@@ -4,6 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import arrow.core.None
 import arrow.core.some
 import net.systemvi.configurator.data.allKeys
 import net.systemvi.configurator.data.alphabetKeys
@@ -58,6 +59,8 @@ class ConfigureViewModel(): ViewModel() {
     }
 
     fun onStop(){
+        keymapApi.keymap.onSome { keymap->keymapApi.save(keymap) }
+        keymapApi.keymap = None
         println("configure view model stop")
     }
 
