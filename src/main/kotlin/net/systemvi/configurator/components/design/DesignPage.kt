@@ -8,13 +8,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import net.systemvi.configurator.components.configure.KeycapPosition
-import net.systemvi.configurator.model.KeyMap
-import net.systemvi.configurator.model.changeName
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable fun DesignPage(modifier: Modifier) {
-    var keymap by remember { mutableStateOf(KeyMap("", listOf(listOf()))) }
     val viewModel = viewModel { DesignPageViewModel() }
+    val keymap = viewModel.keymap
 
     Column(
         modifier = modifier.then(
@@ -24,8 +22,8 @@ import net.systemvi.configurator.model.changeName
         )
     ) {
         Row(){
-            AddRowButton(keymap, { keymap = it })
-            SaveAsButton(keymap, { keymap = keymap.changeName(it) })
+            AddRowButton(viewModel::addRow)
+            SaveAsButton(keymap, viewModel::setName)
         }
         keymap.keycaps.forEachIndexed { i, row ->
             val paddingBottom = 50 * row.fold(0f){acc, keycap -> acc.coerceAtLeast(keycap.padding.bottom)}
@@ -38,7 +36,7 @@ import net.systemvi.configurator.model.changeName
                 horizontalArrangement = Arrangement.Center
             )
             {
-                AddKeycapButton(keymap, i, { keymap = it })
+                AddKeycapButton({viewModel.addKeycap(i)})
                 row.forEachIndexed { j, key ->
                     val width = 50 * key.width.size
                     val height = 50 * key.height.size
@@ -50,15 +48,15 @@ import net.systemvi.configurator.model.changeName
                             .size(width.dp, height.dp)
                             .wrapContentSize(unbounded = true),
                     ) {
-                        KeycapDesign(keymap, i, j, { keymap = it }, {
+                        KeycapDesign(keymap, i, j, {viewModel.deleteKeycap(i, j)}, {
                             viewModel.selectedKeycap = KeycapPosition(i,j) })
                     }
                 }
-                RemoveRowButton(keymap, i, { keymap = it })
+                RemoveRowButton({viewModel.removeRow(i)})
             }
         }
     }
     if(viewModel.selectedKeycap != null) {
-        KeycapEdit(keymap, viewModel.selectedKeycap!!, { keymap = it })
+        KeycapEdit(keymap, viewModel.selectedKeycap!!, viewModel::updateKeymap)
     }
 }

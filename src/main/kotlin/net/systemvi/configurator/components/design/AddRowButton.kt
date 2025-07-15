@@ -4,17 +4,11 @@ import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import net.systemvi.configurator.model.KeyMap
-import net.systemvi.configurator.model.keycaps
 
 @Composable
-fun AddRowButton(keymap: KeyMap, onClick: (keymap: KeyMap) -> Unit) {
+fun AddRowButton(onClick: () -> Unit) {
     ElevatedButton(
-        onClick = {
-            onClick(KeyMap.keycaps.modify(keymap, {
-                it + listOf(listOf())
-            }))
-        },
+        onClick = onClick,
     ) {
         Text(
             "Add Row",

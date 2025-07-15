@@ -26,18 +26,16 @@ import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.onPointerEvent
 import androidx.compose.ui.unit.dp
 import arrow.core.right
-import arrow.optics.dsl.index
 import net.systemvi.configurator.components.common.keyboard_grid.KeycapParam
 import net.systemvi.configurator.components.common.keycaps.FlatKeycap
 import net.systemvi.configurator.components.configure.KeycapPosition
 import net.systemvi.configurator.data.allKeys
 import net.systemvi.configurator.model.KeyMap
 import net.systemvi.configurator.model.Keycap
-import net.systemvi.configurator.model.keycaps
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalFoundationApi::class)
 @Composable
-fun KeycapDesign(keymap: KeyMap, row: Int, key: Int, onDelete: (keymap: KeyMap) -> Unit, onRightClick: () -> Unit){
+fun KeycapDesign(keymap: KeyMap, row: Int, key: Int, onDelete: () -> Unit, onRightClick: () -> Unit){
     var isHovered by remember { mutableStateOf(false) }
     val keycap = keymap.keycaps[row][key]
     val width = 50 * keycap.width.size
@@ -66,11 +64,7 @@ fun KeycapDesign(keymap: KeyMap, row: Int, key: Int, onDelete: (keymap: KeyMap) 
         )
         if (isHovered) {
             IconButton(
-                onClick = {
-                    onDelete(KeyMap.keycaps.index(row).modify(keymap, {
-                        it.filterIndexed { index, _ -> index != key }
-                    }))
-                },
+                onClick = onDelete,
                 modifier = Modifier
                     .align(Alignment.TopEnd)
                     .clip(CircleShape)
