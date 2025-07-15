@@ -3,10 +3,11 @@ package net.systemvi.configurator.components.configure.keyboard_keys.snaptap
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Divider
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
@@ -46,16 +47,20 @@ fun SnapTapItem(keymap: KeyMap, pair: SnapTapPair){
             .padding(8.dp)
             .background(MaterialTheme.colorScheme.primaryContainer,RoundedCornerShape(8.dp))
             .padding(8.dp)
+            .height(IntrinsicSize.Min)
         ,
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ){
         Text(firstText)
-        Text(secondText)
+        Text(secondText,modifier = Modifier.padding(horizontal = 8.dp))
         VerticalDivider()
-        IconButton(onClick = {
-            viewModel.removeSnapTapPair(pair)
-        }){
+        IconButton(
+            modifier = Modifier.padding(horizontal = 8.dp),
+            onClick = {
+                viewModel.removeSnapTapPair(pair)
+            }
+        ){
             Icon(Icons.Filled.Delete,"delete snap tap pair")
         }
     }
