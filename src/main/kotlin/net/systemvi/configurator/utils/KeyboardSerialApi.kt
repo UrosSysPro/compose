@@ -36,12 +36,27 @@ import net.systemvi.configurator.model.MacroActionType
 import net.systemvi.configurator.model.SnapTapPair
 
 class KeyboardSerialApi {
+    //serial console buffer
+    private var messageBuffer=listOf<Byte>()
+
+    //port selection
     private var selectedPortName by mutableStateOf<String?>(null)
     private var port by mutableStateOf<Option<SerialPort>>(None)
-    private var messageBuffer=listOf<Byte>()
+
+    //user event listeners
     private var onKeymapRead:(keymap: KeyMap)->Unit={}
     private var onKeycapPress:(keycapPosition: KeycapMatrixPosition)->Unit={}
     private var onKeycapRelease:(keycapPosition: KeycapMatrixPosition)->Unit={}
+
+    fun onKeymapRead(listener: (KeyMap) -> Unit) {
+        onKeymapRead = listener
+    }
+    fun onKeycapPress(listener: (KeycapMatrixPosition) -> Unit) {
+        onKeycapPress = listener
+    }
+    fun onKeycapRelease(listener: (KeycapMatrixPosition) -> Unit) {
+        onKeycapRelease = listener
+    }
 
     fun getPortNames():List<String> = SerialPortList.getPortNames().toList()
 
@@ -59,6 +74,7 @@ class KeyboardSerialApi {
             println("[ERROR] upload key called, and port is not opened")
         }
     }
+
     fun setKeyOnLayer(macro:Macro,layer:Int,matrixPosition: KeycapMatrixPosition){
         port.onSome { port->
             val bytes: ByteArray = arrayOf(
@@ -113,12 +129,21 @@ class KeyboardSerialApi {
             ).toByteArray()
             port.writeBytes(bytes)
         }.onNone {
-            println("[ERROR] upload macro called, and port is not opened")
+            println("[ERROR] upload add snap tap, and port is not opened")
         }
     }
 
     fun removeSnapTapPair(pair: SnapTapPair){
-        println("[ERROR] remove snap tap not implemented")
+        port.onSome { port->
+            val bytes: ByteArray = arrayOf(
+                'D'.code.toByte(),
+                pair.first.x.toByte(),
+                pair.first.y.toByte(),
+            ).toByteArray()
+            port.writeBytes(bytes)
+        }.onNone {
+            println("[ERROR] upload remove snap tap, and port is not opened")
+        }
     }
 
     fun selectPort(name:String?){
@@ -129,6 +154,7 @@ class KeyboardSerialApi {
             port.onSome { port->
                 port.openPort()
                 port.setParams(BAUDRATE_9600,  DATABITS_8, STOPBITS_1, PARITY_NONE)
+
                 port.addEventListener { event ->
                     val port=event.port
                     val array: ByteArray = port.readBytes()?: ByteArray(0)
@@ -140,13 +166,19 @@ class KeyboardSerialApi {
     }
 
     fun requestKeymapRead(){
-        port.onSome { port -> port.writeString("r") }.onNone { println("[ERROR] requesting keymap read, no port opened") }
+        port
+            .onSome { port -> port.writeString("r") }
+            .onNone { println("[ERROR] requesting keymap read, no port opened") }
     }
     fun enableKeyPressEvents(){
-        port.onSome { port->port.writeString("e") }.onNone { println("[ERROR] enable key press event, no port opened") }
+        port
+            .onSome { port->port.writeString("e") }
+            .onNone { println("[ERROR] enable key press event, no port opened") }
     }
     fun disableKeyPressEvents(){
-        port.onSome { port->port.writeString("d") }.onNone { println("[ERROR] disable key press event, no port opened") }
+        port
+            .onSome { port->port.writeString("d") }
+            .onNone { println("[ERROR] disable key press event, no port opened") }
     }
 
     private fun checkForCommands(){
@@ -166,16 +198,6 @@ class KeyboardSerialApi {
         }
     }
 
-    fun onKeymapRead(listener: (KeyMap) -> Unit) {
-        onKeymapRead = listener
-    }
-    fun onKeycapPress(listener: (KeycapMatrixPosition) -> Unit) {
-        onKeycapPress = listener
-    }
-    fun onKeycapRelease(listener: (KeycapMatrixPosition) -> Unit) {
-        onKeycapRelease = listener
-    }
-
     private fun processMessage(buffer:List<Byte>){
         val cmd = buffer[0].toInt().toChar()
         when(cmd){
@@ -184,50 +206,6 @@ class KeyboardSerialApi {
             'r' -> onKeycapRelease(KeycapMatrixPosition(buffer[1].toInt(), buffer[2].toInt()))
             else -> println("[ERROR] unknown serial command: $cmd")
         }
-    }
-
-    private fun readKeymapFromBuffer(buffer:List<Byte>):KeyMap{
-        val height=buffer[1].toInt()
-        val width=buffer[2].toInt()
-        val keycaps:MutableList<MutableList<Keycap?>> = MutableList(width){
-            MutableList(height){
-                null
-            }
-        }
-        val keysBuffer=buffer.drop(3)
-        val n=width*height
-        for(i in 0 until n){
-            val index=i*11
-            val x=keysBuffer[index].toInt()
-            val y=keysBuffer[index+1].toInt()
-            val value=listOf(
-                keysBuffer[index+2],
-                keysBuffer[index+3],
-                keysBuffer[index+4],
-                keysBuffer[index+5],
-            )
-            val width=keysBuffer[index+6].toInt()
-            val height=keysBuffer[index+7].toInt()
-            val physicalY=keysBuffer[index+8].toInt()
-            val physicalX=keysBuffer[index+9].toInt()
-            val active=keysBuffer[index+10].toInt()==1
-            if(active)keycaps[physicalX][physicalY]= Keycap(
-                layers = value.map { value->
-                    allKeys.find { key->key.value==value }.toOption().getOrElse { Key(value,"???") }.right()
-                },
-                width = KeycapWidth.entries[width],
-                height = KeycapHeight.entries[height],
-                matrixPosition = KeycapMatrixPosition(x,y)
-            )
-        }
-        return KeyMap("untitled",keycaps.map {
-            it.flatMap { key->
-                if (key!=null)
-                    listOf(key)
-                else
-                    emptyList()
-            }.toList()
-        }.toList())
     }
 
     private fun readKeymapFromBuffer2(buffer:List<Byte>):KeyMap{
@@ -317,7 +295,7 @@ class KeyboardSerialApi {
                 }.toList()
             }.toList(),
             layerKeyPositions = layerKeyPositions,
-            snapTapPairs = snapTapPairs.filterIndexed { index, _ -> index%2 == 0 }
+            snapTapPairs = snapTapPairs
         ).apply { println(this.layerKeyPositions);println(this.snapTapPairs) }
     }
 

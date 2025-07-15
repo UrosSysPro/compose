@@ -7,6 +7,7 @@ class KeymapService : ViewModel() {
     val keymapApi = KeymapApi()
 
     fun onStart(){
+        keymapApi.loadFromDisk()
         println("keymap api service started")
     }
 

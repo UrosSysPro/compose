@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import arrow.core.None
 import arrow.core.Option
 import arrow.core.some
+import arrow.core.toOption
 import net.systemvi.configurator.data.allKeys
 import net.systemvi.configurator.data.alphabetKeys
 import net.systemvi.configurator.data.fKeys
@@ -104,7 +105,11 @@ class ConfigureViewModel(): ViewModel() {
                 val y=selectedKeycapPositon!!.y
                 val keycap=keymap.keycaps[x][y]
                 val layer=selectedLayer
-                this.keymap=keymap.updateKeycap(x,y,layer,key).some()
+                keymap.layerKeyPositions.find { it.position==keycap.matrixPosition }.toOption().onSome { layerKeyPosition->
+                    serialApi.removeLayerKeyPosition(layerKeyPosition.position)
+                    this.keymap=this.keymap.map { it.removeLayerKey(layerKeyPosition.position) }
+                }
+                this.keymap=this.keymap.map { it.updateKeycap(x,y,layer,key) }
                 keymapApi.save(this.keymap.getOrNull()!!)
                 serialApi.setKeyOnLayer(key,layer,keycap.matrixPosition)
             }
@@ -118,7 +123,11 @@ class ConfigureViewModel(): ViewModel() {
                 val y=selectedKeycapPositon!!.y
                 val keycap=keymap.keycaps[x][y]
                 val layer=selectedLayer
-                this.keymap=keymap.updateKeycap(x,y,layer,macro).some()
+                keymap.layerKeyPositions.find { it.position==keycap.matrixPosition }.toOption().onSome { layerKeyPosition->
+                    serialApi.removeLayerKeyPosition(layerKeyPosition.position)
+                    this.keymap=this.keymap.map { it.removeLayerKey(layerKeyPosition.position) }
+                }
+                this.keymap=this.keymap.map { it.updateKeycap(x,y,layer,macro) }
                 keymapApi.save(this.keymap.getOrNull()!!)
                 serialApi.setKeyOnLayer(macro,layer, keycap.matrixPosition)
             }
@@ -134,19 +143,6 @@ class ConfigureViewModel(): ViewModel() {
                 this.keymap=keymap.addLayerKey(LayerKeyPosition(keycap.matrixPosition,layer)).some()
                 keymapApi.save(this.keymap.getOrNull()!!)
                 serialApi.addLayerKeyPosition(keycap.matrixPosition,layer)
-            }
-        }
-    }
-
-    fun removeLayerKey(){
-        this.keymap.onSome { keymap->
-            if(selectedKeycapPositon!=null){
-                val x=selectedKeycapPositon!!.x
-                val y=selectedKeycapPositon!!.y
-                val keycap=keymap.keycaps[x][y]
-                this.keymap=keymap.removeLayerKey(keycap.matrixPosition).some()
-                keymapApi.save(this.keymap.getOrNull()!!)
-                serialApi.removeLayerKeyPosition(keycap.matrixPosition)
             }
         }
     }
@@ -185,10 +181,6 @@ class ConfigureViewModel(): ViewModel() {
         serialApi.requestKeymapRead()
     }
 
-    fun closePort(){
-        serialApi.closePort()
-    }
-
     fun keymapLoad(keymap: KeyMap){
         this.keymap= keymap.some()
         unselectKeycap()
@@ -201,10 +193,6 @@ class ConfigureViewModel(): ViewModel() {
 
     fun keymapSaveAs(keymap: KeyMap){
         keymapApi.saveAs(keymap)
-    }
-
-    fun keymapLoadFromDisk():List<KeyMap>{
-        return keymapApi.loadFromDisk()
     }
 
     suspend fun keymapUpload(keymap: KeyMap){

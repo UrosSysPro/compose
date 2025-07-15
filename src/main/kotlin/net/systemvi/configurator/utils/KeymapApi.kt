@@ -26,28 +26,9 @@ import kotlin.collections.plus
 
 class KeymapApi{
 
-    var savedKeymaps by mutableStateOf(loadFromDisk())
+    var savedKeymaps: List<KeyMap> by mutableStateOf(emptyList())
 
     fun macroKeys()=emptyList<Macro>()
-//        keymap.map { keymap->
-//        keymap.keycaps.flatMap { row->
-//            row.flatMap { key->
-//                key.layers.flatMap { key->
-//                    when(key){
-//                        is Either.Right -> listOf()
-//                        is Either.Left  -> listOf(key.value)
-//                    }
-//                }
-//            }
-//        }
-//    }.getOrElse { emptyList() }
-
-    fun keymapLoad(keymap: KeyMap){
-//        this.keymap.onSome { save(it) }
-//        this.keymap=keymap.some()
-//        unselectKeycap()
-//        setKeyboardLayoutPage(KeyboardLayoutPages.Keymap)
-    }
 
     fun save(keymap: KeyMap) {
         savedKeymaps = savedKeymaps.map {
@@ -94,18 +75,20 @@ class KeymapApi{
     }
 
     fun loadFromDisk():List<KeyMap>{
-        val file= File("keymaps.json")
-        val format=Json { serializersModule = ArrowModule }
+        val file = File("keymaps.json")
+        val format = Json { serializersModule = ArrowModule }
         try {
             val builder= StringBuilder()
             val scanner= Scanner(file)
             while (scanner.hasNextLine())builder.append(scanner.nextLine())
             val keymaps=format.decodeFromString<List<KeyMap>>(builder.toString())
+            this.savedKeymaps=keymaps
             println("[Success]keymaps loaded from disk")
             return keymaps
         }catch (e:Exception){
             println("[ERROR] error loading keymaps from disk")
             e.printStackTrace()
+            this.savedKeymaps = emptyList()
             return emptyList()
         }
     }
