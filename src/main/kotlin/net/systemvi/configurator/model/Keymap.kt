@@ -19,6 +19,9 @@ import javax.swing.text.Keymap
     val snapTapPairs:List<SnapTapPair> = emptyList(),
 ){companion object}
 
+fun KeyMap.changeName(name: String): KeyMap =
+    KeyMap.name.set(this, name)
+
 fun KeyMap.setKeycapWidth(i:Int, j:Int, width:KeycapWidth): KeyMap=
     KeyMap.keycaps
         .index(i)

@@ -9,10 +9,11 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import net.systemvi.configurator.components.configure.KeycapPosition
 import net.systemvi.configurator.model.KeyMap
+import net.systemvi.configurator.model.changeName
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable fun DesignPage(modifier: Modifier) {
-    var keymap by remember { mutableStateOf(KeyMap("Untitled 1", listOf(listOf()))) }
+    var keymap by remember { mutableStateOf(KeyMap("", listOf(listOf()))) }
     val viewModel = viewModel { DesignPageViewModel() }
 
     Column(
@@ -22,7 +23,10 @@ import net.systemvi.configurator.model.KeyMap
                 .padding(horizontal = 150.dp)
         )
     ) {
-        AddRowButton(keymap, { keymap = it })
+        Row(){
+            AddRowButton(keymap, { keymap = it })
+            SaveAsButton(keymap, { keymap = keymap.changeName(it)})
+        }
         keymap.keycaps.forEachIndexed { i, row ->
             val paddingBottom = 50 * row.fold(0f){acc, keycap -> acc.coerceAtLeast(keycap.padding.bottom)}
 
