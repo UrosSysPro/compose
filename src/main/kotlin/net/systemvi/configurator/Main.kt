@@ -18,8 +18,8 @@ import net.systemvi.configurator.components.configure.ConfigureViewModel
 import net.systemvi.configurator.components.tester.TesterPage
 import net.systemvi.configurator.components.settings.SettingsPage
 import net.systemvi.configurator.components.design.DesignPage
-import net.systemvi.configurator.utils.KeymapService
-import net.systemvi.configurator.utils.SerialApiService
+import net.systemvi.configurator.utils.services.KeymapService
+import net.systemvi.configurator.utils.services.SerialApiService
 
 
 @OptIn(ExperimentalMaterial3Api::class)

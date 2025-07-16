@@ -30,6 +30,7 @@ import arrow.optics.dsl.index
 import net.systemvi.configurator.components.common.keyboard_grid.KeycapParam
 import net.systemvi.configurator.components.common.keycaps.FlatKeycap
 import net.systemvi.configurator.components.configure.KeycapPosition
+import net.systemvi.configurator.components.tester.keycaps.FlatKeycap
 import net.systemvi.configurator.data.allKeys
 import net.systemvi.configurator.model.KeyMap
 import net.systemvi.configurator.model.Keycap

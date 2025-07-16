@@ -16,6 +16,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -24,24 +25,10 @@ import net.systemvi.configurator.components.common.keyboard_grid.KeycapComponent
 import net.systemvi.configurator.components.common.keyboard_grid.KeycapParam
 import net.systemvi.configurator.components.tester.TesterPageViewModel
 import net.systemvi.configurator.data.allKeys
-import net.systemvi.configurator.utils.rememberRainbowColor
+import net.systemvi.configurator.utils.composables.rememberRainbowColor
 
-val RGBWaveKeycap: KeycapComponent = @Composable {param: KeycapParam ->
-
-    val viewModel = viewModel { TesterPageViewModel() }
-    val key = param.keycap.layers[0].getOrElse { allKeys.last()}
-    val currentlyClicked = viewModel.currentlyDownKeys.contains(key)
-    val color = rememberRainbowColor(5000, param.position.x * 10)
-
-    val containerColor by animateColorAsState(
-        targetValue = when {
-            currentlyClicked -> MaterialTheme.colorScheme.tertiary
-            else -> MaterialTheme.colorScheme.primaryContainer
-        }
-    )
-
-    viewModel.noteEffect(currentlyClicked, param.position.x + param.position.y * 12+24)
-
+@Composable
+fun RGBWaveKeycap(containerColor: Color,borderColor: Color,text:String) {
     Column(
         verticalArrangement = Arrangement.Center,
         modifier = Modifier
@@ -54,25 +41,17 @@ val RGBWaveKeycap: KeycapComponent = @Composable {param: KeycapParam ->
             .border(
                 BorderStroke(
                     width = 2.dp,
-                    color = color,
+                    color = borderColor,
                 ),
                 shape = RoundedCornerShape(10.dp)
             ),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            key.name,
+            text = text,
             style = MaterialTheme.typography.bodySmall,
-            color = color,
+            color = borderColor,
             textAlign = TextAlign.Center
         )
     }
 }
-
-val RGBWaveKeycapName = @Composable {
-    Text(
-        "RGB Wave Keycap",
-        color = rememberRainbowColor(5000)
-    )
-}
-

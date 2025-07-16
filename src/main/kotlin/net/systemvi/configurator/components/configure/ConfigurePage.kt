@@ -13,8 +13,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import net.systemvi.configurator.components.common.BorderHorizontal
 import net.systemvi.configurator.components.configure.keyboard_keys.KeyboardKeys
 import net.systemvi.configurator.components.configure.keyboard_layout.KeyboardLayoutView
-import net.systemvi.configurator.utils.KeymapService
-import net.systemvi.configurator.utils.SerialApiService
+import net.systemvi.configurator.utils.services.KeymapService
+import net.systemvi.configurator.utils.services.SerialApiService
 
 @Composable fun ConfigurePage(
     modifier: Modifier,

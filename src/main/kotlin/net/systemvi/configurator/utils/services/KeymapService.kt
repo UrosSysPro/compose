@@ -1,7 +1,7 @@
-package net.systemvi.configurator.utils
+package net.systemvi.configurator.utils.services
 
 import androidx.lifecycle.ViewModel
-import arrow.core.None
+import net.systemvi.configurator.utils.api.KeymapApi
 
 class KeymapService : ViewModel() {
     val keymapApi = KeymapApi()

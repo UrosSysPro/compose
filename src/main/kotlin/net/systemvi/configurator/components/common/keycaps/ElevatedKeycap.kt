@@ -11,6 +11,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import arrow.core.getOrElse
@@ -19,38 +21,20 @@ import net.systemvi.configurator.components.common.keyboard_grid.KeycapParam
 import net.systemvi.configurator.components.tester.TesterPageViewModel
 import net.systemvi.configurator.data.allKeys
 
-val ElevatedKeycap: KeycapComponent = @Composable { param: KeycapParam ->
-    val viewModel = viewModel { TesterPageViewModel() }
-    val key = param.keycap.layers[0].getOrElse { allKeys.last() }
-    val currentlyClicked = viewModel.currentlyDownKeys.contains(key)
-    val wasClicked = viewModel.wasDownKeys.contains(key)
-
-    val radius = 4.dp
-    val elevation by animateDpAsState(targetValue = if (currentlyClicked) 2.dp else 8.dp)
-
-    val textColor = when {
-        wasClicked -> MaterialTheme.colorScheme.tertiary
-        else -> MaterialTheme.colorScheme.primary
-    }
-    val containerColor = when {
-        wasClicked -> MaterialTheme.colorScheme.tertiaryContainer
-        else -> MaterialTheme.colorScheme.primaryContainer
-    }
-
-    viewModel.noteEffect(currentlyClicked, param.position.x + param.position.y * 12+24)
-
+@Composable
+fun ElevatedKeycap(borderRadius: Dp,elevation: Dp,containerColor: Color,textColor: Color,text:String) {
     Box(
         modifier = Modifier.padding(4.dp).fillMaxSize()
 
             .shadow(
-                shape = RoundedCornerShape(radius),
+                shape = RoundedCornerShape(borderRadius),
                 elevation = elevation,
                 clip = false,
                 ambientColor = MaterialTheme.colorScheme.secondary,
                 spotColor = MaterialTheme.colorScheme.secondary
             )
             .background(
-                shape = RoundedCornerShape(radius),
+                shape = RoundedCornerShape(borderRadius),
                 color = containerColor,
             )
     ) {
@@ -60,15 +44,10 @@ val ElevatedKeycap: KeycapComponent = @Composable { param: KeycapParam ->
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
-                key.name,
+                text = text,
                 style = MaterialTheme.typography.bodySmall,
                 color = textColor
             )
         }
     }
 }
-
-val ElevatedKeycapName = @Composable {
-    Text("Elevated Keycap")
-}
-

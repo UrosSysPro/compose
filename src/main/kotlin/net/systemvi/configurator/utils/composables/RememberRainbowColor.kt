@@ -1,4 +1,4 @@
-package net.systemvi.configurator.utils
+package net.systemvi.configurator.utils.composables
 
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode

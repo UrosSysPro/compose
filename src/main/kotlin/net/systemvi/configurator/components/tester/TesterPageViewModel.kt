@@ -6,6 +6,12 @@ import androidx.lifecycle.ViewModel
 import net.systemvi.configurator.components.common.keyboard_grid.KeycapComponent
 import net.systemvi.configurator.components.common.keyboard_grid.KeycapNameComponent
 import net.systemvi.configurator.components.common.keycaps.*
+import net.systemvi.configurator.components.tester.keycaps.ElevatedKeycap
+import net.systemvi.configurator.components.tester.keycaps.ElevatedKeycapName
+import net.systemvi.configurator.components.tester.keycaps.FlatKeycap
+import net.systemvi.configurator.components.tester.keycaps.FlatKeycapName
+import net.systemvi.configurator.components.tester.keycaps.RGBWaveKeycap
+import net.systemvi.configurator.components.tester.keycaps.RGBWaveKeycapName
 import net.systemvi.configurator.model.Key
 import javax.sound.midi.MidiChannel
 import javax.sound.midi.MidiSystem
@@ -42,7 +48,7 @@ class TesterPageViewModel : ViewModel() {
 
     val allKeycaps: List<Pair<KeycapNameComponent, KeycapComponent>> = listOf(
         Pair(FlatKeycapName, FlatKeycap),
-        Pair(ElevatedKeycapName,ElevatedKeycap),
+        Pair(ElevatedKeycapName, ElevatedKeycap),
         Pair(RGBWaveKeycapName, RGBWaveKeycap)
     )
 

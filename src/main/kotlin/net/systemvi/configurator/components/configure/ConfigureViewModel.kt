@@ -19,8 +19,8 @@ import net.systemvi.configurator.data.numberKeys
 import net.systemvi.configurator.data.numpadKeys
 import net.systemvi.configurator.data.symbolKeys
 import net.systemvi.configurator.model.*
-import net.systemvi.configurator.utils.KeyboardSerialApi
-import net.systemvi.configurator.utils.KeymapApi
+import net.systemvi.configurator.utils.api.KeyboardSerialApi
+import net.systemvi.configurator.utils.api.KeymapApi
 
 data class KeycapPosition(val x:Int,val y:Int)
 
@@ -28,6 +28,10 @@ enum class KeyboardLayoutPages(val title:String){
     Keymap("Keymap"),
     SaveAndLoad("Save and Load");
 }
+
+abstract class UploadStatus
+class Idle:UploadStatus()
+data class InProgress(val done:Int,val of: Int):UploadStatus()
 
 enum class KeyboardKeysPages(val title:String,val keys:List<Key>){
     All("All", allKeys),
@@ -195,7 +199,7 @@ class ConfigureViewModel(): ViewModel() {
         keymapApi.saveAs(keymap)
     }
 
-    suspend fun keymapUpload(keymap: KeyMap){
+    suspend fun keymapUpload(keymap: KeyMap,onStatusUpdate:(UploadStatus)->Unit={}){
         keymapApi.upload(serialApi,keymap)
     }
 }

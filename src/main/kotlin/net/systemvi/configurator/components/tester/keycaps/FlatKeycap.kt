@@ -1,0 +1,68 @@
+package net.systemvi.configurator.components.tester.keycaps
+
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import arrow.core.getOrElse
+import net.systemvi.configurator.components.common.keyboard_grid.KeycapComponent
+import net.systemvi.configurator.components.common.keyboard_grid.KeycapParam
+import net.systemvi.configurator.components.common.keycaps.FlatKeycap
+import net.systemvi.configurator.components.tester.TesterPageViewModel
+import net.systemvi.configurator.data.allKeys
+
+val FlatKeycap: KeycapComponent = @Composable {param: KeycapParam ->
+
+    val viewModel = viewModel { TesterPageViewModel() }
+    val key = param.keycap.layers[0].getOrElse { allKeys.last()}
+    val currentlyClicked = viewModel.currentlyDownKeys.contains(key)
+    val wasClicked = viewModel.wasDownKeys.contains(key)
+
+    val containerColor by animateColorAsState(
+        targetValue = when {
+            currentlyClicked -> MaterialTheme.colorScheme.tertiary
+            wasClicked -> MaterialTheme.colorScheme.primary
+            else -> MaterialTheme.colorScheme.primaryContainer
+        }
+    )
+
+    val textColor by animateColorAsState(
+        targetValue = when {
+            currentlyClicked -> MaterialTheme.colorScheme.tertiaryContainer
+            wasClicked -> MaterialTheme.colorScheme.primaryContainer
+            else -> MaterialTheme.colorScheme.primary
+        }
+    )
+
+    viewModel.noteEffect(currentlyClicked, param.position.x + param.position.y * 12+24)
+
+    FlatKeycap(containerColor,textColor,key.name)
+}
+
+val FlatKeycapName = @Composable {
+    Text(
+        "Flat Keycap",
+        modifier = Modifier
+            .border(
+                BorderStroke(2.dp, MaterialTheme.colorScheme.secondary),
+                shape = RoundedCornerShape(10.dp)
+            )
+            .padding(horizontal = 8.dp, vertical = 4.dp)
+    )
+}
+

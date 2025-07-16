@@ -1,6 +1,7 @@
-package net.systemvi.configurator.utils
+package net.systemvi.configurator.utils.services
 
 import androidx.lifecycle.ViewModel
+import net.systemvi.configurator.utils.api.KeyboardSerialApi
 
 class SerialApiService : ViewModel() {
 
