@@ -1,28 +1,19 @@
 package net.systemvi.configurator.components.settings
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.width
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.foundation.*
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.*
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.MaterialTheme.colorScheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import net.systemvi.configurator.components.ApplicationViewModel
+import net.systemvi.configurator.utils.services.AppStateService
 
 @Composable fun SettingsEntry(left:@Composable () -> Unit, right:@Composable () -> Unit) {
     Row(
@@ -36,9 +27,11 @@ import net.systemvi.configurator.components.ApplicationViewModel
     HorizontalDivider()
 }
 
-@Composable fun SettingsPage(modifer: Modifier,appViewModel: ApplicationViewModel = viewModel { ApplicationViewModel() }) {
+@OptIn(ExperimentalFoundationApi::class)
+@Composable fun SettingsPage(modifier: Modifier) {
+    val appStateService=viewModel { AppStateService() }
     Column(
-        modifer.fillMaxSize(),
+        modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
@@ -50,15 +43,22 @@ import net.systemvi.configurator.components.ApplicationViewModel
                     Text("Primary color")
                 },
                 right={
-                    Row{
-                        appViewModel.colorSeeds.forEach { colorSeed ->
+                    FlowRow{
+                        appStateService.colorSeeds.forEach { colorSeed ->
+                            val selected = colorSeed==appStateService.primaryColor
+                            val borderWidth by animateDpAsState(
+                                targetValue = if (selected) 3.dp else 2.dp,
+                            )
                             Box(modifier = Modifier
+                                .background(
+                                    color = colorSeed,
+                                    shape = CircleShape,
+                                )
+                                .border(borderWidth, appStateService.colorScheme.secondary, CircleShape)
+                                .size(30.dp)
+                                .padding(start = 5.dp,top=5.dp)
+                                .onClick(onClick = {appStateService.setTheme(colorSeed)})
                                 .clip(CircleShape)
-                                .border(0.dp, colorScheme.primary, CircleShape)
-                                .background(color = colorSeed, shape = CircleShape)
-                                .width(20.dp)
-                                .height(20.dp)
-                                .combinedClickable(onClick = {appViewModel.setSelectedColor(colorSeed)})
                             ){}
                         }
                     }
@@ -69,7 +69,10 @@ import net.systemvi.configurator.components.ApplicationViewModel
                     Text("Dark mode")
                 },
                 right={
-                    Switch(appViewModel.getDarkTheme(),onCheckedChange = {appViewModel.setDarkTheme(it) })
+                    Switch(
+                        appStateService.isDark,
+                        onCheckedChange = {appStateService.setTheme(isDark = it) }
+                    )
                 }
             )
         }

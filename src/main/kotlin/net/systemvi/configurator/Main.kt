@@ -7,17 +7,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.*
 import androidx.lifecycle.viewmodel.compose.viewModel
-import net.systemvi.configurator.components.ConfigurePage
-import net.systemvi.configurator.components.DesignPage
 import net.systemvi.configurator.components.NavBar
-import net.systemvi.configurator.components.ApplicationViewModel
-import net.systemvi.configurator.components.SettingsPage
-import net.systemvi.configurator.components.TesterPage
 import net.systemvi.configurator.components.configure.ConfigurePage
-import net.systemvi.configurator.components.configure.ConfigureViewModel
 import net.systemvi.configurator.components.tester.TesterPage
 import net.systemvi.configurator.components.settings.SettingsPage
 import net.systemvi.configurator.components.design.DesignPage
+import net.systemvi.configurator.model.*
+import net.systemvi.configurator.utils.services.AppStateService
 import net.systemvi.configurator.utils.services.KeymapService
 import net.systemvi.configurator.utils.services.SerialApiService
 
@@ -25,29 +21,32 @@ import net.systemvi.configurator.utils.services.SerialApiService
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 @Preview
-fun App(appViewModel: ApplicationViewModel= viewModel { ApplicationViewModel() }) {
+fun App() {
 
 	val keymapService = viewModel { KeymapService() }
 	val serialService = viewModel { SerialApiService() }
+	val appStateService=viewModel { AppStateService() }
 
 	DisposableEffect(Unit){
+		appStateService.onStart()
 		keymapService.onStart()
 		serialService.onStart()
 		onDispose {
+			appStateService.onStop()
 			keymapService.onStop()
 			serialService.onStop()
 		}
 	}
 
 	MaterialTheme (
-		colorScheme = appViewModel.colorScheme
+		colorScheme = appStateService.colorScheme
 	){
 		Scaffold(
 			topBar={
 				NavBar()
 			},
 			content={padding->
-				when(appViewModel.currentPage){
+				when(appStateService.currentPage){
 					ConfigurePage -> ConfigurePage(Modifier.padding(padding))
 					TesterPage -> TesterPage(Modifier.padding(padding))
 					DesignPage -> DesignPage(Modifier.padding(padding))

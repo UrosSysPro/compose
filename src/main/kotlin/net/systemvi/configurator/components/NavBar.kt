@@ -11,11 +11,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
+import net.systemvi.configurator.model.*
+import net.systemvi.configurator.utils.services.AppStateService
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NavBar(pageViewModel: ApplicationViewModel= viewModel { ApplicationViewModel() }) {
-    data class Link(val title:String,val page:Page)
+fun NavBar() {
+    val appStateService=viewModel { AppStateService() }
+    data class Link(val title:String,val page: Page)
     val links=listOf(
         Link("Configure", ConfigurePage),
         Link("Key Tester", TesterPage),
@@ -30,7 +33,7 @@ fun NavBar(pageViewModel: ApplicationViewModel= viewModel { ApplicationViewModel
             {
                 links.forEach { link->
                     TextButton(
-                        onClick = { pageViewModel.currentPage = link.page }
+                        onClick = { appStateService.currentPage = link.page }
                     ) {
                         Text(link.title)
                     }
