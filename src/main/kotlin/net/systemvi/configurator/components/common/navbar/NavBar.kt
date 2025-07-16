@@ -19,6 +19,7 @@ import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.onPointerEvent
 import arrow.core.None
 import arrow.core.Option
+import net.systemvi.configurator.components.settings.SettingsHoverCard
 import net.systemvi.configurator.model.*
 
 
@@ -29,7 +30,7 @@ fun NavBar() {
         NavbarLink("Configure",    ConfigurePage, Icons.Filled.Warning,   {}                        ),
         NavbarLink("Key Tester",   TesterPage,    Icons.Filled.Check,     { Text("tester page") }   ),
         NavbarLink("Design",       DesignPage,    Icons.Filled.Create,    { Text("Design page") }   ),
-        NavbarLink("Settings",     SettingsPage,  Icons.Filled.Settings,  { Text("Settings page") } ),
+        NavbarLink("Settings",     SettingsPage,  Icons.Filled.Settings,  { SettingsHoverCard() }   ),
     )
 
     var mouseHover by remember { mutableStateOf(false) }

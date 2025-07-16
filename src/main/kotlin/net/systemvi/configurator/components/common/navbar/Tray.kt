@@ -4,9 +4,11 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -41,12 +43,13 @@ fun Tray(expanded:Boolean,links:List<NavbarLink>,onShowHoverCard:(Option<@Compos
             )
             .padding(5.dp)
     ){
-        links.forEach {
+        links.forEachIndexed { index,link->
             TrayIcon(
-                link=it,
+                link=link,
                 expanded=expanded,
                 onShowHoverCard=onShowHoverCard
             )
+            if(index != links.size - 1)Box(Modifier.width(5.dp)) {}
         }
     }
 

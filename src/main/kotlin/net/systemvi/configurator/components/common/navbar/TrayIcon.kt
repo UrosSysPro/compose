@@ -56,6 +56,7 @@ fun TrayIcon(link: NavbarLink,expanded: Boolean,onShowHoverCard:(Option<@Composa
 
     LaunchedEffect(hover) {
         if(hover && !selected) onShowHoverCard(link.hoverCard.some())
+        if(hover &&  selected) onShowHoverCard(None)
     }
 
     Column (
