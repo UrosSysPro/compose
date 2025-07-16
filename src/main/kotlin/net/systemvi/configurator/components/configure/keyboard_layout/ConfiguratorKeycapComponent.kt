@@ -33,8 +33,12 @@ import arrow.core.getOrElse
 import arrow.core.toOption
 import com.materialkolor.ktx.blend
 import net.systemvi.configurator.components.common.keyboard_grid.KeycapComponent
+import net.systemvi.configurator.components.common.keycaps.ConfiguratorKeycap
+import net.systemvi.configurator.components.common.keycaps.ElevatedKeycap
+import net.systemvi.configurator.components.common.keycaps.RGBWaveKeycap
 import net.systemvi.configurator.components.configure.ConfigureViewModel
 import net.systemvi.configurator.components.configure.CurrentlySelectedSnapTapKeys
+import net.systemvi.configurator.components.tester.keycaps.ElevatedKeycap
 import net.systemvi.configurator.data.LayerKeyColors
 import net.systemvi.configurator.data.SnapTapKeyColors
 import net.systemvi.configurator.data.modifierKeys
@@ -80,18 +84,6 @@ val ConfiguratorKeycapComponent: KeycapComponent=@Composable{ params->
         }
     }
 
-    val backgroundColor by animateColorAsState(when{
-        isCurrentlySelectingSnapTapKeys -> MaterialTheme.colorScheme.surfaceDim
-        isLayerKey-> LayerKeyColors[layerKeyLayer-1].blend(Color.Black,when{
-            pressed->0.1f
-            selected->0.2f
-            else-> 0f
-        })
-        pressed-> MaterialTheme.colorScheme.tertiaryContainer
-        selected->MaterialTheme.colorScheme.primary
-        else->MaterialTheme.colorScheme.secondaryContainer
-    })
-
     val text=when{
         isLayerKey->"L${layerKeyLayer+1}"
         key is Either.Right->key.value.name
@@ -99,59 +91,18 @@ val ConfiguratorKeycapComponent: KeycapComponent=@Composable{ params->
         else -> {"[ERROR]"}
     }
 
-    val borderColor by animateColorAsState(when{
-        isSnapTapKey -> SnapTapKeyColors[snapTapPairIndex%SnapTapKeyColors.size]
-        else -> MaterialTheme.colorScheme.secondary
-    })
-
-    val borderWidth by animateDpAsState(when{
-        isSnapTapKey->3.dp
-        else->2.dp
-    })
-
-    val snapTapText:@Composable ()->Unit=
-        when{
-            isSnapTapKey-> {{
-                Column(
-                    verticalArrangement = Arrangement.Top,
-                    horizontalAlignment = Alignment.End,
-                    modifier = Modifier.fillMaxSize().padding()
-                ) {
-                    Text(
-                        if(isFirstSnapTapKey)"1st" else "2nd",
-                        modifier = Modifier
-                            .background(borderColor, shape = RoundedCornerShape(bottomStart = 4.dp))
-                            .padding(vertical = 0.dp,horizontal = 8.dp),
-                        color = Color.White,
-                        fontSize = 8.sp,
-                    )
-                }
-            }}
-            else ->  {{}}
-        }
-
-
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(2.dp)
-            .clip(RoundedCornerShape(10.dp))
-            .onClick(onClick = onClick)
-            .background(
-                color = backgroundColor,
-                shape = RoundedCornerShape(10.dp)
-            )
-            .border(
-                BorderStroke(borderWidth,borderColor),
-                shape = RoundedCornerShape(10.dp)
-            )
-    ){
-        Text(
-            text,
-            fontSize = MaterialTheme.typography.bodySmall.fontSize,
-            modifier = Modifier.fillMaxSize().wrapContentSize(Alignment.Center),
-            textAlign = TextAlign.Center
-        )
-        snapTapText()
-    }
+    ConfiguratorKeycap(
+        isDown = pressed,
+        isSelected = selected,
+        onClick = onClick,
+        isLayerKey=isLayerKey,
+        layer=layerKeyLayer,
+        isSnapTapKey=isSnapTapKey,
+        isFirstSnapTapKey=isFirstSnapTapKey,
+        isCurrentlySelectingSnapTapKeys=isCurrentlySelectingSnapTapKeys,
+        snapTapPairIndex = snapTapPairIndex,
+        text = text,
+    )
+//    ElevatedKeycap(pressed,selected,text)
+//    RGBWaveKeycap(pressed,0,text)
 }

@@ -32,18 +32,11 @@ val RGBWaveKeycap: KeycapComponent = @Composable {param: KeycapParam ->
     val viewModel = viewModel { TesterPageViewModel() }
     val key = param.keycap.layers[0].getOrElse { allKeys.last()}
     val currentlyClicked = viewModel.currentlyDownKeys.contains(key)
-    val color = rememberRainbowColor(5000, param.position.x * 10)
-
-    val containerColor by animateColorAsState(
-        targetValue = when {
-            currentlyClicked -> MaterialTheme.colorScheme.tertiary
-            else -> MaterialTheme.colorScheme.primaryContainer
-        }
-    )
+    val offset=param.position.x * 10
 
     viewModel.noteEffect(currentlyClicked, param.position.x + param.position.y * 12+24)
 
-    RGBWaveKeycap(containerColor,color,key.name)
+    RGBWaveKeycap(currentlyClicked,offset,key.name)
 }
 
 val RGBWaveKeycapName = @Composable {

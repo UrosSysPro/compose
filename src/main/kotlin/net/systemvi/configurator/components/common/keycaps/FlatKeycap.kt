@@ -27,7 +27,23 @@ import net.systemvi.configurator.components.tester.TesterPageViewModel
 import net.systemvi.configurator.data.allKeys
 
 @Composable
-fun FlatKeycap(containerColor: Color,textColor:Color,text:String) {
+fun FlatKeycap(isDown: Boolean,wasDown:Boolean, text:String) {
+
+    val containerColor by animateColorAsState(
+        targetValue = when {
+            isDown -> MaterialTheme.colorScheme.tertiary
+            wasDown -> MaterialTheme.colorScheme.primary
+            else -> MaterialTheme.colorScheme.primaryContainer
+        }
+    )
+
+    val textColor by animateColorAsState(
+        targetValue = when {
+            isDown -> MaterialTheme.colorScheme.tertiaryContainer
+            wasDown -> MaterialTheme.colorScheme.primaryContainer
+            else -> MaterialTheme.colorScheme.primary
+        }
+    )
     Column(
         verticalArrangement = Arrangement.Center,
         modifier = Modifier

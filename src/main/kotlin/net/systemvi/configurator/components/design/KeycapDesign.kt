@@ -59,12 +59,7 @@ fun KeycapDesign(keymap: KeyMap, row: Int, key: Int, onDelete: (keymap: KeyMap) 
                 onClick = onRightClick
             )
     ) {
-        FlatKeycap(
-            KeycapParam(
-                Keycap(listOf(allKeys[0].right())),
-                KeycapPosition(0, 0)
-            )
-        )
+        FlatKeycap(false,false,"A")
         if (isHovered) {
             IconButton(
                 onClick = {

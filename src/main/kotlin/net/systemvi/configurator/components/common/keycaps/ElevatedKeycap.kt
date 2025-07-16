@@ -22,19 +22,32 @@ import net.systemvi.configurator.components.tester.TesterPageViewModel
 import net.systemvi.configurator.data.allKeys
 
 @Composable
-fun ElevatedKeycap(borderRadius: Dp,elevation: Dp,containerColor: Color,textColor: Color,text:String) {
+fun ElevatedKeycap(isDown:Boolean,wasDown:Boolean,text:String) {
+
+    val radius = 4.dp
+    val elevation by animateDpAsState(targetValue = if (isDown) 2.dp else 8.dp)
+
+    val textColor = when {
+        wasDown -> MaterialTheme.colorScheme.tertiary
+        else -> MaterialTheme.colorScheme.primary
+    }
+    val containerColor = when {
+        wasDown -> MaterialTheme.colorScheme.tertiaryContainer
+        else -> MaterialTheme.colorScheme.primaryContainer
+    }
+
     Box(
         modifier = Modifier.padding(4.dp).fillMaxSize()
 
             .shadow(
-                shape = RoundedCornerShape(borderRadius),
+                shape = RoundedCornerShape(radius),
                 elevation = elevation,
                 clip = false,
                 ambientColor = MaterialTheme.colorScheme.secondary,
                 spotColor = MaterialTheme.colorScheme.secondary
             )
             .background(
-                shape = RoundedCornerShape(borderRadius),
+                shape = RoundedCornerShape(radius),
                 color = containerColor,
             )
     ) {

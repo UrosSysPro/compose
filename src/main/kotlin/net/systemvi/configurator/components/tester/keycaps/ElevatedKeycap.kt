@@ -26,21 +26,9 @@ val ElevatedKeycap: KeycapComponent = @Composable { param: KeycapParam ->
     val currentlyClicked = viewModel.currentlyDownKeys.contains(key)
     val wasClicked = viewModel.wasDownKeys.contains(key)
 
-    val radius = 4.dp
-    val elevation by animateDpAsState(targetValue = if (currentlyClicked) 2.dp else 8.dp)
-
-    val textColor = when {
-        wasClicked -> MaterialTheme.colorScheme.tertiary
-        else -> MaterialTheme.colorScheme.primary
-    }
-    val containerColor = when {
-        wasClicked -> MaterialTheme.colorScheme.tertiaryContainer
-        else -> MaterialTheme.colorScheme.primaryContainer
-    }
-
     viewModel.noteEffect(currentlyClicked, param.position.x + param.position.y * 12+24)
 
-    ElevatedKeycap(radius,elevation,containerColor,textColor,key.name)
+    ElevatedKeycap(currentlyClicked,wasClicked,key.name)
 }
 
 val ElevatedKeycapName = @Composable {

@@ -33,25 +33,9 @@ val FlatKeycap: KeycapComponent = @Composable {param: KeycapParam ->
     val currentlyClicked = viewModel.currentlyDownKeys.contains(key)
     val wasClicked = viewModel.wasDownKeys.contains(key)
 
-    val containerColor by animateColorAsState(
-        targetValue = when {
-            currentlyClicked -> MaterialTheme.colorScheme.tertiary
-            wasClicked -> MaterialTheme.colorScheme.primary
-            else -> MaterialTheme.colorScheme.primaryContainer
-        }
-    )
-
-    val textColor by animateColorAsState(
-        targetValue = when {
-            currentlyClicked -> MaterialTheme.colorScheme.tertiaryContainer
-            wasClicked -> MaterialTheme.colorScheme.primaryContainer
-            else -> MaterialTheme.colorScheme.primary
-        }
-    )
-
     viewModel.noteEffect(currentlyClicked, param.position.x + param.position.y * 12+24)
 
-    FlatKeycap(containerColor,textColor,key.name)
+    FlatKeycap(currentlyClicked,wasClicked,key.name)
 }
 
 val FlatKeycapName = @Composable {

@@ -28,7 +28,17 @@ import net.systemvi.configurator.data.allKeys
 import net.systemvi.configurator.utils.composables.rememberRainbowColor
 
 @Composable
-fun RGBWaveKeycap(containerColor: Color,borderColor: Color,text:String) {
+fun RGBWaveKeycap(isDown:Boolean,offset:Int,text:String) {
+
+    val borderColor = rememberRainbowColor(5000,offset )
+
+    val containerColor by animateColorAsState(
+        targetValue = when {
+            isDown -> MaterialTheme.colorScheme.tertiary
+            else -> MaterialTheme.colorScheme.primaryContainer
+        }
+    )
+
     Column(
         verticalArrangement = Arrangement.Center,
         modifier = Modifier
