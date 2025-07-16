@@ -29,12 +29,13 @@ import net.systemvi.configurator.model.KeyMap
             Row(
                 modifier = Modifier
                     .wrapContentSize(unbounded = true)
-                    .padding(bottom = paddingBottom.dp),
+                    .padding(bottom = (paddingBottom+10).dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             )
             {
                 AddKeycapButton(keymap, i, { keymap = it })
+                RemoveRowButton(keymap, i, { keymap = it })
                 row.forEachIndexed { j, key ->
                     val width = 50 * key.width.size
                     val height = 50 * key.height.size
@@ -50,7 +51,6 @@ import net.systemvi.configurator.model.KeyMap
                             viewModel.selectedKeycap = KeycapPosition(i,j) })
                     }
                 }
-                RemoveRowButton(keymap, i, { keymap = it })
             }
         }
     }

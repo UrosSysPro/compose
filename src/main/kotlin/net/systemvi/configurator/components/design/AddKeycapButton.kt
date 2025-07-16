@@ -1,7 +1,11 @@
 package net.systemvi.configurator.components.design
 
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -16,7 +20,7 @@ import net.systemvi.configurator.model.keycaps
 
 @Composable
 fun AddKeycapButton(keymap: KeyMap, row: Int, onClick: (keymap: KeyMap) -> Unit) {
-    ElevatedButton(
+    FloatingActionButton(
         onClick = {
             onClick(KeyMap.keycaps.index(row).modify(keymap, {
                 it + Keycap(
@@ -25,11 +29,12 @@ fun AddKeycapButton(keymap: KeyMap, row: Int, onClick: (keymap: KeyMap) -> Unit)
             }))
         },
         modifier = Modifier
-            .padding(end = 10.dp)
+//            .padding(end = 10.dp)
     ) {
-        Text(
-            "Add Keycap",
-            style = MaterialTheme.typography.bodySmall
-        )
+//        Text(
+//            "Add Keycap",
+//            style = MaterialTheme.typography.bodySmall
+//        )
+        Icon(Icons.Filled.Add, contentDescription = "Add Keycap")
     }
 }

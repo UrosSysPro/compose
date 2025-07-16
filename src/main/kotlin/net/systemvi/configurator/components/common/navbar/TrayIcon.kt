@@ -40,11 +40,11 @@ fun TrayIcon(link: NavbarLink,expanded: Boolean,onShowHoverCard:(Option<@Composa
     )
 
     val backgroundColor by animateColorAsState(
-        targetValue = if(selected)MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface,
+        targetValue = if(selected)MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface,
     )
 
     val iconTint by animateColorAsState(
-        targetValue = if(selected)MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface,
+        targetValue = if(selected)MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurface,
     )
 
     var hover by remember { mutableStateOf(false) }

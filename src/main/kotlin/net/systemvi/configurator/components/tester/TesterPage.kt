@@ -118,12 +118,12 @@ fun TesterHoverCard(){
             .shadow(elevation = 20.dp,RoundedCornerShape(20.dp))
             .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(20.dp))
             .padding(20.dp)
-            .size(800.dp,600.dp)
+            .size(900.dp,400.dp)
     ) {
         TesterPage(
             Modifier,
             showFloatingActionButton = false,
-            oneUSize = 30,
+            oneUSize = 40,
         )
     }
 }
