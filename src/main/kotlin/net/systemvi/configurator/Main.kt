@@ -42,15 +42,15 @@ fun App() {
 		colorScheme = appStateService.colorScheme
 	){
 		Scaffold(
-			topBar={
-				NavBar()
-			},
 			content={padding->
-				when(appStateService.currentPage){
-					ConfigurePage -> ConfigurePage(Modifier.padding(padding))
-					TesterPage -> TesterPage(Modifier.padding(padding))
-					DesignPage -> DesignPage(Modifier.padding(padding))
-					SettingsPage -> SettingsPage(Modifier.padding(padding))
+				Box(Modifier.padding(padding).fillMaxSize()){
+					when(appStateService.currentPage){
+						ConfigurePage -> ConfigurePage(Modifier)
+						TesterPage -> TesterPage(Modifier)
+						DesignPage -> DesignPage(Modifier)
+						SettingsPage -> SettingsPage(Modifier)
+					}
+					NavBar()
 				}
 			}
 		)
