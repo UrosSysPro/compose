@@ -1,10 +1,12 @@
 package net.systemvi.configurator.components
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,6 +36,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.PointerEventType
@@ -86,14 +89,22 @@ fun NavBar() {
                 .onPointerEvent(PointerEventType.Exit){mouseHover=false}
         ){
             links.forEach {
+                val selected=appStateService.currentPage==it.page
+                val backgroundColor by animateColorAsState(
+                    targetValue = if(selected)MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface,
+                )
+                val iconTint by animateColorAsState(
+                    targetValue = if(selected)MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface,
+                )
                 Column (
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
+                        .clip(RoundedCornerShape(15.dp))
+                        .background(backgroundColor,RoundedCornerShape(15.dp))
+                        .combinedClickable{ appStateService.currentPage = it.page }
                         .padding(iconPadding)
-                        .onClick{ appStateService.currentPage = it.page }
                 ){
-                    Icon(it.icon,it.title,)
-//                    Text(it.title)
+                    Icon(it.icon,it.title, tint = iconTint)
                 }
             }
         }
