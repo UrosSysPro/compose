@@ -1,0 +1,58 @@
+package net.systemvi.configurator.components.common.navbar
+
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Create
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Text
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.PointerEventType
+import androidx.compose.ui.input.pointer.onPointerEvent
+import arrow.core.None
+import arrow.core.Option
+import net.systemvi.configurator.model.*
+
+
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)
+@Composable
+fun NavBar() {
+    val links=listOf(
+        NavbarLink("Configure",    ConfigurePage, Icons.Filled.Warning,   {}                        ),
+        NavbarLink("Key Tester",   TesterPage,    Icons.Filled.Check,     { Text("tester page") }   ),
+        NavbarLink("Design",       DesignPage,    Icons.Filled.Create,    { Text("Design page") }   ),
+        NavbarLink("Settings",     SettingsPage,  Icons.Filled.Settings,  { Text("Settings page") } ),
+    )
+
+    var mouseHover by remember { mutableStateOf(false) }
+
+    var hoverCard: Option<@Composable ()->Unit> by remember { mutableStateOf(None) }
+
+    LaunchedEffect(mouseHover) {
+        if(!mouseHover) {hoverCard=None}
+    }
+
+    Column(
+        verticalArrangement = Arrangement.Bottom,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.fillMaxSize()
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .onPointerEvent(PointerEventType.Enter){mouseHover=true}
+                .onPointerEvent(PointerEventType.Exit){mouseHover=false}
+        ) {
+            hoverCard.onSome { hover -> hover() }
+            Tray(mouseHover,links,{hoverCard=it})
+        }
+    }
+}

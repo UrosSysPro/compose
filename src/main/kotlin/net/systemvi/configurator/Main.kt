@@ -7,7 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.*
 import androidx.lifecycle.viewmodel.compose.viewModel
-import net.systemvi.configurator.components.NavBar
+import net.systemvi.configurator.components.common.navbar.NavBar
 import net.systemvi.configurator.components.configure.ConfigurePage
 import net.systemvi.configurator.components.tester.TesterPage
 import net.systemvi.configurator.components.settings.SettingsPage
