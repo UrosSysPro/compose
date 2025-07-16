@@ -20,6 +20,7 @@ import androidx.compose.ui.input.pointer.onPointerEvent
 import arrow.core.None
 import arrow.core.Option
 import net.systemvi.configurator.components.settings.SettingsHoverCard
+import net.systemvi.configurator.components.tester.TesterHoverCard
 import net.systemvi.configurator.model.*
 
 
@@ -28,7 +29,7 @@ import net.systemvi.configurator.model.*
 fun NavBar() {
     val links=listOf(
         NavbarLink("Configure",    ConfigurePage, Icons.Filled.Warning,   {}                        ),
-        NavbarLink("Key Tester",   TesterPage,    Icons.Filled.Check,     { Text("tester page") }   ),
+        NavbarLink("Key Tester",   TesterPage,    Icons.Filled.Check,     { TesterHoverCard() }   ),
         NavbarLink("Design",       DesignPage,    Icons.Filled.Create,    { Text("Design page") }   ),
         NavbarLink("Settings",     SettingsPage,  Icons.Filled.Settings,  { SettingsHoverCard() }   ),
     )
