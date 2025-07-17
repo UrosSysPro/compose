@@ -1,6 +1,7 @@
 package net.systemvi.configurator.components.design
 
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.ElevatedButton
@@ -26,6 +27,7 @@ fun RemoveRowButton(keymap: KeyMap, row: Int, onClick: (keymap: KeyMap) -> Unit)
         contentColor = MaterialTheme.colorScheme.onErrorContainer,
         modifier = Modifier
             .padding(horizontal = 10.dp)
+            .size(50.dp)
     ) {
 //        Text(
 //            "Remove Row",
