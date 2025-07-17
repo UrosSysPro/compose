@@ -3,6 +3,7 @@ import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.*
@@ -23,16 +24,16 @@ import net.systemvi.configurator.utils.services.SerialApiService
 @Preview
 fun App() {
 
+	val appStateService=viewModel { AppStateService() }
 	val keymapService = viewModel { KeymapService() }
 	val serialService = viewModel { SerialApiService() }
-	val appStateService=viewModel { AppStateService() }
 
 	DisposableEffect(Unit){
 		appStateService.onStart()
 		keymapService.onStart()
 		serialService.onStart()
 		onDispose {
-			appStateService.onStop()
+			appStateService.onStart()
 			keymapService.onStop()
 			serialService.onStop()
 		}
@@ -57,15 +58,20 @@ fun App() {
 	}
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 fun main() = application {
-	val state=rememberWindowState(
+	var windowState = rememberWindowState(
 		width = 1600.dp,
 		height = 900.dp,
 	)
+
+	var windowDecoration by remember { mutableStateOf(WindowDecoration.SystemDefault) }
+
 	Window(
-		state = state,
+		state = windowState,
 		onCloseRequest = ::exitApplication,
-		title = "Configurator"
+		title = "Configurator",
+		decoration = windowDecoration
 	) {
 		App()
 	}
