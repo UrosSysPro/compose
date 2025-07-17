@@ -31,7 +31,7 @@ fun NavBar() {
     val links=listOf(
         NavbarLink("Configure",    ConfigurePage, Icons.Filled.Warning,   {}                        ),
         NavbarLink("Key Tester",   TesterPage,    Icons.Filled.Check,     { TesterHoverCard() }   ),
-        NavbarLink("Design",       DesignPage,    Icons.Filled.Create,    { DesignHoverCard() }   ),
+        NavbarLink("Design",       DesignPage,    Icons.Filled.Create,    {}   ),
         NavbarLink("Settings",     SettingsPage,  Icons.Filled.Settings,  { SettingsHoverCard() }   ),
     )
 

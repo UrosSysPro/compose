@@ -25,22 +25,16 @@ import androidx.compose.ui.input.pointer.PointerButton
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.onPointerEvent
 import androidx.compose.ui.unit.dp
-import arrow.core.right
-import net.systemvi.configurator.components.common.keyboard_grid.KeycapParam
 import net.systemvi.configurator.components.common.keycaps.FlatKeycap
-import net.systemvi.configurator.components.configure.KeycapPosition
-import net.systemvi.configurator.components.tester.keycaps.FlatKeycap
-import net.systemvi.configurator.data.allKeys
 import net.systemvi.configurator.model.KeyMap
-import net.systemvi.configurator.model.Keycap
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalFoundationApi::class)
 @Composable
-fun KeycapDesign(keymap: KeyMap, row: Int, key: Int, onDelete: () -> Unit, onRightClick: () -> Unit){
+fun KeycapDesign(keymap: KeyMap, row: Int, key: Int, onDelete: () -> Unit, onRightClick: () -> Unit, size: Int){
     var isHovered by remember { mutableStateOf(false) }
     val keycap = keymap.keycaps[row][key]
-    val width = 50 * keycap.width.size
-    val height = 50 * keycap.height.size
+    val width = size * keycap.width.size
+    val height = size * keycap.height.size
 
     Box(
         modifier = Modifier

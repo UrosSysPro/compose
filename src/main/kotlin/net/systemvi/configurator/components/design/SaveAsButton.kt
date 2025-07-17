@@ -23,7 +23,7 @@ import net.systemvi.configurator.model.KeyMap
 import net.systemvi.configurator.utils.services.KeymapService
 
 @Composable
-fun SaveAsButton(keymap: KeyMap, onNameChange: (String) -> Unit) {
+fun SaveAsButton(keymap: KeyMap, onNameChange: (String) -> Unit, enabled: Boolean) {
     val keymapService = viewModel { KeymapService() }
     val viewModel = viewModel { DesignPageViewModel() }
     val textColor = MaterialTheme.colorScheme.primary
@@ -31,7 +31,8 @@ fun SaveAsButton(keymap: KeyMap, onNameChange: (String) -> Unit) {
     ElevatedButton(
         onClick = {
             viewModel.showSaveButton = true
-        }
+        },
+        enabled = enabled
     ) {
         Text(text = "Save as")
     }
