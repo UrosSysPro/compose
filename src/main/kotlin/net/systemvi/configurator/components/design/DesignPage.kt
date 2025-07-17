@@ -14,7 +14,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import net.systemvi.configurator.components.configure.KeycapPosition
 
 @OptIn(ExperimentalFoundationApi::class)
-@Composable fun DesignPage(modifier: Modifier, showFloatingActionButtons: Boolean = true, keycapLimit: Int = 20, rowLimit: Int = 10) {
+@Composable fun DesignPage(modifier: Modifier, showFloatingActionButtons: Boolean = true, keycapLimit: Int = 20, rowLimit: Int = 10, oneUSize:Int=50) {
     val viewModel = viewModel { DesignPageViewModel() }
     val keymap = viewModel.keymap
 
@@ -25,9 +25,12 @@ import net.systemvi.configurator.components.configure.KeycapPosition
                 .padding(horizontal = 150.dp)
         )
     ) {
-        Row(){
-            AddRowButton(viewModel::addRow,keymap.keycaps.size>=rowLimit)
-            SaveAsButton(keymap, viewModel::setName)
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ){
+            AddRowButton(viewModel::addRow, keymap.keycaps.size>=rowLimit)
+            SaveAsButton(keymap, viewModel::setName, keymap.keycaps.flatten().isNotEmpty())
         }
         keymap.keycaps.forEachIndexed { i, row ->
             val paddingBottom = 50 * row.fold(0f){acc, keycap -> acc.coerceAtLeast(keycap.padding.bottom)}
@@ -40,7 +43,7 @@ import net.systemvi.configurator.components.configure.KeycapPosition
                 horizontalArrangement = Arrangement.Center
             )
             {
-                AddKeycapButton({viewModel.addKeycap(i)},row.size>=keycapLimit)
+                AddKeycapButton({viewModel.addKeycap(i)}, row.size>=keycapLimit)
                 row.forEachIndexed { j, key ->
                     val width = 50 * key.width.size
                     val height = 50 * key.height.size
@@ -61,7 +64,7 @@ import net.systemvi.configurator.components.configure.KeycapPosition
         }
     }
     if(viewModel.selectedKeycap != null) {
-        KeycapEdit(keymap, viewModel.selectedKeycap!!, viewModel::updateKeymap)
+        if(showFloatingActionButtons) KeycapEdit(keymap, viewModel.selectedKeycap!!, viewModel::updateKeymap)
     }
 }
 
