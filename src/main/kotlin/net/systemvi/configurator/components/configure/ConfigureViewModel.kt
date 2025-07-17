@@ -29,9 +29,10 @@ enum class KeyboardLayoutPages(val title:String){
     SaveAndLoad("Save and Load");
 }
 
-abstract class UploadStatus
-class Idle:UploadStatus()
-data class InProgress(val done:Int,val of: Int):UploadStatus()
+abstract class UploadStatus{
+    object Idle:UploadStatus()
+    data class InProgress(val done:Int,val of: Int):UploadStatus()
+}
 
 enum class KeyboardKeysPages(val title:String,val keys:List<Key>){
     All("All", allKeys),
@@ -63,13 +64,12 @@ class ConfigureViewModel(): ViewModel() {
     fun onStart(keymapApi: KeymapApi,serialApi: KeyboardSerialApi) {
         this.keymapApi = keymapApi
         this.serialApi = serialApi
-        println("configure view model start")
+        println("[INFO] configure view model start")
     }
 
     fun onStop(){
         keymap.onSome { keymap->keymapApi.save(keymap) }
-        keymap = None
-        println("configure view model stop")
+        println("[INFO] configure view model stop")
     }
 
     fun setKeyboardLayoutPage(page: KeyboardLayoutPages){
@@ -200,6 +200,6 @@ class ConfigureViewModel(): ViewModel() {
     }
 
     suspend fun keymapUpload(keymap: KeyMap,onStatusUpdate:(UploadStatus)->Unit={}){
-        keymapApi.upload(serialApi,keymap)
+        keymapApi.upload(serialApi,keymap,onStatusUpdate)
     }
 }

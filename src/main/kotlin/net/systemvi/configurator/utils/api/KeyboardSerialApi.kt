@@ -308,8 +308,6 @@ class KeyboardSerialApi {
             layerKeyPositions = layerKeyPositions,
             snapTapPairs = snapTapPairs
         )
-            .apply { println(this.layerKeyPositions);println(this.snapTapPairs) }
-            .apply { println(this.keycaps) }
     }
 
     fun deleteKeymap(){

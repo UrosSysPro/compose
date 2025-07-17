@@ -8,6 +8,7 @@ import arrow.core.serialization.ArrowModule
 import arrow.core.toOption
 import kotlinx.coroutines.delay
 import kotlinx.serialization.json.Json
+import net.systemvi.configurator.components.configure.UploadStatus
 import net.systemvi.configurator.model.KeyMap
 import net.systemvi.configurator.model.Macro
 import net.systemvi.configurator.utils.api.KeyboardSerialApi
@@ -53,9 +54,13 @@ class KeymapApi{
         }
     }
 
-    suspend fun upload(serialApi: KeyboardSerialApi, keymap: KeyMap){
+    suspend fun upload(serialApi: KeyboardSerialApi, keymap: KeyMap,onStatusUpdate:(UploadStatus)->Unit={}){
+        val total=keymap.keycaps.flatten().size*4+keymap.snapTapPairs.size+keymap.layerKeyPositions.size+1
+        var done=0
+        onStatusUpdate(UploadStatus.InProgress(done,total))
         serialApi.deleteKeymap()
-
+        done++
+        onStatusUpdate(UploadStatus.InProgress(done,total))
         delay(5)
 
         keymap.keycaps.forEach { row->
@@ -66,6 +71,8 @@ class KeymapApi{
                         is Either.Left -> serialApi.setKeyOnLayer(key.value,layer,keycap.matrixPosition)
                         is Either.Right -> serialApi.setKeyOnLayer(key.value,layer,keycap.matrixPosition)
                     }
+                    done++
+                    onStatusUpdate(UploadStatus.InProgress(done,total))
                     delay(5)
                 }
             }
@@ -73,13 +80,19 @@ class KeymapApi{
 
         keymap.snapTapPairs.forEach { snapTapPair->
             serialApi.addSnapTapPair(snapTapPair)
+            done++
+            onStatusUpdate(UploadStatus.InProgress(done,total))
             delay(5)
         }
 
         keymap.layerKeyPositions.forEach { layerKeyPosition->
             serialApi.addLayerKeyPosition(layerKeyPosition.position,layerKeyPosition.layer)
+            done++
+            onStatusUpdate(UploadStatus.InProgress(done,total))
             delay(5)
         }
+
+        onStatusUpdate(UploadStatus.Idle)
     }
 
     fun loadFromDisk():List<KeyMap>{

@@ -1,4 +1,4 @@
-package net.systemvi.configurator.components.title_bar
+package net.systemvi.configurator.components.common.title_bar
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

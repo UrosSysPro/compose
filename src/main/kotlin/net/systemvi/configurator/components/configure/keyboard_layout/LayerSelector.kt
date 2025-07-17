@@ -1,8 +1,11 @@
 package net.systemvi.configurator.components.configure.keyboard_layout
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -18,21 +21,52 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.launch
 import net.systemvi.configurator.components.configure.ConfigureViewModel
+import net.systemvi.configurator.components.configure.UploadStatus
 import net.systemvi.configurator.components.configure.serial.SerialPortSelector
+import kotlin.math.tan
 
 @Composable fun UploadKeymapButton(){
     val viewModel = viewModel{ ConfigureViewModel() }
     val scope=rememberCoroutineScope()
+    var uploadStatus: UploadStatus by remember { mutableStateOf(UploadStatus.Idle)}
     viewModel.keymap.onSome { keymap ->
         OutlinedButton(
-            onClick = {scope.launch { viewModel.keymapUpload(keymap)}},
+            onClick = {scope.launch {
+                viewModel.keymapUpload(
+                    keymap = keymap,
+                    onStatusUpdate = { uploadStatus=it }
+                )
+            }},
             modifier = Modifier.padding(end = 16.dp),
         ){
             Text("Upload")
         }
+    }
+    when(uploadStatus){
+        is UploadStatus.InProgress -> {
+            val status=uploadStatus as UploadStatus.InProgress
+            Dialog(onDismissRequest = {}){
+                Card{
+                    Column(
+                        modifier = Modifier
+                            .padding(20.dp)
+                    ){
+                        Text(
+                            text = "Uploading...",
+                            modifier = Modifier.padding(bottom = 20.dp)
+                        )
+                        LinearProgressIndicator(
+                            progress = { status.done.toFloat()/status.of}
+                        )
+                    }
+                }
+            }
+        }
+        else -> {}
     }
 }
 @Composable fun SaveAsButton(){
