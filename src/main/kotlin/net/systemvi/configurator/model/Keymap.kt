@@ -4,12 +4,11 @@ import arrow.core.left
 import arrow.core.right
 import arrow.optics.dsl.index
 import arrow.optics.optics
-import arrow.optics.typeclasses.Index
 import eu.mihosoft.jcsg.Cube
+import eu.mihosoft.vvecmath.Vector3d
 import kotlinx.serialization.Serializable
-import net.systemvi.configurator.components.configure.KeycapPosition
 import java.io.FileWriter
-import javax.swing.text.Keymap
+import kotlin.collections.forEachIndexed
 
 @Serializable
 @optics data class KeyMap(
@@ -74,8 +73,73 @@ fun KeyMap.addSnapTapPair(pair: SnapTapPair): KeyMap=
 fun KeyMap.removeSnapTapPair(pair: SnapTapPair): KeyMap=
     KeyMap.snapTapPairs.modify(this) { snappairs -> snappairs.filter { it != pair } }
 
+private fun calculatePlateSize(keymap:KeyMap,oneUSize: Double):Pair<Double, Double>{
+    var totalWidth=0.0
+    var totalHeight=0.0
+    var minSize=1.0
+    var maxPadding=0.0
+    var currentX=0.0
+    var currentY=0.0
+
+    keymap.keycaps.forEachIndexed { rowIndex, row ->
+        row.forEachIndexed { keycapIndex, keycap ->
+            val width=keycap.width.size.toDouble()
+            val height=keycap.height.size.toDouble()
+            val leftPadding=keycap.padding.left.toDouble()
+            val bottomPadding=keycap.padding.bottom.toDouble()
+
+            minSize=minSize.coerceAtMost(height)
+            maxPadding=maxPadding.coerceAtLeast(bottomPadding)
+            currentX+=oneUSize*(leftPadding+width)
+        }
+        totalWidth=totalWidth.coerceAtMost(currentX)
+        currentX=0.0
+        currentY+=(minSize+maxPadding)*oneUSize
+        totalHeight=totalHeight.coerceAtMost(currentY)
+        minSize=1.0
+        maxPadding=0.0
+    }
+    return Pair(totalWidth+oneUSize,totalHeight+oneUSize)
+}
+
+private fun cutSwitchHolesFromPlate(topPlate:Cube, keymap: KeyMap, oneUSize:Double) {
+    var minSize = 1.0
+    var maxPadding = 0.0
+    var currentX = 0.0
+    var currentY = 0.0
+
+    keymap.keycaps.forEachIndexed { rowIndex, row ->
+        row.forEachIndexed { keycapIndex, keycap ->
+            val width = keycap.width.size.toDouble()
+            val height = keycap.height.size.toDouble()
+            val leftPadding = keycap.padding.left.toDouble()
+            val bottomPadding = keycap.padding.bottom.toDouble()
+
+            minSize = minSize.coerceAtMost(height)
+            maxPadding = maxPadding.coerceAtLeast(bottomPadding)
+            currentX += oneUSize * leftPadding
+            //current x and y is top left corner of keycap including padding between tow touching keycaps
+
+//            val switchCube= Cube(Vector3d.xyz())
+//            topPlate.toCSG().diff
+            currentX += oneUSize * width
+        }
+        currentX = 0.0
+        currentY += (minSize + maxPadding) * oneUSize
+        minSize = 1.0
+        maxPadding = 0.0
+    }
+}
+
 fun KeyMap.exportStl(name:String){
-    val topPlate= Cube(30.0)
+    val oneUSize=19.0
+
+    val plateDepth=2.0
+    val (plateWidth,plateHeight)=calculatePlateSize(this,oneUSize)
+
+    val topPlate = Cube(plateWidth,plateHeight,plateDepth)
+//        .toCSG()
+
     val fileWriter= FileWriter(name)
     fileWriter.write(topPlate.toCSG().toStlString())
     fileWriter.close()
