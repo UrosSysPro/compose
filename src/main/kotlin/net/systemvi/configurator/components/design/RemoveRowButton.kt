@@ -12,14 +12,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun RemoveRowButton(onClick: () -> Unit) {
+fun RemoveRowButton(onClick: () -> Unit, size: Int) {
     FloatingActionButton(
         onClick = onClick,
         containerColor = MaterialTheme.colorScheme.errorContainer,
         contentColor = MaterialTheme.colorScheme.onErrorContainer,
         modifier = Modifier
             .padding(horizontal = 10.dp)
-            .size(50.dp)
+            .size(size.dp)
     ) {
         Icon(Icons.Filled.Delete, contentDescription = "Remove Row")
     }

@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun AddKeycapButton(onClick: () -> Unit, disable: Boolean) {
+fun AddKeycapButton(onClick: () -> Unit, disable: Boolean, size: Int) {
     FloatingActionButton(
         onClick = {
             if(!disable){
@@ -21,7 +21,7 @@ fun AddKeycapButton(onClick: () -> Unit, disable: Boolean) {
         containerColor = if(!disable) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceDim,
         contentColor = if(!disable) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurface,
         modifier = Modifier
-            .size(50.dp)
+            .size(size.dp)
     ) {
         Icon(Icons.Filled.Add, contentDescription = "Add Keycap")
     }

@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun AddRowButton(onClick: () -> Unit, disable: Boolean) {
+fun AddRowButton(onClick: () -> Unit, disable: Boolean, size: Int) {
     FloatingActionButton(
         onClick = {
             if(!disable) {
@@ -23,7 +23,7 @@ fun AddRowButton(onClick: () -> Unit, disable: Boolean) {
         contentColor = if(!disable) MaterialTheme.colorScheme.onTertiaryContainer else MaterialTheme.colorScheme.onSurface,
         modifier = Modifier
             .padding(vertical = 10.dp)
-            .size(50.dp)
+            .size(size.dp)
     ) {
         Icon(Icons.Filled.Add, contentDescription = "Add Row")
     }
