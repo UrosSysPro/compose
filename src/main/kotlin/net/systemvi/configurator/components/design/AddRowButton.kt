@@ -17,13 +17,11 @@ import net.systemvi.configurator.model.keycaps
 import net.systemvi.configurator.model.padding
 
 @Composable
-fun AddRowButton(keymap: KeyMap, onClick: (keymap: KeyMap) -> Unit, disable: Boolean) {
+fun AddRowButton(onClick: () -> Unit, disable: Boolean) {
     FloatingActionButton(
         onClick = {
             if(!disable) {
-                onClick(KeyMap.keycaps.modify(keymap, {
-                    it + listOf(listOf())
-                }))
+                onClick()
             }
         },
         containerColor = if(!disable) MaterialTheme.colorScheme.tertiaryContainer else MaterialTheme.colorScheme.surfaceDim,

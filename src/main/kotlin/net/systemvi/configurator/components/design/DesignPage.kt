@@ -16,6 +16,7 @@ import net.systemvi.configurator.components.configure.KeycapPosition
 @OptIn(ExperimentalFoundationApi::class)
 @Composable fun DesignPage(modifier: Modifier, showFloatingActionButtons: Boolean = true, keycapLimit: Int = 20, rowLimit: Int = 10) {
     val viewModel = viewModel { DesignPageViewModel() }
+    val keymap = viewModel.keymap
 
     Column(
         modifier = modifier.then(
@@ -24,8 +25,11 @@ import net.systemvi.configurator.components.configure.KeycapPosition
                 .padding(horizontal = 150.dp)
         )
     ) {
-        AddRowButton(viewModel.keymap, { viewModel.keymap = it }, viewModel.keymap.keycaps.size >= rowLimit)
-        viewModel.keymap.keycaps.forEachIndexed { i, row ->
+        Row(){
+            AddRowButton(viewModel::addRow,keymap.keycaps.size>=rowLimit)
+            SaveAsButton(keymap, viewModel::setName)
+        }
+        keymap.keycaps.forEachIndexed { i, row ->
             val paddingBottom = 50 * row.fold(0f){acc, keycap -> acc.coerceAtLeast(keycap.padding.bottom)}
 
             Row(
@@ -36,7 +40,7 @@ import net.systemvi.configurator.components.configure.KeycapPosition
                 horizontalArrangement = Arrangement.Center
             )
             {
-                AddKeycapButton(viewModel.keymap, i, { viewModel.keymap = it }, viewModel.keymap.keycaps[i].size >= keycapLimit)
+                AddKeycapButton({viewModel.addKeycap(i)},row.size>=keycapLimit)
                 row.forEachIndexed { j, key ->
                     val width = 50 * key.width.size
                     val height = 50 * key.height.size
@@ -48,16 +52,16 @@ import net.systemvi.configurator.components.configure.KeycapPosition
                             .size(width.dp, height.dp)
                             .wrapContentSize(unbounded = true),
                     ) {
-                        KeycapDesign(viewModel.keymap, i, j, { viewModel.keymap = it }, {
+                        KeycapDesign(keymap, i, j, {viewModel.deleteKeycap(i, j)}, {
                             viewModel.selectedKeycap = KeycapPosition(i,j) })
                     }
                 }
-                RemoveRowButton(viewModel.keymap, i, { viewModel.keymap = it })
+                RemoveRowButton({viewModel.removeRow(i)})
             }
         }
     }
     if(viewModel.selectedKeycap != null) {
-        if(showFloatingActionButtons) KeycapEdit(viewModel.keymap, viewModel.selectedKeycap!!, { viewModel.keymap = it })
+        KeycapEdit(keymap, viewModel.selectedKeycap!!, viewModel::updateKeymap)
     }
 }
 

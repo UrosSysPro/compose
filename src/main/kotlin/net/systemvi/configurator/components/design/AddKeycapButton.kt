@@ -12,23 +12,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import arrow.core.right
-import arrow.optics.dsl.index
-import net.systemvi.configurator.data.allKeys
-import net.systemvi.configurator.model.KeyMap
-import net.systemvi.configurator.model.Keycap
-import net.systemvi.configurator.model.keycaps
 
 @Composable
-fun AddKeycapButton(keymap: KeyMap, row: Int, onClick: (keymap: KeyMap) -> Unit, disable: Boolean) {
+fun AddKeycapButton(onClick: () -> Unit, disable: Boolean) {
     FloatingActionButton(
         onClick = {
             if(!disable){
-                onClick(KeyMap.keycaps.index(row).modify(keymap, {
-                    it + Keycap(
-                        listOf(allKeys[0].right())
-                    )
-                }))
+                onClick()
             }
         },
         containerColor = if(!disable) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceDim,
