@@ -77,6 +77,17 @@ import net.systemvi.configurator.utils.services.AppStateService
                     )
                 }
             )
+            SettingsEntry(
+                left={
+                    Text("Client decoration")
+                },
+                right={
+                    Switch(
+                        appStateService.useClientDecoration,
+                        onCheckedChange = {appStateService.useClientDecoration = it }
+                    )
+                }
+            )
         }
     }
 }

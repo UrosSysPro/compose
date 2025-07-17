@@ -43,6 +43,8 @@ class AppStateService: ViewModel() {
     var colorScheme by mutableStateOf(dynamicColorScheme(primaryColor, isDark))
         private set
 
+    var useClientDecoration by mutableStateOf(false)
+
     fun setTheme(primaryColor:Color? = null,isDark:Boolean? = null){
         if(isDark!=null)this.isDark=isDark
         if(primaryColor!=null)this.primaryColor=primaryColor
