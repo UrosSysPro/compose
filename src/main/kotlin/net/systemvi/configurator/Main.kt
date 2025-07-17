@@ -90,9 +90,9 @@ fun main() = application {
 
 	LaunchedEffect(useClientDecoration) {
 		if(useClientDecoration) {
-
+			//change window to use client decoration
 		}else{
-
+			//change window to use defautl decoration
 		}
 	}
 
