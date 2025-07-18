@@ -1,14 +1,20 @@
 package net.systemvi.configurator.model
 
+import arrow.core.None
+import arrow.core.Option
+import arrow.core.Some
 import arrow.core.left
 import arrow.core.right
+import arrow.core.some
 import arrow.optics.dsl.index
 import arrow.optics.optics
+import eu.mihosoft.jcsg.CSG
 import eu.mihosoft.jcsg.Cube
 import eu.mihosoft.vvecmath.Vector3d
 import kotlinx.serialization.Serializable
 import java.io.FileWriter
 import kotlin.collections.forEachIndexed
+import kotlin.random.Random
 
 @Serializable
 @optics data class KeyMap(
@@ -92,21 +98,24 @@ private fun calculatePlateSize(keymap:KeyMap,oneUSize: Double):Pair<Double, Doub
             maxPadding=maxPadding.coerceAtLeast(bottomPadding)
             currentX+=oneUSize*(leftPadding+width)
         }
-        totalWidth=totalWidth.coerceAtMost(currentX)
+        totalWidth=totalWidth.coerceAtLeast(currentX)
         currentX=0.0
         currentY+=(minSize+maxPadding)*oneUSize
-        totalHeight=totalHeight.coerceAtMost(currentY)
+        totalHeight=totalHeight.coerceAtLeast(currentY)
         minSize=1.0
         maxPadding=0.0
     }
-    return Pair(totalWidth+oneUSize,totalHeight+oneUSize)
+    return Pair(totalWidth,totalHeight)
 }
 
-private fun cutSwitchHolesFromPlate(topPlate:Cube, keymap: KeyMap, oneUSize:Double) {
+private fun cutSwitchHolesFromPlate(keymap: KeyMap, oneUSize:Double,cut:(CSG)->Unit,switchSize:Double=14.0) {
     var minSize = 1.0
     var maxPadding = 0.0
     var currentX = 0.0
     var currentY = 0.0
+    var random = Random
+
+    var switches: Option<CSG> = None
 
     keymap.keycaps.forEachIndexed { rowIndex, row ->
         row.forEachIndexed { keycapIndex, keycap ->
@@ -120,8 +129,20 @@ private fun cutSwitchHolesFromPlate(topPlate:Cube, keymap: KeyMap, oneUSize:Doub
             currentX += oneUSize * leftPadding
             //current x and y is top left corner of keycap including padding between tow touching keycaps
 
-//            val switchCube= Cube(Vector3d.xyz())
-//            topPlate.toCSG().diff
+            val switchCube= Cube().apply{
+                center = Vector3d.xyz(
+                    currentX+oneUSize*width/2.0+random.nextDouble()*0.001,
+                    currentY+oneUSize*height/2.0+random.nextDouble()*0.001,
+                    0.0
+                )
+                dimensions = Vector3d.xyz(switchSize,switchSize,switchSize)
+            }.toCSG()
+
+            switches=when(switches){
+                is None->switchCube.some()
+                is Some->(switches as Some<CSG>).value.union(switchCube).some()
+            }
+
             currentX += oneUSize * width
         }
         currentX = 0.0
@@ -129,18 +150,28 @@ private fun cutSwitchHolesFromPlate(topPlate:Cube, keymap: KeyMap, oneUSize:Doub
         minSize = 1.0
         maxPadding = 0.0
     }
+    switches.onSome { cut(it) }
 }
 
 fun KeyMap.exportStl(name:String){
-    val oneUSize=19.0
+//    val oneUSize=19.0
+//    val plateDepth=2.0
+//    val switchSize=14.0
 
+    val oneUSize=19.0
+    val switchSize=14.0
     val plateDepth=2.0
+
     val (plateWidth,plateHeight)=calculatePlateSize(this,oneUSize)
 
-    val topPlate = Cube(plateWidth,plateHeight,plateDepth)
-//        .toCSG()
+    var topPlate = Cube().apply {
+        center = Vector3d.xyz(plateWidth/2.0, plateHeight/2.0, 0.0)
+        dimensions = Vector3d.xyz(plateWidth,plateHeight,plateDepth)
+    }.toCSG()
 
-    val fileWriter= FileWriter(name)
-    fileWriter.write(topPlate.toCSG().toStlString())
+    cutSwitchHolesFromPlate(this,oneUSize,{topPlate=topPlate.difference(it)},switchSize)
+
+    val fileWriter = FileWriter(name)
+    fileWriter.write(topPlate.toStlString())
     fileWriter.close()
 }

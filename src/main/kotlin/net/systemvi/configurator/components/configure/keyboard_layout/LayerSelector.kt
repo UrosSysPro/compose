@@ -27,6 +27,7 @@ import kotlinx.coroutines.launch
 import net.systemvi.configurator.components.configure.ConfigureViewModel
 import net.systemvi.configurator.components.configure.UploadStatus
 import net.systemvi.configurator.components.configure.serial.SerialPortSelector
+import net.systemvi.configurator.model.exportStl
 import kotlin.math.tan
 
 @Composable fun UploadKeymapButton(){
@@ -92,6 +93,19 @@ import kotlin.math.tan
 }
 
 @Composable
+fun ExportButton(){
+    val viewModel = viewModel{ ConfigureViewModel() }
+    viewModel.keymap.onSome { keymap ->
+        OutlinedButton(
+            onClick = { keymap.exportStl("test.stl") },
+            modifier = Modifier.padding(end = 16.dp),
+        ){
+            Text("Export")
+        }
+    }
+}
+
+@Composable
 fun LayerSelector(configureViewModel: ConfigureViewModel = viewModel { ConfigureViewModel() }){
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -137,6 +151,7 @@ fun LayerSelector(configureViewModel: ConfigureViewModel = viewModel { Configure
             modifier = Modifier
                 .height(IntrinsicSize.Min)
         ){
+            ExportButton()
             UploadKeymapButton()
             SaveButton()
             SaveAsButton()
