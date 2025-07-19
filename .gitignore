@@ -17,4 +17,4 @@ graldew
 gradlew.bat
 keymaps.json
 config.json
-test.stl
+*.stl

@@ -108,7 +108,7 @@ private fun calculatePlateSize(keymap:KeyMap,oneUSize: Double):Pair<Double, Doub
     return Pair(totalWidth,totalHeight)
 }
 
-private fun cutSwitchHolesFromPlate(keymap: KeyMap, oneUSize:Double,cut:(CSG)->Unit,switchSize:Double=14.0) {
+private fun cutSwitchHolesFromPlate(keymap: KeyMap, oneUSize:Double,cut:(CSG)->Unit,switchHoleSize:Double=14.0) {
     var minSize = 1.0
     var maxPadding = 0.0
     var currentX = 0.0
@@ -127,7 +127,6 @@ private fun cutSwitchHolesFromPlate(keymap: KeyMap, oneUSize:Double,cut:(CSG)->U
             minSize = minSize.coerceAtMost(height)
             maxPadding = maxPadding.coerceAtLeast(bottomPadding)
             currentX += oneUSize * leftPadding
-            //current x and y is top left corner of keycap including padding between tow touching keycaps
 
             val switchCube= Cube().apply{
                 center = Vector3d.xyz(
@@ -135,7 +134,11 @@ private fun cutSwitchHolesFromPlate(keymap: KeyMap, oneUSize:Double,cut:(CSG)->U
                     currentY+oneUSize*height/2.0+random.nextDouble()*0.001,
                     0.0
                 )
-                dimensions = Vector3d.xyz(switchSize,switchSize,switchSize)
+                dimensions = Vector3d.xyz(
+                    switchHoleSize,
+                    switchHoleSize,
+                    switchHoleSize,
+                )
             }.toCSG()
 
             switches=when(switches){
@@ -153,25 +156,48 @@ private fun cutSwitchHolesFromPlate(keymap: KeyMap, oneUSize:Double,cut:(CSG)->U
     switches.onSome { cut(it) }
 }
 
-fun KeyMap.exportStl(name:String){
-//    val oneUSize=19.0
-//    val plateDepth=2.0
-//    val switchSize=14.0
+fun exportTopPlate(fileName:String,keymap:KeyMap,oneUSize: Double,plateDepth:Double,switchHoleSize:Double) {
 
-    val oneUSize=19.0
-    val switchSize=14.0
-    val plateDepth=2.0
-
-    val (plateWidth,plateHeight)=calculatePlateSize(this,oneUSize)
+    val (plateWidth,plateHeight)=calculatePlateSize(keymap,oneUSize)
 
     var topPlate = Cube().apply {
         center = Vector3d.xyz(plateWidth/2.0, plateHeight/2.0, 0.0)
         dimensions = Vector3d.xyz(plateWidth,plateHeight,plateDepth)
     }.toCSG()
 
-    cutSwitchHolesFromPlate(this,oneUSize,{topPlate=topPlate.difference(it)},switchSize)
+    cutSwitchHolesFromPlate(keymap,oneUSize,{topPlate=topPlate.difference(it)},switchHoleSize)
 
-    val fileWriter = FileWriter(name)
+    val fileWriter = FileWriter(fileName)
     fileWriter.write(topPlate.toStlString())
     fileWriter.close()
+}
+
+fun exportCase(fileName:String,keymap:KeyMap,oneUSize:Double,borderWidth:Double,height:Double) {
+    val (plateWidth,plateHeight)=calculatePlateSize(keymap,oneUSize)
+    var case=Cube().apply{
+        center=Vector3d.ZERO
+        dimensions = Vector3d.xyz(
+            plateWidth+2*borderWidth,
+            plateHeight+2*borderWidth,
+            height
+        )
+    }.toCSG()
+    case=case.difference(Cube().apply {
+        center = Vector3d.xyz(0.0,0.0,5.0)
+        dimensions = Vector3d.xyz(plateWidth,plateHeight,height)
+    }.toCSG())
+
+    val fileWriter = FileWriter(fileName)
+    fileWriter.write(case.toStlString())
+    fileWriter.close()
+}
+
+fun KeyMap.exportStl(name:String){
+
+    val oneUSize=19.0
+    val switchSize=14.0
+    val plateDepth=2.0
+
+    exportTopPlate("top-plate.stl",this,oneUSize,plateDepth,switchSize)
+    exportCase("case.stl",this,oneUSize,switchSize,20.0)
 }
