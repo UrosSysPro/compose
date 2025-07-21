@@ -1,20 +1,14 @@
 package net.systemvi.configurator.model
 
-import arrow.core.None
-import arrow.core.Option
-import arrow.core.Some
 import arrow.core.left
 import arrow.core.right
-import arrow.core.some
 import arrow.optics.dsl.index
 import arrow.optics.optics
-import eu.mihosoft.jcsg.CSG
-import eu.mihosoft.jcsg.Cube
-import eu.mihosoft.vvecmath.Vector3d
 import kotlinx.serialization.Serializable
-import java.io.FileWriter
-import kotlin.collections.forEachIndexed
-import kotlin.random.Random
+import net.systemvi.configurator.utils.export.round_filet_design.KeycapSize
+import net.systemvi.configurator.utils.export.round_filet_design.RoundFiletKeyboard
+import net.systemvi.configurator.utils.export.round_filet_design.SwitchSize
+import java.io.File
 
 @Serializable
 @optics data class KeyMap(
@@ -79,45 +73,15 @@ fun KeyMap.addSnapTapPair(pair: SnapTapPair): KeyMap=
 fun KeyMap.removeSnapTapPair(pair: SnapTapPair): KeyMap=
     KeyMap.snapTapPairs.modify(this) { snappairs -> snappairs.filter { it != pair } }
 
-private fun calculatePlateSize(keymap:KeyMap,oneUSize: Double):Pair<Double, Double>{
-    var totalWidth=0.0
-    var totalHeight=0.0
-    var minSize=1.0
-    var maxPadding=0.0
-    var currentX=0.0
-    var currentY=0.0
-
-    keymap.keycaps.forEachIndexed { rowIndex, row ->
-        row.forEachIndexed { keycapIndex, keycap ->
-            val width=keycap.width.size.toDouble()
-            val height=keycap.height.size.toDouble()
-            val leftPadding=keycap.padding.left.toDouble()
-            val bottomPadding=keycap.padding.bottom.toDouble()
-
-            minSize=minSize.coerceAtMost(height)
-            maxPadding=maxPadding.coerceAtLeast(bottomPadding)
-            currentX+=oneUSize*(leftPadding+width)
-        }
-        totalWidth=totalWidth.coerceAtLeast(currentX)
-        currentX=0.0
-        currentY+=(minSize+maxPadding)*oneUSize
-        totalHeight=totalHeight.coerceAtLeast(currentY)
-        minSize=1.0
-        maxPadding=0.0
-    }
-    return Pair(totalWidth,totalHeight)
-}
-
-private fun cutSwitchHolesFromPlate(keymap: KeyMap, oneUSize:Double,cut:(CSG)->Unit,switchHoleSize:Double=14.0) {
+fun KeyMap.forEveryKeycapPositioned(keycapSize:KeycapSize,keycapPadding: net.systemvi.configurator.utils.export.round_filet_design.KeycapPadding,callback:(keycap: Keycap, rowIndex:Int, keycapIndex:Int, positionX: Double, positionY: Double)->Unit) {
     var minSize = 1.0
     var maxPadding = 0.0
     var currentX = 0.0
     var currentY = 0.0
-    var random = Random
+    var oneUWidth = keycapSize.width + keycapPadding.horizontal * 2
+    var oneUHeight = keycapSize.height + keycapPadding.vertical * 2
 
-    var switches: Option<CSG> = None
-
-    keymap.keycaps.forEachIndexed { rowIndex, row ->
+    this.keycaps.forEachIndexed { rowIndex, row ->
         row.forEachIndexed { keycapIndex, keycap ->
             val width = keycap.width.size.toDouble()
             val height = keycap.height.size.toDouble()
@@ -126,78 +90,29 @@ private fun cutSwitchHolesFromPlate(keymap: KeyMap, oneUSize:Double,cut:(CSG)->U
 
             minSize = minSize.coerceAtMost(height)
             maxPadding = maxPadding.coerceAtLeast(bottomPadding)
-            currentX += oneUSize * leftPadding
+            currentX += oneUWidth * leftPadding
 
-            val switchCube= Cube().apply{
-                center = Vector3d.xyz(
-                    currentX+oneUSize*width/2.0+random.nextDouble()*0.001,
-                    currentY+oneUSize*height/2.0+random.nextDouble()*0.001,
-                    0.0
-                )
-                dimensions = Vector3d.xyz(
-                    switchHoleSize,
-                    switchHoleSize,
-                    switchHoleSize,
-                )
-            }.toCSG()
+            callback(keycap, rowIndex, keycapIndex, currentX, currentY)
 
-            switches=when(switches){
-                is None->switchCube.some()
-                is Some->(switches as Some<CSG>).value.union(switchCube).some()
-            }
-
-            currentX += oneUSize * width
+            currentX += oneUWidth * width
         }
         currentX = 0.0
-        currentY += (minSize + maxPadding) * oneUSize
+        currentY += (minSize + maxPadding) * oneUHeight
         minSize = 1.0
         maxPadding = 0.0
     }
-    switches.onSome { cut(it) }
-}
-
-fun exportTopPlate(fileName:String,keymap:KeyMap,oneUSize: Double,plateDepth:Double,switchHoleSize:Double) {
-
-    val (plateWidth,plateHeight)=calculatePlateSize(keymap,oneUSize)
-
-    var topPlate = Cube().apply {
-        center = Vector3d.xyz(plateWidth/2.0, plateHeight/2.0, 0.0)
-        dimensions = Vector3d.xyz(plateWidth,plateHeight,plateDepth)
-    }.toCSG()
-
-    cutSwitchHolesFromPlate(keymap,oneUSize,{topPlate=topPlate.difference(it)},switchHoleSize)
-
-    val fileWriter = FileWriter(fileName)
-    fileWriter.write(topPlate.toStlString())
-    fileWriter.close()
-}
-
-fun exportCase(fileName:String,keymap:KeyMap,oneUSize:Double,borderWidth:Double,height:Double) {
-    val (plateWidth,plateHeight)=calculatePlateSize(keymap,oneUSize)
-    var case=Cube().apply{
-        center=Vector3d.ZERO
-        dimensions = Vector3d.xyz(
-            plateWidth+2*borderWidth,
-            plateHeight+2*borderWidth,
-            height
-        )
-    }.toCSG()
-    case=case.difference(Cube().apply {
-        center = Vector3d.xyz(0.0,0.0,5.0)
-        dimensions = Vector3d.xyz(plateWidth,plateHeight,height)
-    }.toCSG())
-
-    val fileWriter = FileWriter(fileName)
-    fileWriter.write(case.toStlString())
-    fileWriter.close()
 }
 
 fun KeyMap.exportStl(name:String){
-
-    val oneUSize=19.0
-    val switchSize=14.0
-    val plateDepth=2.0
-
-    exportTopPlate("top-plate.stl",this,oneUSize,plateDepth,switchSize)
-    exportCase("case.stl",this,oneUSize,switchSize,20.0)
+    val dirName="round_filet_design"
+    val file= File(dirName)
+    file.mkdir()
+    RoundFiletKeyboard(
+        keymap=this,
+        switchSize = SwitchSize(14.0,14.0),
+        keycapSize = KeycapSize(18.0,18.0),
+        keycapPadding = net.systemvi.configurator.utils.export.round_filet_design.KeycapPadding(0.5,0.5),
+        plateHeight = 2.0,
+        keyboardBorderWidth = 0.8,
+    ).saveToDir(dirName)
 }
