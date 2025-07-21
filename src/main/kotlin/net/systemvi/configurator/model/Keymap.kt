@@ -113,6 +113,7 @@ fun KeyMap.exportStl(name:String){
         keycapSize = KeycapSize(18.0,18.0),
         keycapPadding = net.systemvi.configurator.utils.export.round_filet_design.KeycapPadding(0.5,0.5),
         plateHeight = 2.0,
-        keyboardBorderWidth = 0.8,
+        keyboardBorderWidth = 8.0,
+        keyboardBorderHeight = 20.0,
     ).saveToDir(dirName)
 }
