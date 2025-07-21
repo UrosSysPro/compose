@@ -21,6 +21,7 @@ import net.systemvi.configurator.model.KeyMap
 import net.systemvi.configurator.model.Keycap
 import net.systemvi.configurator.model.KeycapHeight
 import net.systemvi.configurator.model.KeycapMatrixPosition
+import net.systemvi.configurator.model.KeycapPadding
 import net.systemvi.configurator.model.KeycapWidth
 import net.systemvi.configurator.model.LayerKeyPosition
 import net.systemvi.configurator.model.Macro
@@ -230,7 +231,9 @@ class KeyboardSerialApi {
                     val height=buffer[4].toInt()
                     val physicalX=buffer[5].toInt()
                     val physicalY=buffer[6].toInt()
-                    buffer=buffer.drop(7)
+                    val paddingLeft=buffer[7].toInt()
+                    val paddingBottom=buffer[8].toInt()
+                    buffer=buffer.drop(9)
                     val keys= MutableList<Either<Macro, Key>>(4){ passKey.right() }
                     for(i in 0 until 4){
                         val keyType= buffer[0].toInt().toChar()
@@ -271,7 +274,8 @@ class KeyboardSerialApi {
                         layers = keys,
                         width = KeycapWidth.entries[width],
                         height = KeycapHeight.entries[height],
-                        matrixPosition = KeycapMatrixPosition(column, row)
+                        matrixPosition = KeycapMatrixPosition(column, row),
+                        padding = KeycapPadding(paddingBottom*0.25f,paddingLeft*0.25f)
                     )
                 }
                 'l'->{
