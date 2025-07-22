@@ -33,7 +33,7 @@ import net.systemvi.configurator.components.configure.KeycapPosition
             SaveAsButton(keymap, viewModel::setName, keymap.keycaps.flatten().isNotEmpty())
         }
         keymap.keycaps.forEachIndexed { i, row ->
-            val paddingBottom = 50 * row.fold(0f){acc, keycap -> acc.coerceAtLeast(keycap.padding.bottom)}
+            val paddingBottom = oneUSize * row.fold(0f){acc, keycap -> acc.coerceAtLeast(keycap.padding.bottom)}
 
             Row(
                 modifier = Modifier
@@ -45,9 +45,9 @@ import net.systemvi.configurator.components.configure.KeycapPosition
             {
                 AddKeycapButton({viewModel.addKeycap(i)}, row.size>=keycapLimit, oneUSize)
                 row.forEachIndexed { j, key ->
-                    val width = 50 * key.width.size
-                    val height = 50 * key.height.size
-                    val leftPadding = 50 * key.padding.left
+                    val width = oneUSize * key.width.size
+                    val height = oneUSize * key.height.size
+                    val leftPadding = oneUSize * key.padding.left
 
                     Box(
                         modifier = Modifier
@@ -62,6 +62,7 @@ import net.systemvi.configurator.components.configure.KeycapPosition
                 RemoveRowButton({viewModel.removeRow(i)}, oneUSize)
             }
         }
+        DragAndDropRows()
     }
     if(viewModel.selectedKeycap != null) {
         if(showFloatingActionButtons) KeycapEdit(keymap, viewModel.selectedKeycap!!, viewModel::updateKeymap)
