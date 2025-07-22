@@ -12,3 +12,5 @@ object TesterPage:Page()
 object DesignPage:Page()
 @Serializable
 object SettingsPage:Page()
+@Serializable
+object ComponentPage:Page()

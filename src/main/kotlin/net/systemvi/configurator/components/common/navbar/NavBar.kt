@@ -29,10 +29,11 @@ import net.systemvi.configurator.model.*
 @Composable
 fun NavBar() {
     val links=listOf(
-        NavbarLink("Configure",    ConfigurePage, Icons.Filled.Warning,   {}                        ),
-        NavbarLink("Key Tester",   TesterPage,    Icons.Filled.Check,     { TesterHoverCard() }   ),
-        NavbarLink("Design",       DesignPage,    Icons.Filled.Create,    {}   ),
-        NavbarLink("Settings",     SettingsPage,  Icons.Filled.Settings,  { SettingsHoverCard() }   ),
+        NavbarLink("Configure",     ConfigurePage, Icons.Filled.Warning,   {}),
+        NavbarLink("Key Tester",    TesterPage,    Icons.Filled.Check,     { TesterHoverCard() }),
+        NavbarLink("Design",        DesignPage,    Icons.Filled.Create,    {}),
+        NavbarLink("Settings",      SettingsPage,  Icons.Filled.Settings,  { SettingsHoverCard() }),
+        NavbarLink("Component",     ComponentPage,  Icons.Filled.Settings, {}),
     )
 
     var mouseHover by remember { mutableStateOf(false) }

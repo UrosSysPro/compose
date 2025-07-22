@@ -20,6 +20,8 @@ import net.systemvi.configurator.components.configure.ConfigurePage
 import net.systemvi.configurator.components.design.DesignPage
 import net.systemvi.configurator.components.settings.SettingsPage
 import net.systemvi.configurator.components.tester.TesterPage
+import net.systemvi.configurator.components.component_tester.ComponentPage
+import net.systemvi.configurator.model.ComponentPage
 import net.systemvi.configurator.model.ConfigurePage
 import net.systemvi.configurator.model.DesignPage
 import net.systemvi.configurator.model.SettingsPage
@@ -66,6 +68,7 @@ fun App(
                         TesterPage -> TesterPage(Modifier)
                         DesignPage -> DesignPage(Modifier)
                         SettingsPage -> SettingsPage(Modifier)
+                        ComponentPage -> ComponentPage()
                     }
                     NavBar()
                 }

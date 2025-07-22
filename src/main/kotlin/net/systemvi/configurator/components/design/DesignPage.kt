@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import net.systemvi.configurator.components.common.DraggableColumn
 import net.systemvi.configurator.components.configure.KeycapPosition
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -32,7 +33,7 @@ import net.systemvi.configurator.components.configure.KeycapPosition
             AddRowButton(viewModel::addRow, keymap.keycaps.size>=rowLimit, oneUSize)
             SaveAsButton(keymap, viewModel::setName, keymap.keycaps.flatten().isNotEmpty())
         }
-        keymap.keycaps.forEachIndexed { i, row ->
+        DraggableColumn(keymap.keycaps,{it},{println("onDrop")}){ i,row ->
             val paddingBottom = oneUSize * row.fold(0f){acc, keycap -> acc.coerceAtLeast(keycap.padding.bottom)}
 
             Row(
@@ -60,7 +61,36 @@ import net.systemvi.configurator.components.configure.KeycapPosition
                     }
                 }
                 RemoveRowButton({viewModel.removeRow(i)}, oneUSize)
-            }
+        }
+//        keymap.keycaps.forEachIndexed { i, row ->
+//            val paddingBottom = oneUSize * row.fold(0f){acc, keycap -> acc.coerceAtLeast(keycap.padding.bottom)}
+//
+//            Row(
+//                modifier = Modifier
+//                    .wrapContentSize(unbounded = true)
+//                    .padding(bottom = (paddingBottom+10).dp),
+//                verticalAlignment = Alignment.CenterVertically,
+//                horizontalArrangement = Arrangement.Center
+//            )
+//            {
+//                AddKeycapButton({viewModel.addKeycap(i)}, row.size>=keycapLimit, oneUSize)
+//                row.forEachIndexed { j, key ->
+//                    val width = oneUSize * key.width.size
+//                    val height = oneUSize * key.height.size
+//                    val leftPadding = oneUSize * key.padding.left
+//
+//                    Box(
+//                        modifier = Modifier
+//                            .padding(start = leftPadding.dp)
+//                            .size(width.dp, height.dp)
+//                            .wrapContentSize(unbounded = true),
+//                    ) {
+//                        KeycapDesign(keymap, i, j, {viewModel.deleteKeycap(i, j)}, {
+//                            viewModel.selectedKeycap = KeycapPosition(i,j) }, oneUSize)
+//                    }
+//                }
+//                RemoveRowButton({viewModel.removeRow(i)}, oneUSize)
+//            }
         }
         DragAndDropRows()
     }
