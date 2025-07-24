@@ -12,7 +12,8 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import net.systemvi.configurator.components.common.DraggableColumn
+import net.systemvi.configurator.components.common.DraggableList
+import net.systemvi.configurator.components.common.DraggableListDirection
 import net.systemvi.configurator.components.configure.KeycapPosition
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -34,7 +35,7 @@ import net.systemvi.configurator.components.configure.KeycapPosition
             AddRowButton(viewModel::addRow, keymap.keycaps.size>=rowLimit, oneUSize)
             SaveAsButton(keymap, viewModel::setName, keymap.keycaps.flatten().isNotEmpty())
         }
-        DraggableColumn(keymap.keycaps,{it},{println("onDrop")}){ i,row,isSelected ->
+        DraggableList(keymap.keycaps,{it},{}){ i, row, isSelected ->
             val paddingBottom = oneUSize * row.fold(0f){acc, keycap -> acc.coerceAtLeast(keycap.padding.bottom)}
 
             Row(
@@ -49,18 +50,21 @@ import net.systemvi.configurator.components.configure.KeycapPosition
             )
             {
                 AddKeycapButton({ viewModel.addKeycap(i) }, row.size >= keycapLimit, oneUSize)
-                row.forEachIndexed { j, key ->
-                    val width = oneUSize * key.width.size
-                    val height = oneUSize * key.height.size
-                    val leftPadding = oneUSize * key.padding.left
+                DraggableList(row,{it},{}, DraggableListDirection.horizontal){ j,keycap, isSelected->
+                    val width = oneUSize * keycap.width.size
+                    val height = oneUSize * keycap.height.size
+                    val leftPadding = oneUSize * keycap.padding.left
 
                     Box(
                         modifier = Modifier
+                            .graphicsLayer(
+                                alpha = if(isSelected)0f else 1f,
+                            )
                             .padding(start = leftPadding.dp)
                             .size(width.dp, height.dp)
                             .wrapContentSize(unbounded = true),
                     ) {
-                        KeycapDesign(key, { viewModel.deleteKeycap(i, j) }, {
+                        KeycapDesign(keycap, { viewModel.deleteKeycap(i, j) }, {
                             viewModel.selectedKeycap = KeycapPosition(i, j)
                         }, oneUSize)
                     }

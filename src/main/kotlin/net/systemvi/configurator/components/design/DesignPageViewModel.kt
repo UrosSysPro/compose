@@ -11,14 +11,18 @@ import net.systemvi.configurator.components.configure.KeycapPosition
 import net.systemvi.configurator.model.KeyMap
 import net.systemvi.configurator.data.allKeys
 import net.systemvi.configurator.model.Keycap
+import net.systemvi.configurator.model.KeycapMatrixPosition
 import net.systemvi.configurator.model.changeName
 import net.systemvi.configurator.model.keycaps
 import kotlin.collections.plus
+import kotlin.random.Random
+import kotlin.random.nextInt
 
 class DesignPageViewModel : ViewModel() {
 
     var selectedKeycap: KeycapPosition? by mutableStateOf(null)
     var showSaveButton by mutableStateOf(false)
+    var random = Random
 
     var keymap by mutableStateOf(KeyMap("", listOf(listOf())))
         private set
@@ -46,7 +50,8 @@ class DesignPageViewModel : ViewModel() {
     fun addKeycap(row: Int) {
         keymap = KeyMap.keycaps.index(row).modify(keymap, {
             it + Keycap(
-                listOf(allKeys[0].right())
+                listOf(allKeys[0].right()),
+                matrixPosition = KeycapMatrixPosition(random.nextInt(),random.nextInt())
             )
         })
     }
