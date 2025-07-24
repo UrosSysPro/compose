@@ -14,3 +14,5 @@ object DesignPage:Page()
 object SettingsPage:Page()
 @Serializable
 object ComponentPage:Page()
+@Serializable
+object SerialApiTestPage:Page()

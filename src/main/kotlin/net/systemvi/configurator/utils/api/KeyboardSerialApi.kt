@@ -330,4 +330,19 @@ class KeyboardSerialApi {
         } }
         port= None
     }
+    fun storeToFlash(){
+        port
+            .onSome { port->port.writeString("f") }
+            .onNone { println("[ERROR] store keymap to flash, no port opened") }
+    }
+    fun loadFromFlash(){
+        port
+            .onSome { port->port.writeString("F") }
+            .onNone { println("[ERROR] load keymap from flash, no port opened") }
+    }
+    fun formatFlash(){
+        port
+            .onSome { port->port.writeString("q") }
+            .onNone { println("[ERROR] format flash, no port opened") }
+    }
 }

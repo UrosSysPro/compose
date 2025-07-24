@@ -20,10 +20,12 @@ import net.systemvi.configurator.components.configure.ConfigurePage
 import net.systemvi.configurator.components.design.DesignPage
 import net.systemvi.configurator.components.settings.SettingsPage
 import net.systemvi.configurator.components.tester.TesterPage
+import net.systemvi.configurator.components.serial_api_test_page.SerialApiTestPage
 import net.systemvi.configurator.components.component_tester.ComponentPage
 import net.systemvi.configurator.model.ComponentPage
 import net.systemvi.configurator.model.ConfigurePage
 import net.systemvi.configurator.model.DesignPage
+import net.systemvi.configurator.model.SerialApiTestPage
 import net.systemvi.configurator.model.SettingsPage
 import net.systemvi.configurator.model.TesterPage
 import net.systemvi.configurator.utils.services.AppStateService
@@ -68,7 +70,8 @@ fun App(
                         TesterPage -> TesterPage(Modifier)
                         DesignPage -> DesignPage(Modifier)
                         SettingsPage -> SettingsPage(Modifier)
-                        ComponentPage -> ComponentPage()
+                        ComponentPage -> ComponentPage(Modifier)
+                        SerialApiTestPage -> SerialApiTestPage(Modifier)
                     }
                     NavBar()
                 }

@@ -10,7 +10,6 @@ import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -19,7 +18,6 @@ import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.onPointerEvent
 import arrow.core.None
 import arrow.core.Option
-import net.systemvi.configurator.components.design.DesignHoverCard
 import net.systemvi.configurator.components.settings.SettingsHoverCard
 import net.systemvi.configurator.components.tester.TesterHoverCard
 import net.systemvi.configurator.model.*
@@ -34,6 +32,7 @@ fun NavBar() {
         NavbarLink("Design",        DesignPage,    Icons.Filled.Create,    {}),
         NavbarLink("Settings",      SettingsPage,  Icons.Filled.Settings,  { SettingsHoverCard() }),
         NavbarLink("Component",     ComponentPage,  Icons.Filled.Settings, {}),
+        NavbarLink("Serial Api Tester", SerialApiTestPage,  Icons.Filled.Settings, {}),
     )
 
     var mouseHover by remember { mutableStateOf(false) }
