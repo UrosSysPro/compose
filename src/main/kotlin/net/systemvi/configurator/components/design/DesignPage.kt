@@ -35,7 +35,11 @@ import net.systemvi.configurator.components.configure.KeycapPosition
             AddRowButton(viewModel::addRow, keymap.keycaps.size>=rowLimit, oneUSize)
             SaveAsButton(keymap, viewModel::setName, keymap.keycaps.flatten().isNotEmpty())
         }
-        DraggableList(keymap.keycaps,{it},{}){ i, row, isSelected ->
+        DraggableList(
+            items = keymap.keycaps,
+            key = {it},
+            onDrop = {}
+        ){ i, row, isSelected ->
             val paddingBottom = oneUSize * row.fold(0f){acc, keycap -> acc.coerceAtLeast(keycap.padding.bottom)}
 
             Row(
@@ -50,7 +54,12 @@ import net.systemvi.configurator.components.configure.KeycapPosition
             )
             {
                 AddKeycapButton({ viewModel.addKeycap(i) }, row.size >= keycapLimit, oneUSize)
-                DraggableList(row,{it},{}, DraggableListDirection.horizontal){ j,keycap, isSelected->
+                DraggableList(
+                    items = row,
+                    key = {it},
+                    onDrop = {},
+                    direction = DraggableListDirection.horizontal
+                ){ j,keycap, isSelected->
                     val width = oneUSize * keycap.width.size
                     val height = oneUSize * keycap.height.size
                     val leftPadding = oneUSize * keycap.padding.left
