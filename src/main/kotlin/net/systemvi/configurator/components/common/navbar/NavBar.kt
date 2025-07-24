@@ -31,8 +31,8 @@ fun NavBar() {
         NavbarLink("Key Tester",    TesterPage,    Icons.Filled.Check,     { TesterHoverCard() }),
         NavbarLink("Design",        DesignPage,    Icons.Filled.Create,    {}),
         NavbarLink("Settings",      SettingsPage,  Icons.Filled.Settings,  { SettingsHoverCard() }),
-        NavbarLink("Component",     ComponentPage,  Icons.Filled.Settings, {}),
-        NavbarLink("Serial Api Tester", SerialApiTestPage,  Icons.Filled.Settings, {}),
+//        NavbarLink("Component",     ComponentPage,  Icons.Filled.Settings, {}),
+//        NavbarLink("Serial Api Tester", SerialApiTestPage,  Icons.Filled.Settings, {}),
     )
 
     var mouseHover by remember { mutableStateOf(false) }
