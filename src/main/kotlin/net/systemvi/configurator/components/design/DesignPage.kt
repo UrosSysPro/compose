@@ -9,6 +9,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import net.systemvi.configurator.components.common.DraggableColumn
@@ -33,18 +34,21 @@ import net.systemvi.configurator.components.configure.KeycapPosition
             AddRowButton(viewModel::addRow, keymap.keycaps.size>=rowLimit, oneUSize)
             SaveAsButton(keymap, viewModel::setName, keymap.keycaps.flatten().isNotEmpty())
         }
-        DraggableColumn(keymap.keycaps,{it},{println("onDrop")}){ i,row ->
+        DraggableColumn(keymap.keycaps,{it},{println("onDrop")}){ i,row,isSelected ->
             val paddingBottom = oneUSize * row.fold(0f){acc, keycap -> acc.coerceAtLeast(keycap.padding.bottom)}
 
             Row(
                 modifier = Modifier
+                    .graphicsLayer(
+                        alpha = if(isSelected)0f else 1f,
+                    )
                     .wrapContentSize(unbounded = true)
                     .padding(bottom = (paddingBottom+10).dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             )
             {
-                AddKeycapButton({viewModel.addKeycap(i)}, row.size>=keycapLimit, oneUSize)
+                AddKeycapButton({ viewModel.addKeycap(i) }, row.size >= keycapLimit, oneUSize)
                 row.forEachIndexed { j, key ->
                     val width = oneUSize * key.width.size
                     val height = oneUSize * key.height.size
@@ -56,43 +60,14 @@ import net.systemvi.configurator.components.configure.KeycapPosition
                             .size(width.dp, height.dp)
                             .wrapContentSize(unbounded = true),
                     ) {
-                        KeycapDesign(keymap, i, j, {viewModel.deleteKeycap(i, j)}, {
-                            viewModel.selectedKeycap = KeycapPosition(i,j) }, oneUSize)
+                        KeycapDesign(key, { viewModel.deleteKeycap(i, j) }, {
+                            viewModel.selectedKeycap = KeycapPosition(i, j)
+                        }, oneUSize)
                     }
                 }
-                RemoveRowButton({viewModel.removeRow(i)}, oneUSize)
+                RemoveRowButton({ viewModel.removeRow(i) }, oneUSize)
+            }
         }
-//        keymap.keycaps.forEachIndexed { i, row ->
-//            val paddingBottom = oneUSize * row.fold(0f){acc, keycap -> acc.coerceAtLeast(keycap.padding.bottom)}
-//
-//            Row(
-//                modifier = Modifier
-//                    .wrapContentSize(unbounded = true)
-//                    .padding(bottom = (paddingBottom+10).dp),
-//                verticalAlignment = Alignment.CenterVertically,
-//                horizontalArrangement = Arrangement.Center
-//            )
-//            {
-//                AddKeycapButton({viewModel.addKeycap(i)}, row.size>=keycapLimit, oneUSize)
-//                row.forEachIndexed { j, key ->
-//                    val width = oneUSize * key.width.size
-//                    val height = oneUSize * key.height.size
-//                    val leftPadding = oneUSize * key.padding.left
-//
-//                    Box(
-//                        modifier = Modifier
-//                            .padding(start = leftPadding.dp)
-//                            .size(width.dp, height.dp)
-//                            .wrapContentSize(unbounded = true),
-//                    ) {
-//                        KeycapDesign(keymap, i, j, {viewModel.deleteKeycap(i, j)}, {
-//                            viewModel.selectedKeycap = KeycapPosition(i,j) }, oneUSize)
-//                    }
-//                }
-//                RemoveRowButton({viewModel.removeRow(i)}, oneUSize)
-//            }
-        }
-        DragAndDropRows()
     }
     if(viewModel.selectedKeycap != null) {
         if(showFloatingActionButtons) KeycapEdit(keymap, viewModel.selectedKeycap!!, viewModel::updateKeymap)

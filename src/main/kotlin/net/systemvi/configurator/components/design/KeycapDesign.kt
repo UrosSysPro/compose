@@ -27,12 +27,13 @@ import androidx.compose.ui.input.pointer.onPointerEvent
 import androidx.compose.ui.unit.dp
 import net.systemvi.configurator.components.common.keycaps.FlatKeycap
 import net.systemvi.configurator.model.KeyMap
+import net.systemvi.configurator.model.Keycap
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalFoundationApi::class)
 @Composable
-fun KeycapDesign(keymap: KeyMap, row: Int, key: Int, onDelete: () -> Unit, onRightClick: () -> Unit, size: Int){
+fun KeycapDesign(keycap: Keycap, onDelete: () -> Unit, onRightClick: () -> Unit, size: Int){
+
     var isHovered by remember { mutableStateOf(false) }
-    val keycap = keymap.keycaps[row][key]
     val width = size * keycap.width.size
     val height = size * keycap.height.size
 
