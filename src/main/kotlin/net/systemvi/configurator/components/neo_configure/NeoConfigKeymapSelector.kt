@@ -26,7 +26,7 @@ fun NeoConfigKeymapSelector(){
     SharedTransitionLayout(
         modifier = Modifier
             .height(30.dp)
-            .wrapContentHeight(unbounded = true)
+            .wrapContentHeight(unbounded = true, align = Alignment.Top)
     ){
         AnimatedContent(
             expanded,
@@ -95,7 +95,6 @@ private fun KeymapsPopUp(
                     rememberSharedContentState(key = "container"),
                     animatedVisibilityScope = animatedVisibilityScope
                 )
-                .padding(top=450.dp)
         ) {
             Column(
                 modifier = Modifier
