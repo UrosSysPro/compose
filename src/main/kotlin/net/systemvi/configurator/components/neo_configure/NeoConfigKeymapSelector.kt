@@ -14,44 +14,32 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import net.systemvi.configurator.components.common.hero_pop_up.HeroPopUp
 import net.systemvi.configurator.components.configure.keyboard_layout.KeymapPreview
 import net.systemvi.configurator.data.defaultKeymaps
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun NeoConfigKeymapSelector(){
-    var expanded by remember {
-        mutableStateOf(false)
-    }
-    SharedTransitionLayout(
-        modifier = Modifier
-            .height(30.dp)
-            .wrapContentHeight(unbounded = true, align = Alignment.Top)
-    ){
-        AnimatedContent(
-            expanded,
-            label = "basic_transition",
-        ) { targetState ->
-            if (!targetState) {
-                ShowKeymapsButton(
-                    onExpand = {
-                        expanded = true
-                    },
-                    animatedVisibilityScope = this@AnimatedContent,
-                    sharedTransitionScope = this@SharedTransitionLayout
-                )
-            } else {
-                KeymapsPopUp(
-                    onCollapse = {
-                        expanded = false
-                    },
-                    animatedVisibilityScope = this@AnimatedContent,
-                    sharedTransitionScope = this@SharedTransitionLayout
-                )
-            }
+    HeroPopUp (
+        verticalAlignment = Alignment.Top,
+        firstComponent = {onCollapse, animatedVisibilityScope, sharedTransitionScope ->
+            ShowKeymapsButton(
+                onCollapse,
+                sharedTransitionScope,
+                animatedVisibilityScope,
+            )
+        },
+        secondComponent = {onCollapse, animatedVisibilityScope, sharedTransitionScope ->
+            KeymapsPopUp(
+                onCollapse,
+                sharedTransitionScope,
+                animatedVisibilityScope,
+            )
         }
-    }
+    )
 }
+
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 private fun ShowKeymapsButton(

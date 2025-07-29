@@ -14,46 +14,33 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import net.systemvi.configurator.components.common.hero_pop_up.HeroPopUp
 import net.systemvi.configurator.utils.services.SerialApiService
 
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun NeoConfigPortSelector(){
-    var expanded by remember {
-        mutableStateOf(false)
-    }
-    SharedTransitionLayout(
-        modifier = Modifier
-            .height(30.dp)
-            .width(30.dp)
-            .wrapContentHeight(unbounded = true, align = Alignment.Top)
-            .wrapContentWidth(unbounded = true,align = Alignment.End),
-    ){
-        AnimatedContent(
-            expanded,
-            label = "basic_transition",
-        ) { targetState ->
-            if (!targetState) {
-                ShowPortsButton(
-                    onExpand = {
-                        expanded = true
-                    },
-                    animatedVisibilityScope = this@AnimatedContent,
-                    sharedTransitionScope = this@SharedTransitionLayout
-                )
-            } else {
-                PortsPopUp(
-                    onCollapse = {
-                        expanded = false
-                    },
-                    animatedVisibilityScope = this@AnimatedContent,
-                    sharedTransitionScope = this@SharedTransitionLayout
-                )
-            }
+    HeroPopUp (
+        horizontalAlignment = Alignment.End,
+        verticalAlignment = Alignment.Top,
+        firstComponent = {onCollapse, animatedVisibilityScope, sharedTransitionScope ->
+            ShowPortsButton(
+                onCollapse,
+                sharedTransitionScope,
+                animatedVisibilityScope,
+            )
+        },
+        secondComponent = {onCollapse, animatedVisibilityScope, sharedTransitionScope ->
+            PortsPopUp(
+                onCollapse,
+                sharedTransitionScope,
+                animatedVisibilityScope,
+            )
         }
-    }
+    )
 }
+
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 private fun ShowPortsButton(
