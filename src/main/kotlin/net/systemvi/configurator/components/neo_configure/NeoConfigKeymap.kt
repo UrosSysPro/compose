@@ -6,7 +6,7 @@ import net.systemvi.configurator.components.neo_configure.keymap.PleaseSelectKey
 
 @Composable
 fun NeoConfigKeymap(){
-    if(true){
+    if(false){
         KeymapGrid()
     }else{
         PleaseSelectKeymapOrPort()
