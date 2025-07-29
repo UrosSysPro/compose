@@ -8,7 +8,9 @@ import androidx.lifecycle.ViewModel
 import arrow.core.None
 import arrow.core.Option
 import arrow.core.some
+import net.systemvi.configurator.components.common.keyboard_grid.KeycapParam
 import net.systemvi.configurator.model.KeyMap
+import net.systemvi.configurator.model.Keycap
 import net.systemvi.configurator.model.KeycapMatrixPosition
 import net.systemvi.configurator.utils.api.KeyboardSerialApi
 import net.systemvi.configurator.utils.api.KeymapApi
@@ -72,6 +74,20 @@ class NeoConfigureViewModel: ViewModel() {
         name.onNone {
             serialApi.onSome { it.closePort() }
             this.keymap = None
+        }
+    }
+
+    fun keycapClick(keycap: Keycap,ctrlPressed:Boolean){
+        if(currentlySelectedKeycaps.contains(keycap.matrixPosition)){
+            if(ctrlPressed)
+                currentlySelectedKeycaps-=keycap.matrixPosition
+            else
+                currentlySelectedKeycaps=emptySet()
+        }else{
+            if(ctrlPressed)
+                currentlySelectedKeycaps+=keycap.matrixPosition
+            else
+                currentlySelectedKeycaps=setOf(keycap.matrixPosition)
         }
     }
 }

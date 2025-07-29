@@ -60,7 +60,7 @@ fun SnapTapKeycap(isDown: Boolean, selected: Boolean, text:String, isFirst:Boole
         Text(
             text = text,
             style = MaterialTheme.typography.bodySmall,
-            color = SnapTapKeyColors[index.coerceAtMost(SnapTapKeyColors.size)],
+            color = textColor,
             textAlign = TextAlign.Center
         )
     }
