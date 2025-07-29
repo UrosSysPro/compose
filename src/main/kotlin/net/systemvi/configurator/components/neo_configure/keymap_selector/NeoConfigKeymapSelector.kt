@@ -1,38 +1,37 @@
-package net.systemvi.configurator.components.neo_configure
+package net.systemvi.configurator.components.neo_configure.keymap_selector
 
 import androidx.compose.animation.*
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import net.systemvi.configurator.components.common.hero_pop_up.HeroPopUp
-import net.systemvi.configurator.utils.services.SerialApiService
-
+import net.systemvi.configurator.components.configure.keyboard_layout.KeymapPreview
+import net.systemvi.configurator.data.defaultKeymaps
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun NeoConfigPortSelector(){
+fun NeoConfigKeymapSelector(){
     HeroPopUp (
-        horizontalAlignment = Alignment.End,
         verticalAlignment = Alignment.Top,
-        firstComponent = {onCollapse, animatedVisibilityScope, sharedTransitionScope ->
-            ShowPortsButton(
-                onCollapse,
+        firstComponent = {onExpand, animatedVisibilityScope, sharedTransitionScope ->
+            ShowKeymapsButton(
+                onExpand,
                 sharedTransitionScope,
                 animatedVisibilityScope,
             )
         },
         secondComponent = {onCollapse, animatedVisibilityScope, sharedTransitionScope ->
-            PortsPopUp(
+            KeymapsPopUp(
                 onCollapse,
                 sharedTransitionScope,
                 animatedVisibilityScope,
@@ -43,7 +42,7 @@ fun NeoConfigPortSelector(){
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-private fun ShowPortsButton(
+private fun ShowKeymapsButton(
     onExpand: () -> Unit,
     sharedTransitionScope: SharedTransitionScope,
     animatedVisibilityScope: AnimatedVisibilityScope
@@ -58,7 +57,7 @@ private fun ShowPortsButton(
                 )
         ){
             Text(
-                text = "Ports",
+                text = "Keymaps",
                 modifier = Modifier
                     .sharedElement(
                         rememberSharedContentState(key = "title"),
@@ -71,14 +70,12 @@ private fun ShowPortsButton(
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-private fun PortsPopUp(
+private fun KeymapsPopUp(
     onCollapse: () -> Unit,
     sharedTransitionScope: SharedTransitionScope,
     animatedVisibilityScope: AnimatedVisibilityScope
 ) {
-    val serialApi = viewModel { SerialApiService() }.serialApi
-    val portNames by remember { mutableStateOf(serialApi.getPortNames()) }
-
+    val keymaps = defaultKeymaps()
     with(sharedTransitionScope) {
         Card(
             modifier = Modifier
@@ -90,13 +87,13 @@ private fun PortsPopUp(
             Column(
                 modifier = Modifier
                     .clickable { onCollapse() }
-                    .size(300.dp,400.dp)
+                    .size(1000.dp,400.dp)
                     .padding(top = 20.dp,),
-                verticalArrangement = Arrangement.spacedBy(10.dp),
+                verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Text(
-                    text = "Ports",
+                    text = "Keymaps",
                     modifier = Modifier
                         .sharedElement(
                             rememberSharedContentState(key = "title"),
@@ -105,11 +102,16 @@ private fun PortsPopUp(
                     fontWeight = FontWeight.Medium,
                     color = MaterialTheme.colorScheme.primary
                 )
-                portNames.forEach { portName ->
-                    TextButton(
-                        onClick = {}
-                    ){
-                        Text(portName)
+                FlowRow(
+                    modifier = Modifier
+                        .weight(1f)
+                        .verticalScroll(rememberScrollState())
+                    ,
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                ){
+                    keymaps.forEach {
+                        KeymapPreview(it)
                     }
                 }
             }

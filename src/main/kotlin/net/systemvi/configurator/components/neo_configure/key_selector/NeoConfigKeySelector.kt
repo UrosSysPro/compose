@@ -1,4 +1,4 @@
-package net.systemvi.configurator.components.neo_configure
+package net.systemvi.configurator.components.neo_configure.key_selector
 
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi

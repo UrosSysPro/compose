@@ -13,11 +13,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import net.systemvi.configurator.components.neo_configure.NeoConfigKeySelector
+import net.systemvi.configurator.components.neo_configure.key_selector.NeoConfigKeySelector
 import net.systemvi.configurator.components.neo_configure.NeoConfigKeymap
-import net.systemvi.configurator.components.neo_configure.NeoConfigKeymapSelector
-import net.systemvi.configurator.components.neo_configure.NeoConfigPortSelector
-import net.systemvi.configurator.model.padding
+import net.systemvi.configurator.components.neo_configure.keymap_selector.NeoConfigKeymapSelector
+import net.systemvi.configurator.components.neo_configure.port_selector.NeoConfigPortSelector
 
 @Composable
 fun NeoConfigPage() {
