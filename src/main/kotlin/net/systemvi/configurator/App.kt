@@ -22,12 +22,14 @@ import net.systemvi.configurator.components.settings.SettingsPage
 import net.systemvi.configurator.components.tester.TesterPage
 import net.systemvi.configurator.components.serial_api_test_page.SerialApiTestPage
 import net.systemvi.configurator.components.component_tester.ComponentPage
-import net.systemvi.configurator.model.ComponentPage
-import net.systemvi.configurator.model.ConfigurePage
-import net.systemvi.configurator.model.DesignPage
-import net.systemvi.configurator.model.SerialApiTestPage
-import net.systemvi.configurator.model.SettingsPage
-import net.systemvi.configurator.model.TesterPage
+import net.systemvi.configurator.page.ComponentPage
+import net.systemvi.configurator.page.ConfigurePage
+import net.systemvi.configurator.page.DesignPage
+import net.systemvi.configurator.page.NeoConfigPage
+import net.systemvi.configurator.page.NeoConfigurePage
+import net.systemvi.configurator.page.SerialApiTestPage
+import net.systemvi.configurator.page.SettingsPage
+import net.systemvi.configurator.page.TesterPage
 import net.systemvi.configurator.utils.services.AppStateService
 import net.systemvi.configurator.utils.services.KeymapService
 import net.systemvi.configurator.utils.services.SerialApiService
@@ -66,6 +68,7 @@ fun App(
             content={padding->
                 Box(Modifier.padding(padding).fillMaxSize()){
                     when(appStateService.currentPage){
+                        NeoConfigurePage -> NeoConfigPage()
                         ConfigurePage -> ConfigurePage(Modifier)
                         TesterPage -> TesterPage(Modifier)
                         DesignPage -> DesignPage(Modifier)

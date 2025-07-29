@@ -8,8 +8,8 @@ import androidx.lifecycle.ViewModel
 import com.materialkolor.dynamicColorScheme
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
-import net.systemvi.configurator.model.ConfigurePage
-import net.systemvi.configurator.model.Page
+import net.systemvi.configurator.page.ConfigurePage
+import net.systemvi.configurator.page.Page
 import java.io.File
 import java.io.FileWriter
 import java.util.Scanner

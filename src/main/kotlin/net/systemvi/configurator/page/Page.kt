@@ -1,9 +1,11 @@
-package net.systemvi.configurator.model
+package net.systemvi.configurator.page
 
 import kotlinx.serialization.Serializable
 
 @Serializable
 sealed class Page
+@Serializable
+object NeoConfigurePage:Page()
 @Serializable
 object ConfigurePage:Page()
 @Serializable

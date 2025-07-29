@@ -20,17 +20,22 @@ import arrow.core.None
 import arrow.core.Option
 import net.systemvi.configurator.components.settings.SettingsHoverCard
 import net.systemvi.configurator.components.tester.TesterHoverCard
-import net.systemvi.configurator.model.*
+import net.systemvi.configurator.page.ConfigurePage
+import net.systemvi.configurator.page.DesignPage
+import net.systemvi.configurator.page.NeoConfigurePage
+import net.systemvi.configurator.page.SettingsPage
+import net.systemvi.configurator.page.TesterPage
 
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)
 @Composable
 fun NavBar() {
     val links=listOf(
-        NavbarLink("Configure",     ConfigurePage, Icons.Filled.Warning,   {}),
-        NavbarLink("Key Tester",    TesterPage,    Icons.Filled.Check,     { TesterHoverCard() }),
-        NavbarLink("Design",        DesignPage,    Icons.Filled.Create,    {}),
-        NavbarLink("Settings",      SettingsPage,  Icons.Filled.Settings,  { SettingsHoverCard() }),
+//        NavbarLink("Configure", ConfigurePage, Icons.Filled.Warning,   {}),
+        NavbarLink("Neo Configure", NeoConfigurePage, Icons.Filled.Warning,   {}),
+        NavbarLink("Key Tester", TesterPage,    Icons.Filled.Check,     { TesterHoverCard() }),
+        NavbarLink("Design", DesignPage,    Icons.Filled.Create,    {}),
+        NavbarLink("Settings", SettingsPage,  Icons.Filled.Settings,  { SettingsHoverCard() }),
 //        NavbarLink("Component",     ComponentPage,  Icons.Filled.Settings, {}),
 //        NavbarLink("Serial Api Tester", SerialApiTestPage,  Icons.Filled.Settings, {}),
     )
