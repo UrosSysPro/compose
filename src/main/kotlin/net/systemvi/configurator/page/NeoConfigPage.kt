@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import net.systemvi.configurator.components.neo_configure.NeoConfigKeySelector
 import net.systemvi.configurator.components.neo_configure.NeoConfigKeymap
 import net.systemvi.configurator.components.neo_configure.NeoConfigKeymapSelector
@@ -31,7 +32,8 @@ fun NeoConfigPage() {
                     horizontal = 30.dp,
                     vertical = 15.dp
                 )
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .zIndex(2f),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.Top,
         ){
@@ -39,7 +41,15 @@ fun NeoConfigPage() {
             NeoConfigKeymapSelector()
             NeoConfigPortSelector()
         }
-        NeoConfigKeymap()
+        Column (
+            modifier = Modifier
+                .fillMaxSize()
+                .zIndex(1f),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            NeoConfigKeymap()
+        }
         Box(modifier = Modifier.height(100.dp)){}
     }
 }
