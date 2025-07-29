@@ -37,6 +37,7 @@ class NeoConfigureViewModel: ViewModel() {
     val snapTapSelection                     =   SnapTapSelection.create()
     var currentlyPressedKeycaps              by  mutableStateOf(emptySet<KeycapMatrixPosition>())
     var currentlySelectedKeycaps             by  mutableStateOf(emptySet<KeycapMatrixPosition>())
+    var currentLayer                         by  mutableStateOf(0)
 
     fun onStart(keymapApi:KeymapApi,serialApi: KeyboardSerialApi) {
         this.keymapApi = keymapApi.some()
