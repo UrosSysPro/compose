@@ -42,6 +42,8 @@ class KeyboardSerialApi {
     private var onKeymapRead:(keymap: KeyMap)->Unit={}
     private var onKeycapPress:(keycapPosition: KeycapMatrixPosition)->Unit={}
     private var onKeycapRelease:(keycapPosition: KeycapMatrixPosition)->Unit={}
+    private var onNameRead:(name: String)->Unit={}
+
 
     fun onKeymapRead(listener: (KeyMap) -> Unit) {
         onKeymapRead = listener
@@ -51,6 +53,9 @@ class KeyboardSerialApi {
     }
     fun onKeycapRelease(listener: (KeycapMatrixPosition) -> Unit) {
         onKeycapRelease = listener
+    }
+    fun onNameRead(listener: (String) -> Unit) {
+        onNameRead = listener
     }
 
     fun getPortNames():List<String> = SerialPortList.getPortNames().toList()
@@ -170,6 +175,13 @@ class KeyboardSerialApi {
             .onSome { port -> port.writeString("r") }
             .onNone { println("[ERROR] requesting keymap read, no port opened") }
     }
+
+    fun requestName(){
+        port
+            .onSome { port -> port.writeString("n") }
+            .onNone { println("[ERROR] requesting name read, no port opened") }
+    }
+
     fun enableKeyPressEvents(){
         port
             .onSome { port->port.writeString("e") }
@@ -204,9 +216,14 @@ class KeyboardSerialApi {
             'l' -> onKeymapRead(readKeymapFromBuffer2(buffer))
             'p' -> onKeycapPress(KeycapMatrixPosition(buffer[1].toInt(), buffer[2].toInt()))
             'r' -> onKeycapRelease(KeycapMatrixPosition(buffer[1].toInt(), buffer[2].toInt()))
+            'n' -> onNameRead(readName(buffer))
             else -> println("[ERROR] unknown serial command: $cmd")
         }
     }
+
+    private fun readName(buffer:List<Byte>):String =
+        buffer.drop(1).fold(""){ acc,byte -> acc + byte.toInt().toChar() }
+
 
     private fun readKeymapFromBuffer2(buffer:List<Byte>): KeyMap {
         var buffer = buffer

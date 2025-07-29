@@ -14,7 +14,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import arrow.core.None
+import arrow.core.getOrElse
+import arrow.core.some
 import net.systemvi.configurator.components.common.hero_pop_up.HeroPopUp
+import net.systemvi.configurator.components.neo_configure.NeoConfigureViewModel
 import net.systemvi.configurator.utils.services.SerialApiService
 
 
@@ -76,8 +80,8 @@ private fun PortsPopUp(
     sharedTransitionScope: SharedTransitionScope,
     animatedVisibilityScope: AnimatedVisibilityScope
 ) {
-    val serialApi = viewModel { SerialApiService() }.serialApi
-    val portNames by remember { mutableStateOf(serialApi.getPortNames()) }
+    val neoConfigViewModel = viewModel { NeoConfigureViewModel() }
+    val portNames by remember { mutableStateOf(neoConfigViewModel.serialApi.map { it.getPortNames() }.getOrElse { emptyList() }) }
 
     with(sharedTransitionScope) {
         Card(
@@ -105,9 +109,22 @@ private fun PortsPopUp(
                     fontWeight = FontWeight.Medium,
                     color = MaterialTheme.colorScheme.primary
                 )
+
+                TextButton(
+                    onClick = {
+                        neoConfigViewModel.selectPort(None)
+                        onCollapse()
+                    }
+                ){
+                    Text("None")
+                }
+
                 portNames.forEach { portName ->
                     TextButton(
-                        onClick = {}
+                        onClick = {
+                            neoConfigViewModel.selectPort(portName.some())
+                            onCollapse()
+                        }
                     ){
                         Text(portName)
                     }
