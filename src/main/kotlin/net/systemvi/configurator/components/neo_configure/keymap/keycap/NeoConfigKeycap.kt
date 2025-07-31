@@ -17,15 +17,12 @@ val NeoConfigKeycap: KeycapComponent = { params ->
     val neoConfigViewModel = viewModel { NeoConfigureViewModel() }
     val keymap = neoConfigViewModel.keymap.getOrNull()!!
     val keycap=params.keycap
+    val currentSelectedLayer=neoConfigViewModel.currentLayer.coerceAtMost(keycap.layers.size-1)
 
     val isPressed = neoConfigViewModel.currentlyPressedKeycaps.contains(keycap.matrixPosition)
     val isSelected = neoConfigViewModel.currentlySelectedKeycaps.contains(params.position)
 
-    val text=when(val a=keycap.layers
-        .get(
-            neoConfigViewModel.currentLayer.coerceAtMost(keycap.layers.size)
-        )
-    ){
+    val text=when(val a=keycap.layers.get(currentSelectedLayer)){
         is Either.Left->a.value.name
         is Either.Right->a.value.name
     }
