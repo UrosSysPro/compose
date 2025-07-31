@@ -23,7 +23,6 @@ import net.systemvi.configurator.components.common.icons.HeightIcon
 import net.systemvi.configurator.components.common.icons.PaddingIcon
 import net.systemvi.configurator.components.common.icons.SettingsIcon
 import net.systemvi.configurator.components.common.icons.WidthIcon
-import net.systemvi.configurator.components.configure.KeycapPosition
 import net.systemvi.configurator.model.*
 
 @Composable

@@ -22,7 +22,6 @@ import net.systemvi.configurator.model.*
 import net.systemvi.configurator.utils.api.KeyboardSerialApi
 import net.systemvi.configurator.utils.api.KeymapApi
 
-data class KeycapPosition(val x:Int,val y:Int)
 
 enum class KeyboardLayoutPages(val title:String){
     Keymap("Keymap"),

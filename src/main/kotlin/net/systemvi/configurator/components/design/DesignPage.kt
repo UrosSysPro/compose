@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import net.systemvi.configurator.components.common.DraggableList
 import net.systemvi.configurator.components.common.DraggableListDirection
-import net.systemvi.configurator.components.configure.KeycapPosition
+import net.systemvi.configurator.model.KeycapPosition
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable fun DesignPage(modifier: Modifier, showFloatingActionButtons: Boolean = true, keycapLimit: Int = 20, rowLimit: Int = 10, oneUSize:Int = 50) {

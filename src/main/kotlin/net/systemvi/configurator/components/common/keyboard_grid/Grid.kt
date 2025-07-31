@@ -8,9 +8,9 @@ import androidx.compose.ui.layout.layoutId
 import androidx.compose.ui.unit.dp
 import net.systemvi.configurator.components.common.AutoSizingBox
 import net.systemvi.configurator.components.common.AutoSizingBoxItemPosition
-import net.systemvi.configurator.components.configure.KeycapPosition
 import net.systemvi.configurator.model.KeyMap
 import net.systemvi.configurator.model.Keycap
+import net.systemvi.configurator.model.KeycapPosition
 
 @Composable fun Grid(keymap: KeyMap, keycapComponent: KeycapComponent, oneUSize:Int=50) {
     data class GridItem(val keycap: Keycap, val x: Int, val y: Int)

@@ -7,11 +7,11 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import arrow.core.right
 import arrow.optics.dsl.index
-import net.systemvi.configurator.components.configure.KeycapPosition
 import net.systemvi.configurator.model.KeyMap
 import net.systemvi.configurator.data.allKeys
 import net.systemvi.configurator.model.Keycap
 import net.systemvi.configurator.model.KeycapMatrixPosition
+import net.systemvi.configurator.model.KeycapPosition
 import net.systemvi.configurator.model.changeName
 import net.systemvi.configurator.model.keycaps
 import kotlin.collections.plus

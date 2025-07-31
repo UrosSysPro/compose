@@ -12,10 +12,10 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import arrow.core.right
 import net.systemvi.configurator.components.common.keyboard_grid.KeycapParam
-import net.systemvi.configurator.components.configure.KeycapPosition
 import net.systemvi.configurator.components.tester.TesterPageViewModel
 import net.systemvi.configurator.model.Key
 import net.systemvi.configurator.model.Keycap
+import net.systemvi.configurator.model.KeycapPosition
 
 @Composable
 fun KeycapSelectorRow() {

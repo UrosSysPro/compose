@@ -9,11 +9,11 @@ import arrow.core.None
 import arrow.core.Option
 import arrow.core.some
 import net.systemvi.configurator.components.common.keyboard_grid.KeycapParam
-import net.systemvi.configurator.components.configure.KeycapPosition
 import net.systemvi.configurator.model.Key
 import net.systemvi.configurator.model.KeyMap
 import net.systemvi.configurator.model.Keycap
 import net.systemvi.configurator.model.KeycapMatrixPosition
+import net.systemvi.configurator.model.KeycapPosition
 import net.systemvi.configurator.model.updateKeycap
 import net.systemvi.configurator.utils.api.KeyboardSerialApi
 import net.systemvi.configurator.utils.api.KeymapApi
