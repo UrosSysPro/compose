@@ -64,8 +64,8 @@ class KeyboardSerialApi {
         port.onSome { port->
             val bytes: ByteArray = arrayOf(
                 'l'.code.toByte(),
-                matrixPosition.x.toByte(),
-                matrixPosition.y.toByte(),
+                matrixPosition.column.toByte(),
+                matrixPosition.row.toByte(),
                 layer.toByte(),
                 key.value,
             ).toByteArray()
@@ -79,8 +79,8 @@ class KeyboardSerialApi {
         port.onSome { port->
             val bytes: ByteArray = arrayOf(
                 'm'.code.toByte(),
-                matrixPosition.x.toByte(),
-                matrixPosition.y.toByte(),
+                matrixPosition.column.toByte(),
+                matrixPosition.row.toByte(),
                 layer.toByte(),
                 macro.actions.size.toByte(),
                 *macro.actions.flatMap { (key, action) -> listOf(key.value,action.id.toByte()) }.toTypedArray(),
@@ -95,8 +95,8 @@ class KeyboardSerialApi {
         port.onSome { port->
             val bytes: ByteArray = arrayOf(
                 'A'.code.toByte(),
-                position.x.toByte(),
-                position.y.toByte(),
+                position.column.toByte(),
+                position.row.toByte(),
                 layer.toByte(),
             ).toByteArray()
             port.writeBytes(bytes)
@@ -109,8 +109,8 @@ class KeyboardSerialApi {
         port.onSome { port->
             val bytes: ByteArray = arrayOf(
                 'S'.code.toByte(),
-                position.x.toByte(),
-                position.y.toByte(),
+                position.column.toByte(),
+                position.row.toByte(),
             ).toByteArray()
             port.writeBytes(bytes)
         }.onNone {
@@ -122,10 +122,10 @@ class KeyboardSerialApi {
         port.onSome { port->
             val bytes: ByteArray = arrayOf(
                 'E'.code.toByte(),
-                pair.first.x.toByte(),
-                pair.first.y.toByte(),
-                pair.second.x.toByte(),
-                pair.second.y.toByte(),
+                pair.first.column.toByte(),
+                pair.first.row.toByte(),
+                pair.second.column.toByte(),
+                pair.second.row.toByte(),
             ).toByteArray()
             port.writeBytes(bytes)
         }.onNone {
@@ -137,8 +137,8 @@ class KeyboardSerialApi {
         port.onSome { port->
             val bytes: ByteArray = arrayOf(
                 'D'.code.toByte(),
-                pair.first.x.toByte(),
-                pair.first.y.toByte(),
+                pair.first.column.toByte(),
+                pair.first.row.toByte(),
             ).toByteArray()
             port.writeBytes(bytes)
         }.onNone {
