@@ -22,15 +22,24 @@ import net.systemvi.configurator.components.neo_configure.NeoConfigureViewModel
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun NeoConfigKeySelector(){
+    var expanded by remember { mutableStateOf(false) }
     HeroPopUp (
-        expanded = false,
+        expanded = expanded,
         horizontalAlignment = Alignment.Start,
         verticalAlignment = Alignment.Top,
         firstComponent = {animationScope,transitionScope->
-            ShowKeysButton(transitionScope,animationScope)
+            ShowKeysButton(
+                {expanded=true},
+                transitionScope,
+                animationScope
+            )
         },
         secondComponent = {animationScope,transitionScope->
-            KeysPopUp(transitionScope,animationScope)
+            KeysPopUp(
+                {expanded=false},
+                transitionScope,
+                animationScope
+            )
         },
     )
 }
@@ -38,12 +47,12 @@ fun NeoConfigKeySelector(){
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 private fun ShowKeysButton(
+    open:()->Unit,
     sharedTransitionScope: SharedTransitionScope,
     animatedVisibilityScope: AnimatedVisibilityScope
 ) = with(sharedTransitionScope) {
     ElevatedButton(
-//        onClick = onExpand,
-        onClick = {},
+        onClick = open,
         modifier = Modifier
             .sharedBounds(
                 rememberSharedContentState(key = "container"),
@@ -64,6 +73,7 @@ private fun ShowKeysButton(
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 private fun KeysPopUp(
+    close:()->Unit,
     sharedTransitionScope: SharedTransitionScope,
     animatedVisibilityScope: AnimatedVisibilityScope
 ) = with(sharedTransitionScope) {
@@ -79,9 +89,6 @@ private fun KeysPopUp(
     ) {
         Column(
             modifier = Modifier
-                .combinedClickable {
-//                    onCollapse()
-                }
                 .size(600.dp,400.dp)
                 .padding(top = 20.dp,),
             verticalArrangement = Arrangement.spacedBy(10.dp),
@@ -129,7 +136,7 @@ private fun KeysPopUp(
                         ElevatedButton(
                             onClick = {
                                 neoConfigViewModel.setKey(key)
-//                                onCollapse()
+                                close()
                             }
                         ){
                             Text(key.name)

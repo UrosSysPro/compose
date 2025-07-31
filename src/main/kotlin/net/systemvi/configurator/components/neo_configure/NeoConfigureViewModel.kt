@@ -93,6 +93,9 @@ class NeoConfigureViewModel: ViewModel() {
     }
 
     fun openKeymap(keymap: KeyMap){
+        currentLayer=0
+        currentlySelectedKeycaps=emptySet()
+        currentlyPressedKeycaps=emptySet()
         this.keymap=keymap.some()
     }
 

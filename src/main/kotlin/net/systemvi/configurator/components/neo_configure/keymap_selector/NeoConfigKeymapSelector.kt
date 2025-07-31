@@ -24,17 +24,20 @@ import net.systemvi.configurator.data.defaultKeymaps
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun NeoConfigKeymapSelector(){
+    var expanded by remember { mutableStateOf(false) }
     HeroPopUp (
-        expanded = false,
+        expanded = expanded,
         verticalAlignment = Alignment.Top,
         firstComponent = { animatedVisibilityScope, sharedTransitionScope ->
             ShowKeymapsButton(
+                {expanded=true},
                 sharedTransitionScope,
                 animatedVisibilityScope,
             )
         },
         secondComponent = { animatedVisibilityScope, sharedTransitionScope ->
             KeymapsPopUp(
+                {expanded=false},
                 sharedTransitionScope,
                 animatedVisibilityScope,
             )
@@ -45,13 +48,13 @@ fun NeoConfigKeymapSelector(){
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 private fun ShowKeymapsButton(
+    open:()->Unit,
     sharedTransitionScope: SharedTransitionScope,
     animatedVisibilityScope: AnimatedVisibilityScope
 ) {
     with(sharedTransitionScope) {
         ElevatedButton(
-//            onClick = onExpand,
-            onClick = {},
+            onClick = open,
             modifier = Modifier
                 .sharedBounds(
                     rememberSharedContentState(key = "container"),
@@ -73,6 +76,7 @@ private fun ShowKeymapsButton(
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 private fun KeymapsPopUp(
+    close :()->Unit,
     sharedTransitionScope: SharedTransitionScope,
     animatedVisibilityScope: AnimatedVisibilityScope
 ) {
@@ -88,9 +92,6 @@ private fun KeymapsPopUp(
         ) {
             Column(
                 modifier = Modifier
-                    .combinedClickable {
-//                        onCollapse()
-                    }
                     .size(1000.dp,400.dp)
                     .padding(top = 20.dp,),
                 verticalArrangement = Arrangement.Center,
@@ -115,7 +116,10 @@ private fun KeymapsPopUp(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                 ){
                     keymaps.forEach {
-                        KeymapPreview(it,{neoConfigViewModel.openKeymap(it)})
+                        KeymapPreview(it,{
+                            neoConfigViewModel.openKeymap(it)
+                            close()
+                        })
                     }
                 }
             }
