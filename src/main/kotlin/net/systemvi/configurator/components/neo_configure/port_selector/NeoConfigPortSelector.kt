@@ -2,6 +2,7 @@ package net.systemvi.configurator.components.neo_configure.port_selector
 
 import androidx.compose.animation.*
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Card
 import androidx.compose.material3.ElevatedButton
@@ -26,18 +27,17 @@ import net.systemvi.configurator.utils.services.SerialApiService
 @Composable
 fun NeoConfigPortSelector(){
     HeroPopUp (
+        expanded = false,
         horizontalAlignment = Alignment.End,
         verticalAlignment = Alignment.Top,
-        firstComponent = {onCollapse, animatedVisibilityScope, sharedTransitionScope ->
+        firstComponent = { animatedVisibilityScope, sharedTransitionScope ->
             ShowPortsButton(
-                onCollapse,
                 sharedTransitionScope,
                 animatedVisibilityScope,
             )
         },
-        secondComponent = {onCollapse, animatedVisibilityScope, sharedTransitionScope ->
+        secondComponent = { animatedVisibilityScope, sharedTransitionScope ->
             PortsPopUp(
-                onCollapse,
                 sharedTransitionScope,
                 animatedVisibilityScope,
             )
@@ -48,13 +48,14 @@ fun NeoConfigPortSelector(){
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 private fun ShowPortsButton(
-    onExpand: () -> Unit,
     sharedTransitionScope: SharedTransitionScope,
     animatedVisibilityScope: AnimatedVisibilityScope
 ) {
     with(sharedTransitionScope) {
         ElevatedButton(
-            onClick = onExpand,
+            onClick = {
+
+            },
             modifier = Modifier
                 .sharedBounds(
                     rememberSharedContentState(key = "container"),
@@ -76,7 +77,6 @@ private fun ShowPortsButton(
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 private fun PortsPopUp(
-    onCollapse: () -> Unit,
     sharedTransitionScope: SharedTransitionScope,
     animatedVisibilityScope: AnimatedVisibilityScope
 ) {
@@ -93,7 +93,9 @@ private fun PortsPopUp(
         ) {
             Column(
                 modifier = Modifier
-                    .clickable { onCollapse() }
+                    .combinedClickable{
+//                        onCollapse()
+                    }
                     .size(300.dp,400.dp)
                     .padding(top = 20.dp,),
                 verticalArrangement = Arrangement.spacedBy(10.dp),
@@ -113,7 +115,7 @@ private fun PortsPopUp(
                 TextButton(
                     onClick = {
                         neoConfigViewModel.selectPort(None)
-                        onCollapse()
+//                        onCollapse()
                     }
                 ){
                     Text("None")
@@ -123,7 +125,7 @@ private fun PortsPopUp(
                     TextButton(
                         onClick = {
                             neoConfigViewModel.selectPort(portName.some())
-                            onCollapse()
+//                            onCollapse()
                         }
                     ){
                         Text(portName)

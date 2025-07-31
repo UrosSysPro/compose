@@ -4,6 +4,7 @@ import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowUp
@@ -22,13 +23,14 @@ import net.systemvi.configurator.components.neo_configure.NeoConfigureViewModel
 @Composable
 fun NeoConfigKeySelector(){
     HeroPopUp (
+        expanded = false,
         horizontalAlignment = Alignment.Start,
         verticalAlignment = Alignment.Top,
-        firstComponent = {onExpand,animationScope,transitionScope->
-            ShowKeysButton(onExpand,transitionScope,animationScope)
+        firstComponent = {animationScope,transitionScope->
+            ShowKeysButton(transitionScope,animationScope)
         },
-        secondComponent = {onExpand,animationScope,transitionScope->
-            KeysPopUp(onExpand,transitionScope,animationScope)
+        secondComponent = {animationScope,transitionScope->
+            KeysPopUp(transitionScope,animationScope)
         },
     )
 }
@@ -36,12 +38,12 @@ fun NeoConfigKeySelector(){
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 private fun ShowKeysButton(
-    onExpand: () -> Unit,
     sharedTransitionScope: SharedTransitionScope,
     animatedVisibilityScope: AnimatedVisibilityScope
 ) = with(sharedTransitionScope) {
     ElevatedButton(
-        onClick = onExpand,
+//        onClick = onExpand,
+        onClick = {},
         modifier = Modifier
             .sharedBounds(
                 rememberSharedContentState(key = "container"),
@@ -62,7 +64,6 @@ private fun ShowKeysButton(
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 private fun KeysPopUp(
-    onCollapse: () -> Unit,
     sharedTransitionScope: SharedTransitionScope,
     animatedVisibilityScope: AnimatedVisibilityScope
 ) = with(sharedTransitionScope) {
@@ -78,7 +79,9 @@ private fun KeysPopUp(
     ) {
         Column(
             modifier = Modifier
-                .clickable { onCollapse() }
+                .combinedClickable {
+//                    onCollapse()
+                }
                 .size(600.dp,400.dp)
                 .padding(top = 20.dp,),
             verticalArrangement = Arrangement.spacedBy(10.dp),
@@ -126,7 +129,7 @@ private fun KeysPopUp(
                         ElevatedButton(
                             onClick = {
                                 neoConfigViewModel.setKey(key)
-                                onCollapse()
+//                                onCollapse()
                             }
                         ){
                             Text(key.name)

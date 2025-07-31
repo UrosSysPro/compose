@@ -2,6 +2,7 @@ package net.systemvi.configurator.components.neo_configure.keymap_selector
 
 import androidx.compose.animation.*
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -24,17 +25,16 @@ import net.systemvi.configurator.data.defaultKeymaps
 @Composable
 fun NeoConfigKeymapSelector(){
     HeroPopUp (
+        expanded = false,
         verticalAlignment = Alignment.Top,
-        firstComponent = {onExpand, animatedVisibilityScope, sharedTransitionScope ->
+        firstComponent = { animatedVisibilityScope, sharedTransitionScope ->
             ShowKeymapsButton(
-                onExpand,
                 sharedTransitionScope,
                 animatedVisibilityScope,
             )
         },
-        secondComponent = {onCollapse, animatedVisibilityScope, sharedTransitionScope ->
+        secondComponent = { animatedVisibilityScope, sharedTransitionScope ->
             KeymapsPopUp(
-                onCollapse,
                 sharedTransitionScope,
                 animatedVisibilityScope,
             )
@@ -45,13 +45,13 @@ fun NeoConfigKeymapSelector(){
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 private fun ShowKeymapsButton(
-    onExpand: () -> Unit,
     sharedTransitionScope: SharedTransitionScope,
     animatedVisibilityScope: AnimatedVisibilityScope
 ) {
     with(sharedTransitionScope) {
         ElevatedButton(
-            onClick = onExpand,
+//            onClick = onExpand,
+            onClick = {},
             modifier = Modifier
                 .sharedBounds(
                     rememberSharedContentState(key = "container"),
@@ -73,7 +73,6 @@ private fun ShowKeymapsButton(
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 private fun KeymapsPopUp(
-    onCollapse: () -> Unit,
     sharedTransitionScope: SharedTransitionScope,
     animatedVisibilityScope: AnimatedVisibilityScope
 ) {
@@ -89,7 +88,9 @@ private fun KeymapsPopUp(
         ) {
             Column(
                 modifier = Modifier
-                    .clickable { onCollapse() }
+                    .combinedClickable {
+//                        onCollapse()
+                    }
                     .size(1000.dp,400.dp)
                     .padding(top = 20.dp,),
                 verticalArrangement = Arrangement.Center,
