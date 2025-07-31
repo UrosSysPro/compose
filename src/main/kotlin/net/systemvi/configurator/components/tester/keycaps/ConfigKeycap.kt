@@ -7,7 +7,6 @@ import arrow.core.getOrElse
 import net.systemvi.configurator.components.common.keyboard_grid.KeycapComponent
 import net.systemvi.configurator.components.common.keyboard_grid.KeycapParam
 import net.systemvi.configurator.components.common.keycaps.ConfiguratorKeycap
-import net.systemvi.configurator.components.common.keycaps.ElevatedKeycap
 import net.systemvi.configurator.components.tester.TesterPageViewModel
 import net.systemvi.configurator.data.allKeys
 
@@ -17,7 +16,7 @@ val ConfigKeycap: KeycapComponent = @Composable { param: KeycapParam ->
     val currentlyClicked = viewModel.currentlyDownKeys.contains(key)
     val wasClicked = viewModel.wasDownKeys.contains(key)
 
-    viewModel.noteEffect(currentlyClicked, param.position.x + param.position.y * 12+24)
+    viewModel.noteEffect(currentlyClicked, param.position.row + param.position.column * 12+24)
 
     ConfiguratorKeycap(
         currentlyClicked,
@@ -25,7 +24,7 @@ val ConfigKeycap: KeycapComponent = @Composable { param: KeycapParam ->
         key.name,
 
         isSnapTapKey = true,
-        snapTapPairIndex = param.position.x,
+        snapTapPairIndex = param.position.row,
     )
 }
 

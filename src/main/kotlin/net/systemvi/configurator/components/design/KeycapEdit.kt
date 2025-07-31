@@ -99,8 +99,8 @@ fun KeycapEdit(keymap: KeyMap, selectedKeycap: KeycapPosition, onUpdate: (keymap
     val textColor = MaterialTheme.colorScheme.primaryContainer
     val contentColor = MaterialTheme.colorScheme.primary
     val viewModel = viewModel { DesignPageViewModel() }
-    val x = selectedKeycap.x
-    val y = selectedKeycap.y
+    val x = selectedKeycap.row
+    val y = selectedKeycap.column
 
     if(viewModel.selectedKeycap != null) {
         Dialog(

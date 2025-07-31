@@ -1,17 +1,7 @@
 package net.systemvi.configurator.components.tester.keycaps
 
-import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import arrow.core.getOrElse
 import net.systemvi.configurator.components.common.keyboard_grid.KeycapComponent
@@ -26,7 +16,7 @@ val ElevatedKeycap: KeycapComponent = @Composable { param: KeycapParam ->
     val currentlyClicked = viewModel.currentlyDownKeys.contains(key)
     val wasClicked = viewModel.wasDownKeys.contains(key)
 
-    viewModel.noteEffect(currentlyClicked, param.position.x + param.position.y * 12+24)
+    viewModel.noteEffect(currentlyClicked, param.position.row + param.position.column * 12+24)
 
     ElevatedKeycap(currentlyClicked,wasClicked,key.name)
 }

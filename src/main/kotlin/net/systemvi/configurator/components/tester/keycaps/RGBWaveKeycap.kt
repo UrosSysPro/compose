@@ -1,23 +1,7 @@
 package net.systemvi.configurator.components.tester.keycaps
 
-import androidx.compose.animation.animateColorAsState
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import arrow.core.getOrElse
 import net.systemvi.configurator.components.common.keyboard_grid.KeycapComponent
@@ -32,9 +16,9 @@ val RGBWaveKeycap: KeycapComponent = @Composable {param: KeycapParam ->
     val viewModel = viewModel { TesterPageViewModel() }
     val key = param.keycap.layers[0].getOrElse { allKeys.last()}
     val currentlyClicked = viewModel.currentlyDownKeys.contains(key)
-    val offset=param.position.x * 10
+    val offset=param.position.row * 10
 
-    viewModel.noteEffect(currentlyClicked, param.position.x + param.position.y * 12+24)
+    viewModel.noteEffect(currentlyClicked, param.position.row + param.position.column * 12+24)
 
     RGBWaveKeycap(currentlyClicked,offset,key.name)
 }

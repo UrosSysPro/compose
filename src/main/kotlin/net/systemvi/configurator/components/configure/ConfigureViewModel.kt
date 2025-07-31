@@ -1,7 +1,6 @@
 package net.systemvi.configurator.components.configure
 
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -84,8 +83,8 @@ class ConfigureViewModel(): ViewModel() {
 
     fun isKeycapSelected(i:Int,j:Int):Boolean=
         selectedKeycapPositon!=null
-                && selectedKeycapPositon!!.x == i
-                && selectedKeycapPositon!!.y == j
+                && selectedKeycapPositon!!.row == i
+                && selectedKeycapPositon!!.column == j
 
     fun selectKeycap(i:Int,j:Int){
         selectedKeycapPositon = KeycapPosition(i,j)
@@ -104,8 +103,8 @@ class ConfigureViewModel(): ViewModel() {
     fun setNormalKey(key: Key){
         keymap.onSome { keymap->
             if(selectedKeycapPositon!=null){
-                val x=selectedKeycapPositon!!.x
-                val y=selectedKeycapPositon!!.y
+                val x=selectedKeycapPositon!!.row
+                val y=selectedKeycapPositon!!.column
                 val keycap=keymap.keycaps[x][y]
                 val layer=selectedLayer
                 keymap.layerKeyPositions.find { it.position==keycap.matrixPosition }.toOption().onSome { layerKeyPosition->
@@ -122,8 +121,8 @@ class ConfigureViewModel(): ViewModel() {
     fun setMacroKey(macro:Macro){
         keymap.onSome { keymap->
             if(selectedKeycapPositon!=null){
-                val x=selectedKeycapPositon!!.x
-                val y=selectedKeycapPositon!!.y
+                val x=selectedKeycapPositon!!.row
+                val y=selectedKeycapPositon!!.column
                 val keycap=keymap.keycaps[x][y]
                 val layer=selectedLayer
                 keymap.layerKeyPositions.find { it.position==keycap.matrixPosition }.toOption().onSome { layerKeyPosition->
@@ -140,8 +139,8 @@ class ConfigureViewModel(): ViewModel() {
     fun setLayerKey(layer:Int){
         keymap.onSome { keymap->
             if(selectedKeycapPositon!=null){
-                val x=selectedKeycapPositon!!.x
-                val y=selectedKeycapPositon!!.y
+                val x=selectedKeycapPositon!!.row
+                val y=selectedKeycapPositon!!.column
                 val keycap=keymap.keycaps[x][y]
                 this.keymap=keymap.addLayerKey(LayerKeyPosition(keycap.matrixPosition,layer)).some()
                 keymapApi.save(this.keymap.getOrNull()!!)
