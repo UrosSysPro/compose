@@ -9,9 +9,12 @@ import arrow.core.None
 import arrow.core.Option
 import arrow.core.some
 import net.systemvi.configurator.components.common.keyboard_grid.KeycapParam
+import net.systemvi.configurator.components.configure.KeycapPosition
+import net.systemvi.configurator.model.Key
 import net.systemvi.configurator.model.KeyMap
 import net.systemvi.configurator.model.Keycap
 import net.systemvi.configurator.model.KeycapMatrixPosition
+import net.systemvi.configurator.model.updateKeycap
 import net.systemvi.configurator.utils.api.KeyboardSerialApi
 import net.systemvi.configurator.utils.api.KeymapApi
 import net.systemvi.configurator.utils.syntax.paired
@@ -38,7 +41,7 @@ class NeoConfigureViewModel: ViewModel() {
     var keymap                               by  mutableStateOf<Option<KeyMap>>(None)
     val snapTapSelection                     =   SnapTapSelection.create()
     var currentlyPressedKeycaps              by  mutableStateOf(emptySet<KeycapMatrixPosition>())
-    var currentlySelectedKeycaps             by  mutableStateOf(emptySet<KeycapMatrixPosition>())
+    var currentlySelectedKeycaps             by  mutableStateOf(emptySet<KeycapPosition>())
     var currentLayer                         by  mutableStateOf(0)
 
     fun onStart(keymapApi:KeymapApi,serialApi: KeyboardSerialApi) {
@@ -77,21 +80,40 @@ class NeoConfigureViewModel: ViewModel() {
         }
     }
 
-    fun keycapClick(keycap: Keycap,ctrlPressed:Boolean){
-        if(currentlySelectedKeycaps.contains(keycap.matrixPosition)){
+    fun keycapClick(position: KeycapPosition,ctrlPressed:Boolean){
+        if(currentlySelectedKeycaps.contains(position)){
             if(ctrlPressed)
-                currentlySelectedKeycaps-=keycap.matrixPosition
+                currentlySelectedKeycaps-=position
             else
                 currentlySelectedKeycaps=emptySet()
         }else{
             if(ctrlPressed)
-                currentlySelectedKeycaps+=keycap.matrixPosition
+                currentlySelectedKeycaps+=position
             else
-                currentlySelectedKeycaps=setOf(keycap.matrixPosition)
+                currentlySelectedKeycaps=setOf(position)
         }
     }
 
     fun openKeymap(keymap: KeyMap){
         this.keymap=keymap.some()
+    }
+
+    fun setKey(key: Key){
+        Pair(keymap,serialApi).paired().onSome { (keymap,serialApi) ->
+            currentlySelectedKeycaps.forEach { position->
+                this.keymap = this.keymap.map { it.updateKeycap(
+                    position.y,
+                    position.x,
+                    currentLayer,
+                    key
+                )}
+
+                serialApi.setKeyOnLayer(
+                    key,
+                    currentLayer,
+                    keymap.keycaps[position.y][position.x].matrixPosition
+                )
+            }
+        }
     }
 }

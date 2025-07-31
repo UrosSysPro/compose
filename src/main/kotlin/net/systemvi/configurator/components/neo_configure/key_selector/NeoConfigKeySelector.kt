@@ -13,8 +13,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import net.systemvi.configurator.components.common.hero_pop_up.HeroPopUp
 import net.systemvi.configurator.components.configure.KeyboardKeysPages
+import net.systemvi.configurator.components.neo_configure.NeoConfigureViewModel
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
@@ -66,6 +68,7 @@ private fun KeysPopUp(
 ) = with(sharedTransitionScope) {
     val categories = KeyboardKeysPages.entries
     var selectedCategory by remember { mutableStateOf(categories[0]) }
+    val neoConfigViewModel = viewModel { NeoConfigureViewModel() }
     Card(
         modifier = Modifier
             .sharedBounds(
@@ -121,7 +124,10 @@ private fun KeysPopUp(
                 ){
                     selectedCategory.keys.forEach { key ->
                         ElevatedButton(
-                            onClick = {}
+                            onClick = {
+                                neoConfigViewModel.setKey(key)
+                                onCollapse()
+                            }
                         ){
                             Text(key.name)
                         }

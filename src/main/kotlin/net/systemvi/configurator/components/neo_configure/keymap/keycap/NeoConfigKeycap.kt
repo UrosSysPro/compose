@@ -19,7 +19,7 @@ val NeoConfigKeycap: KeycapComponent = { params ->
     val keycap=params.keycap
 
     val isPressed = neoConfigViewModel.currentlyPressedKeycaps.contains(keycap.matrixPosition)
-    val isSelected = neoConfigViewModel.currentlySelectedKeycaps.contains(keycap.matrixPosition)
+    val isSelected = neoConfigViewModel.currentlySelectedKeycaps.contains(params.position)
 
     val text=when(val a=keycap.layers
         .get(
@@ -48,7 +48,7 @@ val NeoConfigKeycap: KeycapComponent = { params ->
                     val event = awaitPointerEvent()
                     if (event.type == PointerEventType.Press) {
                         val ctrlPressed = event.keyboardModifiers.isCtrlPressed
-                        neoConfigViewModel.keycapClick(keycap,ctrlPressed)
+                        neoConfigViewModel.keycapClick(params.position,ctrlPressed)
                     }
                 }
             }
