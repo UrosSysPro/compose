@@ -14,8 +14,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import net.systemvi.configurator.components.common.hero_pop_up.HeroPopUp
 import net.systemvi.configurator.components.configure.keyboard_layout.KeymapPreview
+import net.systemvi.configurator.components.neo_configure.NeoConfigureViewModel
 import net.systemvi.configurator.data.defaultKeymaps
 
 @OptIn(ExperimentalSharedTransitionApi::class)
@@ -76,6 +78,7 @@ private fun KeymapsPopUp(
     animatedVisibilityScope: AnimatedVisibilityScope
 ) {
     val keymaps = defaultKeymaps()
+    val neoConfigViewModel= viewModel { NeoConfigureViewModel() }
     with(sharedTransitionScope) {
         Card(
             modifier = Modifier
@@ -111,7 +114,7 @@ private fun KeymapsPopUp(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                 ){
                     keymaps.forEach {
-                        KeymapPreview(it)
+                        KeymapPreview(it,{neoConfigViewModel.openKeymap(it)})
                     }
                 }
             }

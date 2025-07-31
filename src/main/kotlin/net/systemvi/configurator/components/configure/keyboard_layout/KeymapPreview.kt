@@ -16,15 +16,14 @@ import net.systemvi.configurator.components.common.keyboard_grid.Grid
 import net.systemvi.configurator.model.KeyMap
 import net.systemvi.configurator.model.height
 
-@Composable fun KeymapPreview(keymap: KeyMap){
-    val viewModel= viewModel { ConfigureViewModel() }
+@Composable fun KeymapPreview(keymap: KeyMap,onClick:()->Unit){
     Card(
         modifier = Modifier
             .clipToBounds()
             .padding(end = 10.dp)
             .height(200.dp)
             .width(IntrinsicSize.Min)
-            .clickable(onClick = {viewModel.keymapLoad(keymap)})
+            .combinedClickable(onClick = onClick)
         ,
     ) {
        Column(

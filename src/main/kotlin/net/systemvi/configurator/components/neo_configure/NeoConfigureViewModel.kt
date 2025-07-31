@@ -90,4 +90,8 @@ class NeoConfigureViewModel: ViewModel() {
                 currentlySelectedKeycaps=setOf(keycap.matrixPosition)
         }
     }
+
+    fun openKeymap(keymap: KeyMap){
+        this.keymap=keymap.some()
+    }
 }

@@ -19,6 +19,8 @@ import net.systemvi.configurator.data.defaultKeymaps
 import net.systemvi.configurator.model.KeyMap
 
 @Composable fun KeymapsRow(title:String, keymaps: List<KeyMap>) {
+    val viewModel= viewModel { ConfigureViewModel() }
+
     Column {
         Text(title, style = MaterialTheme.typography.titleMedium)
         FlowRow(
@@ -27,7 +29,7 @@ import net.systemvi.configurator.model.KeyMap
                 .padding(top=20.dp, bottom = 20.dp)
         ){
             keymaps.forEach { keymap->
-                KeymapPreview(keymap)
+                KeymapPreview(keymap,{viewModel.keymapLoad(keymap)})
             }
         }
     }
