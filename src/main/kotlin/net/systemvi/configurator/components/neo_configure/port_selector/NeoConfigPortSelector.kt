@@ -21,6 +21,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import arrow.core.None
 import arrow.core.getOrElse
 import arrow.core.some
+import kotlinx.coroutines.launch
 import net.systemvi.configurator.components.common.hero_pop_up.HeroPopUp
 import net.systemvi.configurator.components.neo_configure.NeoConfigureViewModel
 import net.systemvi.configurator.utils.services.SerialApiService
@@ -90,6 +91,7 @@ private fun PortsPopUp(
 ) {
     val neoConfigViewModel = viewModel { NeoConfigureViewModel() }
     val portNames by remember { mutableStateOf(neoConfigViewModel.serialApi.map { it.getPortNames() }.getOrElse { emptyList() }) }
+    val scope= rememberCoroutineScope()
 
     with(sharedTransitionScope) {
         Card(
@@ -118,20 +120,20 @@ private fun PortsPopUp(
                 )
 
                 TextButton(
-                    onClick = {
+                    onClick = { scope.launch {
                         neoConfigViewModel.selectPort(None)
                         close()
-                    }
+                    }}
                 ){
                     Text("None")
                 }
 
                 portNames.forEach { portName ->
                     TextButton(
-                        onClick = {
+                        onClick = {scope.launch {
                             neoConfigViewModel.selectPort(portName.some())
                             close()
-                        }
+                        }}
                     ){
                         Text(portName)
                     }

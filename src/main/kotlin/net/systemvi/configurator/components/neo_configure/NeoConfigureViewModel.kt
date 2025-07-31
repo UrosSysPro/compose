@@ -8,14 +8,18 @@ import androidx.lifecycle.ViewModel
 import arrow.core.None
 import arrow.core.Option
 import arrow.core.some
+import kotlinx.coroutines.suspendCancellableCoroutine
 import net.systemvi.configurator.model.Key
 import net.systemvi.configurator.model.KeyMap
 import net.systemvi.configurator.model.KeycapMatrixPosition
 import net.systemvi.configurator.model.KeycapPosition
+import net.systemvi.configurator.model.changeName
 import net.systemvi.configurator.model.updateKeycap
 import net.systemvi.configurator.utils.api.KeyboardSerialApi
 import net.systemvi.configurator.utils.api.KeymapApi
 import net.systemvi.configurator.utils.syntax.paired
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 data class SnapTapSelection(
     var isSelecting: MutableState<Boolean>,
@@ -52,25 +56,35 @@ class NeoConfigureViewModel: ViewModel() {
         println("[INFO] NeoConfigureViewModel onStop() called")
     }
 
-    fun selectPort(name:Option<String>){
+    suspend fun selectPort(name:Option<String>){
         Pair(serialApi,name).paired().onSome { (serialApi, name) ->
             serialApi.selectPort(name)
-            serialApi.onKeymapRead { keymap->
-                println("new keymap read")
-                this.keymap=keymap.some()
+            val keymap = suspendCoroutine { continuation ->
+                //read keymap
+                serialApi.onKeymapRead { keymap->
+                    continuation.resume(keymap)
+                }
+                serialApi.requestKeymapRead()
             }
+
+            val name = suspendCoroutine { continuation ->
+                //read name
+                serialApi.onNameRead { name->
+                    continuation.resume(name)
+                }
+                serialApi.requestName()
+            }
+
+            //set event listener for keypress on serial port
             serialApi.onKeycapPress { keycap->
                 currentlyPressedKeycaps += keycap
             }
             serialApi.onKeycapRelease { keycap->
                 currentlyPressedKeycaps -= keycap
             }
-            serialApi.onNameRead { name->
-                println(name)
-            }
             serialApi.enableKeyPressEvents()
-            serialApi.requestKeymapRead()
-            serialApi.requestName()
+
+            this.keymap=keymap.changeName(name).some()
         }
         name.onNone {
             serialApi.onSome { it.closePort() }
