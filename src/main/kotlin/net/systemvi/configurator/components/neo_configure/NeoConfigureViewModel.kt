@@ -75,9 +75,7 @@ class NeoConfigureViewModel: ViewModel() {
                     serialApi.requestKeymapRead()
                     scope.launch{
                         delay(500)
-                        if(continuation.isActive){
-                            continuation.cancel()
-                        }
+                        if(continuation.isActive) continuation.cancel()
                     }
                 }
             }catch (e:Exception){
@@ -93,9 +91,7 @@ class NeoConfigureViewModel: ViewModel() {
                     serialApi.requestName()
                     scope.launch {
                         delay(500)
-                        if(continuation.isActive){
-                            continuation.cancel()
-                        }
+                        if(continuation.isActive) continuation.cancel()
                     }
                 }
             }catch (e:Exception){
