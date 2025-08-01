@@ -7,13 +7,11 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import arrow.core.None
 import arrow.core.Option
-import arrow.core.getOrElse
 import arrow.core.some
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.suspendCancellableCoroutine
 import net.systemvi.configurator.model.Key
 import net.systemvi.configurator.model.KeyMap
@@ -25,7 +23,6 @@ import net.systemvi.configurator.utils.api.KeyboardSerialApi
 import net.systemvi.configurator.utils.api.KeymapApi
 import net.systemvi.configurator.utils.syntax.paired
 import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
 data class SnapTapSelection(
     var isSelecting: MutableState<Boolean>,
@@ -68,15 +65,16 @@ class NeoConfigureViewModel: ViewModel() {
 
             val keymap = try {
                 suspendCancellableCoroutine<Option<KeyMap>>{ continuation ->
-                    //read keymap
-                    serialApi.onKeymapRead { keymap->
-                        continuation.resume(keymap.some())
-                    }
-                    serialApi.requestKeymapRead()
-                    scope.launch{
+                    val cancellationJob=scope.launch {
                         delay(500)
                         if(continuation.isActive) continuation.cancel()
                     }
+                    //read keymap
+                    serialApi.onKeymapRead { keymap->
+                        cancellationJob.cancel()
+                        continuation.resume(keymap.some())
+                    }
+                    serialApi.requestKeymapRead()
                 }
             }catch (e:Exception){
                 None
@@ -85,14 +83,15 @@ class NeoConfigureViewModel: ViewModel() {
             val name:Option<String> = try{
                 suspendCancellableCoroutine { continuation ->
                     //read name
-                    serialApi.onNameRead { name->
-                        continuation.resume(name.some())
-                    }
-                    serialApi.requestName()
-                    scope.launch {
+                    val cancellationJob=scope.launch {
                         delay(500)
                         if(continuation.isActive) continuation.cancel()
                     }
+                    serialApi.onNameRead { name->
+                        cancellationJob.cancel()
+                        continuation.resume(name.some())
+                    }
+                    serialApi.requestName()
                 }
             }catch (e:Exception){
 //                None
