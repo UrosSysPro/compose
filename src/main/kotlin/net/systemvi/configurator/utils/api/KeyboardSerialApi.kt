@@ -35,9 +35,10 @@ class KeyboardSerialApi {
     private var messageBuffer=listOf<Byte>()
 
     //port selection
-    private var selectedPortName by mutableStateOf<String?>(null)
     private var port by mutableStateOf<Option<SerialPort>>(None)
     var connectionOpen by mutableStateOf(false)
+        private set
+    var selectedPortName by mutableStateOf<String?>(null)
         private set
 
     //user event listeners
@@ -172,6 +173,8 @@ class KeyboardSerialApi {
                     connectionOpen=true
                 }catch (e:Exception){
                     connectionOpen=false
+                    selectedPortName=null
+                    this.port = None
                     e.printStackTrace()
                 }
             }

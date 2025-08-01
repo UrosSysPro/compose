@@ -109,7 +109,7 @@ class NeoConfigureViewModel: ViewModel() {
             serialApi.enableKeyPressEvents()
 
             Pair(keymap,name).paired().onSome { (keymap, name) ->
-                this.keymap = keymap.changeName(name).some()
+                openKeymap(keymap.changeName(name))
             }.onNone {
                 println("could not read keymap and name")
                 this.keymap = None
@@ -180,6 +180,7 @@ class NeoConfigureViewModel: ViewModel() {
     suspend fun uploadKeymap(onStatusUpdate:(UploadStatus)->Unit){
         Triple(keymap,keymapApi,serialApi).tripled().onSome { (keymap,keymapApi,serialApi) ->
             keymapApi.upload(serialApi,keymap,onStatusUpdate)
+            serialApi.storeToFlash()
         }
     }
 }
