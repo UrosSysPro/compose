@@ -7,7 +7,13 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import arrow.core.None
 import arrow.core.Option
+import arrow.core.getOrElse
 import arrow.core.some
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.suspendCancellableCoroutine
 import net.systemvi.configurator.model.Key
 import net.systemvi.configurator.model.KeyMap
@@ -56,23 +62,45 @@ class NeoConfigureViewModel: ViewModel() {
         println("[INFO] NeoConfigureViewModel onStop() called")
     }
 
-    suspend fun selectPort(name:Option<String>){
+    suspend fun selectPort(scope:CoroutineScope,name:Option<String>){
         Pair(serialApi,name).paired().onSome { (serialApi, name) ->
             serialApi.selectPort(name)
-            val keymap = suspendCoroutine { continuation ->
-                //read keymap
-                serialApi.onKeymapRead { keymap->
-                    continuation.resume(keymap)
+
+            val keymap = try {
+                suspendCancellableCoroutine<Option<KeyMap>>{ continuation ->
+                    //read keymap
+                    serialApi.onKeymapRead { keymap->
+                        continuation.resume(keymap.some())
+                    }
+                    serialApi.requestKeymapRead()
+                    scope.launch{
+                        delay(500)
+                        if(continuation.isActive){
+                            continuation.cancel()
+                        }
+                    }
                 }
-                serialApi.requestKeymapRead()
+            }catch (e:Exception){
+                None
             }
 
-            val name = suspendCoroutine { continuation ->
-                //read name
-                serialApi.onNameRead { name->
-                    continuation.resume(name)
+            val name:Option<String> = try{
+                suspendCancellableCoroutine { continuation ->
+                    //read name
+                    serialApi.onNameRead { name->
+                        continuation.resume(name.some())
+                    }
+                    serialApi.requestName()
+                    scope.launch {
+                        delay(500)
+                        if(continuation.isActive){
+                            continuation.cancel()
+                        }
+                    }
                 }
-                serialApi.requestName()
+            }catch (e:Exception){
+//                None
+                "Name not found".some()
             }
 
             //set event listener for keypress on serial port
@@ -84,7 +112,12 @@ class NeoConfigureViewModel: ViewModel() {
             }
             serialApi.enableKeyPressEvents()
 
-            this.keymap=keymap.changeName(name).some()
+            Pair(keymap,name).paired().onSome { (keymap, name) ->
+                this.keymap = keymap.changeName(name).some()
+            }.onNone {
+                println("could not read keymap and name")
+                this.keymap = None
+            }
         }
         name.onNone {
             serialApi.onSome { it.closePort() }

@@ -120,20 +120,24 @@ private fun PortsPopUp(
                 )
 
                 TextButton(
-                    onClick = { scope.launch {
-                        neoConfigViewModel.selectPort(None)
+                    onClick = {
+                        scope.launch {
+                            neoConfigViewModel.selectPort(scope, None)
+                        }
                         close()
-                    }}
+                    }
                 ){
                     Text("None")
                 }
 
                 portNames.forEach { portName ->
                     TextButton(
-                        onClick = {scope.launch {
-                            neoConfigViewModel.selectPort(portName.some())
+                        onClick = {
+                            scope.launch {
+                                neoConfigViewModel.selectPort(scope,portName.some())
+                            }
                             close()
-                        }}
+                        }
                     ){
                         Text(portName)
                     }
