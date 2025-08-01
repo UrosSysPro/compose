@@ -7,6 +7,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import arrow.core.None
 import arrow.core.Option
+import arrow.core.getOrElse
 import arrow.core.some
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
@@ -49,6 +50,7 @@ class NeoConfigureViewModel: ViewModel() {
     var currentlyPressedKeycaps              by  mutableStateOf(emptySet<KeycapMatrixPosition>())
     var currentlySelectedKeycaps             by  mutableStateOf(emptySet<KeycapPosition>())
     var currentLayer                         by  mutableStateOf(0)
+    var onboardKeymaps                       by  mutableStateOf(emptyList<KeyMap>())
 
     fun onStart(keymapApi:KeymapApi,serialApi: KeyboardSerialApi) {
         this.keymapApi = keymapApi.some()
@@ -176,6 +178,10 @@ class NeoConfigureViewModel: ViewModel() {
             }
         }
     }
+
+    fun savedKeymaps():List<KeyMap> = keymapApi.map { it.savedKeymaps }.getOrElse { emptyList() }
+
+    fun defaultKeymaps():List<KeyMap> = net.systemvi.configurator.data.defaultKeymaps()
 
     suspend fun uploadKeymap(onStatusUpdate:(UploadStatus)->Unit){
         Triple(keymap,keymapApi,serialApi).tripled().onSome { (keymap,keymapApi,serialApi) ->

@@ -18,9 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import arrow.core.getOrElse
 import net.systemvi.configurator.components.neo_configure.NeoConfigureViewModel
-import net.systemvi.configurator.data.defaultKeymaps
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
@@ -29,9 +27,18 @@ fun KeymapsPopUp(
     sharedTransitionScope: SharedTransitionScope,
     animatedVisibilityScope: AnimatedVisibilityScope
 ) {
-    val defaultKeymaps = defaultKeymaps()
     val neoConfigViewModel= viewModel { NeoConfigureViewModel() }
-    val keymaps=neoConfigViewModel.keymapApi.map { it.savedKeymaps }.getOrElse { emptyList() }
+
+    val defaultKeymaps = neoConfigViewModel.defaultKeymaps()
+    val savedKeymaps = neoConfigViewModel.savedKeymaps()
+    val onboardKeymaps = neoConfigViewModel.onboardKeymaps
+
+    val keymaps = listOf(
+        Pair("Default",defaultKeymaps),
+        Pair("On Board",onboardKeymaps),
+        Pair("Saved Keymaps",savedKeymaps),
+    )
+
     with(sharedTransitionScope) {
         Card(
             modifier = Modifier
@@ -64,14 +71,11 @@ fun KeymapsPopUp(
                         .verticalScroll(rememberScrollState())
 
                 ) {
-
-                    KeymapRow(defaultKeymaps) {
-                        neoConfigViewModel.openKeymap(it)
-                        close()
-                    }
-                    KeymapRow(keymaps) {
-                        neoConfigViewModel.openKeymap(it)
-                        close()
+                    keymaps.filter { it.second.isNotEmpty() }.forEach { (title,keymaps)->
+                        KeymapRow(title,keymaps){
+                            neoConfigViewModel.openKeymap(it)
+                            close()
+                        }
                     }
                 }
             }
