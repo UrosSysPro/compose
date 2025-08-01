@@ -16,6 +16,7 @@ import java.io.File
     val keycaps:List<List<Keycap>>,
     val layerKeyPositions:List<LayerKeyPosition> = emptyList(),
     val snapTapPairs:List<SnapTapPair> = emptyList(),
+    val type: KeymapType = KeymapType.Default,
 ){companion object}
 
 fun KeyMap.changeName(name: String): KeyMap =
@@ -72,6 +73,8 @@ fun KeyMap.addSnapTapPair(pair: SnapTapPair): KeyMap=
 
 fun KeyMap.removeSnapTapPair(pair: SnapTapPair): KeyMap=
     KeyMap.snapTapPairs.modify(this) { snappairs -> snappairs.filter { it != pair } }
+
+//fun KeyMap.changeType(type: KeymapType)= KeyMap.type
 
 fun KeyMap.forEveryKeycapPositioned(keycapSize:KeycapSize,keycapPadding: net.systemvi.configurator.utils.export.round_filet_design.KeycapPadding,callback:(keycap: Keycap, rowIndex:Int, keycapIndex:Int, positionX: Double, positionY: Double)->Unit) {
     var minSize = 1.0

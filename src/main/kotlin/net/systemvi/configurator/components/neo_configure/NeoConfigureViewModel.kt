@@ -50,7 +50,6 @@ class NeoConfigureViewModel: ViewModel() {
     var currentlyPressedKeycaps              by  mutableStateOf(emptySet<KeycapMatrixPosition>())
     var currentlySelectedKeycaps             by  mutableStateOf(emptySet<KeycapPosition>())
     var currentLayer                         by  mutableStateOf(0)
-    var onboardKeymaps                       by  mutableStateOf(emptyList<KeyMap>())
 
     fun onStart(keymapApi:KeymapApi,serialApi: KeyboardSerialApi) {
         this.keymapApi = keymapApi.some()
@@ -178,6 +177,8 @@ class NeoConfigureViewModel: ViewModel() {
             }
         }
     }
+
+    var onboardKeymaps by mutableStateOf(emptyList<KeyMap>())
 
     fun savedKeymaps():List<KeyMap> = keymapApi.map { it.savedKeymaps }.getOrElse { emptyList() }
 

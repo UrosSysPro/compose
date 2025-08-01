@@ -7,27 +7,31 @@ import net.systemvi.configurator.model.*
 
 @OptIn(ExperimentalStdlibApi::class)
 private fun stringToKeyMap(name:String, rows:List<String>): KeyMap{
-    val keymap = KeyMap(name, rows.map { row ->
-        row.split(" ").map { key ->
-            val splitKey = key.split(":")
-            val keyItem = allKeys
-                .find { it.value == if (splitKey[0].length == 1) splitKey[0][0].code.toByte() else splitKey[0].hexToByte() }
-                .toOption()
-                .getOrElse { allKeys[0] }.right()
-            val width = KeycapWidth.entries[splitKey.getOrNull(1)?.toInt().toOption().getOrElse { 0 }]
-            val height = KeycapHeight.entries[splitKey.getOrNull(2)?.toInt().toOption().getOrElse { 0 }]
-            val padding = KeycapPadding(
-                left = splitKey.getOrNull(3)?.toFloat().toOption().getOrElse { 0f },
-                bottom = splitKey.getOrNull(4)?.toFloat().toOption().getOrElse { 0f }
-            )
-            Keycap(
-                listOf(keyItem),
-                width = width,
-                height = height,
-                padding = padding,
-            )
-        }
-    })
+    val keymap = KeyMap(
+        name = name,
+        keycaps = rows.map { row ->
+            row.split(" ").map { key ->
+                val splitKey = key.split(":")
+                val keyItem = allKeys
+                    .find { it.value == if (splitKey[0].length == 1) splitKey[0][0].code.toByte() else splitKey[0].hexToByte() }
+                    .toOption()
+                    .getOrElse { allKeys[0] }.right()
+                val width = KeycapWidth.entries[splitKey.getOrNull(1)?.toInt().toOption().getOrElse { 0 }]
+                val height = KeycapHeight.entries[splitKey.getOrNull(2)?.toInt().toOption().getOrElse { 0 }]
+                val padding = KeycapPadding(
+                    left = splitKey.getOrNull(3)?.toFloat().toOption().getOrElse { 0f },
+                    bottom = splitKey.getOrNull(4)?.toFloat().toOption().getOrElse { 0f }
+                )
+                Keycap(
+                    listOf(keyItem),
+                    width = width,
+                    height = height,
+                    padding = padding,
+                )
+            }
+        },
+        type = KeymapType.Default,
+    )
     return keymap
 }
 
