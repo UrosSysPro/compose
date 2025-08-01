@@ -3,6 +3,8 @@ package net.systemvi.configurator.components.neo_configure.key_selector
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -40,9 +42,23 @@ fun KeyCategoryMacro(
             Row (
                 verticalAlignment = Alignment.CenterVertically
             ){
+                var showMenu by remember { mutableStateOf(false) }
                 Text(macro.name)
-                IconButton(onClick = {  }) {
+                IconButton(onClick = { showMenu=true }) {
                     Icon(Icons.Filled.MoreVert, contentDescription = "three dots")
+                }
+                DropdownMenu(
+                    expanded = showMenu,
+                    onDismissRequest = { showMenu = false },
+                ){
+                    DropdownMenuItem(
+                        text = { Text("Edit") },
+                        onClick = { editedMacro = macro; showEditor = true; showMenu = false }
+                    )
+                    DropdownMenuItem(
+                        text = { Text("Delete") },
+                        onClick = { onRemoveMacro(macro); showMenu = false }
+                    )
                 }
             }
         }

@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import net.systemvi.configurator.components.configure.KeyboardKeysPages
 import net.systemvi.configurator.components.neo_configure.NeoConfigureViewModel
+import net.systemvi.configurator.model.Macro
 
 
 @OptIn(ExperimentalSharedTransitionApi::class)
@@ -41,6 +42,8 @@ fun KeysPopUp(
     val categories = KeyboardKeysPages.entries
     var selectedCategory by remember { mutableStateOf(categories[0]) }
     val neoConfigViewModel = viewModel { NeoConfigureViewModel() }
+    var macros by remember { mutableStateOf(emptyList<Macro>()) }
+
     Card(
         modifier = Modifier
             .sharedBounds(
@@ -89,6 +92,9 @@ fun KeysPopUp(
                 }
                 KeyCategoryGrid(
                     page = selectedCategory,
+                    macros = macros,
+                    onAddMacro = {macros += it},
+                    onRemoveMacro = {macros = macros.filter { macro-> macro != it }},
                     onNormalKeySelected = { key-> neoConfigViewModel.setKey(key);close()},
 //                    onMacroKeySelected = {macro->neoConfigViewModel.setMacro(macro);close()},
                     onLayerKeySelected = {layer->neoConfigViewModel.setLayerKey(layer);close()}

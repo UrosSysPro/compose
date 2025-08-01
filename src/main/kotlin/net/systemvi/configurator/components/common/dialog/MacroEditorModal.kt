@@ -142,9 +142,10 @@ fun MacroEditorModal(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Start,
             ) {
-                macro.actions.forEach {
-                    MacroActionItem(it)
-                }
+//                DraggableList(macro.actions,{macro.actions.indexOf(it)},{}, DraggableListDirection.horizontal){ index,action,isDragged ->
+//                    if(!isDragged)MacroActionItem(action)
+//                }
+                macro.actions.forEach { MacroActionItem(it) }
             }
 
             Row(
