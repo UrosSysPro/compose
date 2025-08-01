@@ -21,22 +21,21 @@ import net.systemvi.configurator.components.neo_configure.NeoConfigureViewModel
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun NeoConfigKeySelector(){
-    var expanded by remember { mutableStateOf(false) }
+fun NeoConfigKeySelector(expanded:Boolean,setExpanded:(Boolean)->Unit){
     HeroPopUp (
         expanded = expanded,
         horizontalAlignment = Alignment.Start,
         verticalAlignment = Alignment.Top,
         firstComponent = {animationScope,transitionScope->
             ShowKeysButton(
-                {expanded=true},
+                {setExpanded(true)},
                 transitionScope,
                 animationScope
             )
         },
         secondComponent = {animationScope,transitionScope->
             KeysPopUp(
-                {expanded=false},
+                {setExpanded(false)},
                 transitionScope,
                 animationScope
             )

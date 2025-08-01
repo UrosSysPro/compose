@@ -9,7 +9,6 @@ import arrow.core.None
 import arrow.core.Option
 import arrow.core.some
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -76,7 +75,7 @@ class NeoConfigureViewModel: ViewModel() {
                     }
                     serialApi.requestKeymapRead()
                 }
-            }catch (e:Exception){
+            }catch (_:Exception){
                 None
             }
 
@@ -93,7 +92,7 @@ class NeoConfigureViewModel: ViewModel() {
                     }
                     serialApi.requestName()
                 }
-            }catch (e:Exception){
+            }catch (_:Exception){
 //                None
                 "Name not found".some()
             }

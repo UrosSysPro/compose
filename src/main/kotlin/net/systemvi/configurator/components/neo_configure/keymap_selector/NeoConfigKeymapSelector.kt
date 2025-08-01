@@ -23,21 +23,20 @@ import net.systemvi.configurator.data.defaultKeymaps
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun NeoConfigKeymapSelector(){
-    var expanded by remember { mutableStateOf(false) }
+fun NeoConfigKeymapSelector(expanded: Boolean,setExpanded: (Boolean) -> Unit,){
     HeroPopUp (
         expanded = expanded,
         verticalAlignment = Alignment.Top,
         firstComponent = { animatedVisibilityScope, sharedTransitionScope ->
             ShowKeymapsButton(
-                {expanded=true},
+                {setExpanded(true)},
                 sharedTransitionScope,
                 animatedVisibilityScope,
             )
         },
         secondComponent = { animatedVisibilityScope, sharedTransitionScope ->
             KeymapsPopUp(
-                {expanded=false},
+                {setExpanded(false)},
                 sharedTransitionScope,
                 animatedVisibilityScope,
             )

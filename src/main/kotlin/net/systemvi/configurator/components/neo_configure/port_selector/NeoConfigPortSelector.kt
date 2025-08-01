@@ -44,8 +44,7 @@ import net.systemvi.configurator.utils.services.SerialApiService
 
 @OptIn(ExperimentalSharedTransitionApi::class, ExperimentalComposeUiApi::class)
 @Composable
-fun NeoConfigPortSelector(){
-    var expanded by remember { mutableStateOf(false) }
+fun NeoConfigPortSelector(expanded: Boolean,setExpanded: (Boolean) -> Unit){
     var job by remember { mutableStateOf<Option<Job>>(None) }
     HeroPopUp (
         expanded = expanded,
@@ -53,7 +52,7 @@ fun NeoConfigPortSelector(){
         verticalAlignment = Alignment.Top,
         firstComponent = { animatedVisibilityScope, sharedTransitionScope ->
             ShowPortsButton(
-                {expanded=true},
+                {setExpanded(true)},
                 job.map { it.isActive }.getOrElse {false},
                 sharedTransitionScope,
                 animatedVisibilityScope,
@@ -61,7 +60,7 @@ fun NeoConfigPortSelector(){
         },
         secondComponent = { animatedVisibilityScope, sharedTransitionScope ->
             PortsPopUp(
-                {expanded=false},
+                {setExpanded(false)},
                 {job = it.some()},
                 sharedTransitionScope,
                 animatedVisibilityScope,
