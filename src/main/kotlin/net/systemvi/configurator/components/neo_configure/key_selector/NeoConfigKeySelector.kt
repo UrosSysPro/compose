@@ -131,7 +131,23 @@ private fun KeysPopUp(
                     horizontalArrangement = Arrangement.spacedBy(10.dp),
                     verticalArrangement = Arrangement.spacedBy(10.dp),
                 ){
-                    selectedCategory.keys.forEach { key ->
+                    when (selectedCategory) {
+                        KeyboardKeysPages.LayerKeys -> {
+                            for(i in 1 until 4){
+                                ElevatedButton(
+                                    onClick = {
+                                        neoConfigViewModel.setLayerKey(i)
+                                        close()
+                                    }
+                                ){
+                                    Text("L${i+1}")
+                                }
+                            }
+                        }
+                        KeyboardKeysPages.MacroKeys -> {
+
+                        }
+                        else -> selectedCategory.keys.forEach { key ->
                         ElevatedButton(
                             onClick = {
                                 neoConfigViewModel.setKey(key)
@@ -140,6 +156,7 @@ private fun KeysPopUp(
                         ){
                             Text(key.name)
                         }
+                    }
                     }
                 }
             }

@@ -20,6 +20,8 @@ import net.systemvi.configurator.model.KeyMap
 import net.systemvi.configurator.model.KeycapMatrixPosition
 import net.systemvi.configurator.model.KeycapPosition
 import net.systemvi.configurator.model.KeymapType
+import net.systemvi.configurator.model.LayerKeyPosition
+import net.systemvi.configurator.model.addLayerKey
 import net.systemvi.configurator.model.changeName
 import net.systemvi.configurator.model.changeType
 import net.systemvi.configurator.model.updateKeycap
@@ -82,8 +84,6 @@ class NeoConfigureViewModel: ViewModel() {
         None
     }
 
-
-
     private suspend fun readName(scope: CoroutineScope,serialApi: KeyboardSerialApi):Option<String> = try{
         suspendCancellableCoroutine { continuation ->
             //read name
@@ -133,6 +133,7 @@ class NeoConfigureViewModel: ViewModel() {
         }
         name.onNone {
             serialApi.onSome { it.closePort() }
+            onboardKeymaps = emptyList()
             this.keymap = None
         }
     }
@@ -173,6 +174,22 @@ class NeoConfigureViewModel: ViewModel() {
                     currentLayer,
                     keymap.keycaps[position.column][position.row].matrixPosition
                 )
+            }
+            when(keymap.type){
+                is KeymapType.Saved -> saveKeymap()
+                is KeymapType.Onboard -> updateOnboardKeymaps()
+                else -> Unit
+            }
+        }
+    }
+
+    fun setLayerKey(layer:Int){
+        Pair(keymap,serialApi).paired().onSome { (keymap,serialApi) ->
+            currentlySelectedKeycaps.forEach { position->
+                val keycap=keymap.keycaps[position.column][position.row]
+
+                this.keymap = this.keymap.map { it.addLayerKey(LayerKeyPosition(keycap.matrixPosition,layer))}
+                serialApi.addLayerKeyPosition(keycap.matrixPosition,layer)
             }
             when(keymap.type){
                 is KeymapType.Saved -> saveKeymap()
