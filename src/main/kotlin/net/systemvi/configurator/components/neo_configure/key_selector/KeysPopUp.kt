@@ -96,7 +96,7 @@ fun KeysPopUp(
                     onAddMacro = {macros += it},
                     onRemoveMacro = {macros = macros.filter { macro-> macro != it }},
                     onNormalKeySelected = { key-> neoConfigViewModel.setKey(key);close()},
-//                    onMacroKeySelected = {macro->neoConfigViewModel.setMacro(macro);close()},
+                    onMacroKeySelected = {macro->neoConfigViewModel.setMacro(macro);close()},
                     onLayerKeySelected = {layer->neoConfigViewModel.setLayerKey(layer);close()}
                 )
             }

@@ -21,6 +21,7 @@ import net.systemvi.configurator.model.KeycapMatrixPosition
 import net.systemvi.configurator.model.KeycapPosition
 import net.systemvi.configurator.model.KeymapType
 import net.systemvi.configurator.model.LayerKeyPosition
+import net.systemvi.configurator.model.Macro
 import net.systemvi.configurator.model.addLayerKey
 import net.systemvi.configurator.model.changeName
 import net.systemvi.configurator.model.changeType
@@ -160,6 +161,30 @@ class NeoConfigureViewModel: ViewModel() {
     }
 
     fun setKey(key: Key){
+        Pair(keymap,serialApi).paired().onSome { (keymap,serialApi) ->
+            currentlySelectedKeycaps.forEach { position->
+                this.keymap = this.keymap.map { it.updateKeycap(
+                    position.column,
+                    position.row,
+                    currentLayer,
+                    key
+                )}
+
+                serialApi.setKeyOnLayer(
+                    key,
+                    currentLayer,
+                    keymap.keycaps[position.column][position.row].matrixPosition
+                )
+            }
+            when(keymap.type){
+                is KeymapType.Saved -> saveKeymap()
+                is KeymapType.Onboard -> updateOnboardKeymaps()
+                else -> Unit
+            }
+        }
+    }
+
+    fun setMacro(key: Macro){
         Pair(keymap,serialApi).paired().onSome { (keymap,serialApi) ->
             currentlySelectedKeycaps.forEach { position->
                 this.keymap = this.keymap.map { it.updateKeycap(
