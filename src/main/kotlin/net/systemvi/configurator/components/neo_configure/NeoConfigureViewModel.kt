@@ -156,6 +156,22 @@ class NeoConfigureViewModel: ViewModel() {
                     keymap.keycaps[position.column][position.row].matrixPosition
                 )
             }
+            saveKeymap()
+        }
+    }
+
+    fun saveKeymap(){
+        Pair(keymap,keymapApi).paired().onSome { (keymap,keymapApi) ->
+            if(keymapApi.savedKeymaps.any{it.name==keymap.name}){
+                keymapApi.savedKeymaps=keymapApi.savedKeymaps.map {
+                    if(it.name==keymap.name)
+                        keymap
+                    else
+                        it
+                }
+            }else{
+                keymapApi.savedKeymaps+=keymap
+            }
         }
     }
 }
