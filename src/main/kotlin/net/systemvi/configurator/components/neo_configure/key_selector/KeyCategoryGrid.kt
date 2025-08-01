@@ -41,9 +41,7 @@ fun KeyCategoryGrid(
                 }
             }
             KeyboardKeysPages.MacroKeys -> KeyCategoryMacro(macros,onAddMacro,onRemoveMacro,onMacroKeySelected)
-            KeyboardKeysPages.SnapTapKeys ->{
-                Text("comming soon")
-            }
+            KeyboardKeysPages.SnapTapKeys -> KeyCategorySnapTap(snapTapPairs,onAddSnapTap,onRemoveSnapTap)
             else -> page.keys.forEach { key ->
                 ElevatedButton(
                     onClick = {onNormalKeySelected(key)},

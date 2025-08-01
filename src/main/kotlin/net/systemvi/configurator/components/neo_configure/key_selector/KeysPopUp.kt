@@ -27,9 +27,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import arrow.core.getOrElse
 import net.systemvi.configurator.components.configure.KeyboardKeysPages
 import net.systemvi.configurator.components.neo_configure.NeoConfigureViewModel
 import net.systemvi.configurator.model.Macro
+import net.systemvi.configurator.model.SnapTapPair
 
 
 @OptIn(ExperimentalSharedTransitionApi::class)
@@ -43,6 +45,7 @@ fun KeysPopUp(
     var selectedCategory by remember { mutableStateOf(categories[0]) }
     val neoConfigViewModel = viewModel { NeoConfigureViewModel() }
     var macros by remember { mutableStateOf(emptyList<Macro>()) }
+    val snapTapPairs=neoConfigViewModel.keymap.map { it.snapTapPairs }.getOrElse { emptyList() }
 
     Card(
         modifier = Modifier
@@ -97,7 +100,10 @@ fun KeysPopUp(
                     onRemoveMacro = {macros = macros.filter { macro-> macro != it }},
                     onNormalKeySelected = { key-> neoConfigViewModel.setKey(key);close()},
                     onMacroKeySelected = {macro->neoConfigViewModel.setMacro(macro);close()},
-                    onLayerKeySelected = {layer->neoConfigViewModel.setLayerKey(layer);close()}
+                    onLayerKeySelected = {layer->neoConfigViewModel.setLayerKey(layer);close()},
+                    snapTapPairs = snapTapPairs,
+                    onAddSnapTap = {println("Add snap tap pair")},
+                    onRemoveSnapTap = {println("Remove snap tap pair")},
                 )
             }
         }
