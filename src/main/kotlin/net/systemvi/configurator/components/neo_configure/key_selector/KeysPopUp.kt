@@ -5,14 +5,12 @@ import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Card
-import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -31,7 +29,6 @@ import arrow.core.getOrElse
 import net.systemvi.configurator.components.configure.KeyboardKeysPages
 import net.systemvi.configurator.components.neo_configure.NeoConfigureViewModel
 import net.systemvi.configurator.model.Macro
-import net.systemvi.configurator.model.SnapTapPair
 
 
 @OptIn(ExperimentalSharedTransitionApi::class)
