@@ -10,6 +10,7 @@ import androidx.compose.ui.unit.dp
 import net.systemvi.configurator.components.configure.KeyboardKeysPages
 import net.systemvi.configurator.model.Key
 import net.systemvi.configurator.model.Macro
+import net.systemvi.configurator.model.SnapTapPair
 
 @Composable
 fun KeyCategoryGrid(
@@ -17,6 +18,12 @@ fun KeyCategoryGrid(
     onNormalKeySelected:(Key)->Unit={},
     onMacroKeySelected:(Macro)->Unit={},
     onLayerKeySelected:(layer:Int)->Unit={},
+    snapTapPairs:List<SnapTapPair> = emptyList(),
+    macros:List<Macro> = emptyList(),
+    onAddSnapTap:()->Unit={},
+    onRemoveSnapTap:(SnapTapPair)->Unit={},
+    onAddMacro:(Macro)->Unit={},
+    onRemoveMacro:(Macro)->Unit={},
 ){
     FlowRow(
         modifier = Modifier,
@@ -33,9 +40,7 @@ fun KeyCategoryGrid(
                     }
                 }
             }
-            KeyboardKeysPages.MacroKeys -> {
-                Text("comming soon")
-            }
+            KeyboardKeysPages.MacroKeys -> KeyCategoryMacro(macros,onAddMacro,onRemoveMacro,onMacroKeySelected)
             KeyboardKeysPages.SnapTapKeys ->{
                 Text("comming soon")
             }

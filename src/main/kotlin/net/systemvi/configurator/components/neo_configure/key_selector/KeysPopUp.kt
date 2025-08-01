@@ -56,7 +56,7 @@ fun KeysPopUp(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
-                text = "Keys",
+                text = selectedCategory.title,
                 modifier = Modifier
                     .sharedElement(
                         rememberSharedContentState(key = "title"),
@@ -87,7 +87,6 @@ fun KeysPopUp(
                         }
                     }
                 }
-                Text(selectedCategory.title)
                 KeyCategoryGrid(
                     page = selectedCategory,
                     onNormalKeySelected = { key-> neoConfigViewModel.setKey(key);close()},
