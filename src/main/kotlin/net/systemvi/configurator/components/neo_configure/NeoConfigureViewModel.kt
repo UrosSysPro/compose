@@ -1,5 +1,6 @@
 package net.systemvi.configurator.components.neo_configure
 
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -18,12 +19,15 @@ import net.systemvi.configurator.model.Key
 import net.systemvi.configurator.model.KeyMap
 import net.systemvi.configurator.model.KeycapMatrixPosition
 import net.systemvi.configurator.model.KeycapPosition
+import net.systemvi.configurator.model.KeymapType
 import net.systemvi.configurator.model.changeName
+import net.systemvi.configurator.model.changeType
 import net.systemvi.configurator.model.updateKeycap
 import net.systemvi.configurator.utils.api.KeyboardSerialApi
 import net.systemvi.configurator.utils.api.KeymapApi
 import net.systemvi.configurator.utils.syntax.paired
 import net.systemvi.configurator.utils.syntax.tripled
+import javax.swing.text.Keymap
 import kotlin.coroutines.resume
 
 data class SnapTapSelection(
@@ -61,44 +65,50 @@ class NeoConfigureViewModel: ViewModel() {
         println("[INFO] NeoConfigureViewModel onStop() called")
     }
 
+    private suspend fun readKeymap(scope: CoroutineScope,serialApi: KeyboardSerialApi):Option<KeyMap> = try {
+        suspendCancellableCoroutine{ continuation ->
+            val cancellationJob=scope.launch {
+                delay(500)
+                if(continuation.isActive) continuation.cancel()
+            }
+            //read keymap
+            serialApi.onKeymapRead { keymap->
+                cancellationJob.cancel()
+                continuation.resume(keymap.some())
+            }
+            serialApi.requestKeymapRead()
+        }
+    }catch (_:Exception){
+        None
+    }
+
+
+
+    private suspend fun readName(scope: CoroutineScope,serialApi: KeyboardSerialApi):Option<String> = try{
+        suspendCancellableCoroutine { continuation ->
+            //read name
+            val cancellationJob=scope.launch {
+                delay(500)
+                if(continuation.isActive) continuation.cancel()
+            }
+            serialApi.onNameRead { name->
+                cancellationJob.cancel()
+                continuation.resume(name.some())
+            }
+            serialApi.requestName()
+        }
+    }catch (_:Exception){
+//                None
+        "Name not found".some()
+    }
+
     suspend fun selectPort(scope:CoroutineScope,name:Option<String>){
         Pair(serialApi,name).paired().onSome { (serialApi, name) ->
             serialApi.selectPort(name)
 
-            val keymap = try {
-                suspendCancellableCoroutine<Option<KeyMap>>{ continuation ->
-                    val cancellationJob=scope.launch {
-                        delay(500)
-                        if(continuation.isActive) continuation.cancel()
-                    }
-                    //read keymap
-                    serialApi.onKeymapRead { keymap->
-                        cancellationJob.cancel()
-                        continuation.resume(keymap.some())
-                    }
-                    serialApi.requestKeymapRead()
-                }
-            }catch (_:Exception){
-                None
-            }
+            val keymap = readKeymap(scope,serialApi)
 
-            val name:Option<String> = try{
-                suspendCancellableCoroutine { continuation ->
-                    //read name
-                    val cancellationJob=scope.launch {
-                        delay(500)
-                        if(continuation.isActive) continuation.cancel()
-                    }
-                    serialApi.onNameRead { name->
-                        cancellationJob.cancel()
-                        continuation.resume(name.some())
-                    }
-                    serialApi.requestName()
-                }
-            }catch (_:Exception){
-//                None
-                "Name not found".some()
-            }
+            val name:Option<String> = readName(scope,serialApi)
 
             //set event listener for keypress on serial port
             serialApi.onKeycapPress { keycap->
@@ -110,9 +120,14 @@ class NeoConfigureViewModel: ViewModel() {
             serialApi.enableKeyPressEvents()
 
             Pair(keymap,name).paired().onSome { (keymap, name) ->
-                openKeymap(keymap.changeName(name))
+                val keymap=keymap
+                    .changeName(name)
+                    .changeType(KeymapType.Onboard(false))
+                onboardKeymaps = listOf(keymap)
+                this.keymap.onNone { openKeymap(keymap) }
             }.onNone {
                 println("could not read keymap and name")
+                onboardKeymaps = emptyList()
                 this.keymap = None
             }
         }
@@ -159,7 +174,11 @@ class NeoConfigureViewModel: ViewModel() {
                     keymap.keycaps[position.column][position.row].matrixPosition
                 )
             }
-            saveKeymap()
+            when(keymap.type){
+                is KeymapType.Saved -> saveKeymap()
+                is KeymapType.Onboard -> updateOnboardKeymaps()
+                else -> Unit
+            }
         }
     }
 
@@ -175,6 +194,31 @@ class NeoConfigureViewModel: ViewModel() {
             }else{
                 keymapApi.savedKeymaps+=keymap
             }
+        }
+    }
+
+    fun updateOnboardKeymaps(){
+        keymap.onSome { keymap ->
+            if(onboardKeymaps.any{it.name==keymap.name}){
+                onboardKeymaps=onboardKeymaps.map {
+                    if(it.name==keymap.name)
+                        keymap
+                    else
+                        it
+                }
+            }else{
+                onboardKeymaps+=keymap
+            }
+        }
+    }
+
+    fun createCopyOfKeymap(name:String){
+        Pair(keymap,keymapApi).paired().onSome { (keymap,api)->
+            val keymap = keymap
+                .changeName(name)
+                .changeType(KeymapType.Saved)
+            api.saveAs(keymap)
+            this.keymap=keymap.some()
         }
     }
 

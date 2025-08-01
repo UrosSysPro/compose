@@ -10,7 +10,9 @@ import kotlinx.coroutines.delay
 import kotlinx.serialization.json.Json
 import net.systemvi.configurator.components.configure.UploadStatus
 import net.systemvi.configurator.model.KeyMap
+import net.systemvi.configurator.model.KeymapType
 import net.systemvi.configurator.model.Macro
+import net.systemvi.configurator.model.changeType
 import net.systemvi.configurator.utils.api.KeyboardSerialApi
 import java.io.File
 import java.io.FileWriter
@@ -19,6 +21,7 @@ import java.util.Scanner
 class KeymapApi{
 
     var savedKeymaps: List<KeyMap> by mutableStateOf(emptyList())
+//    private set
 
     fun macroKeys()=emptyList<Macro>()
 
@@ -35,8 +38,7 @@ class KeymapApi{
                 println("[ERROR] keymap with same name exists, nothing is saved")
             }
             .onNone {
-//                this.keymap = keymap.some()
-                savedKeymaps+=keymap
+                savedKeymaps+=keymap.changeType(KeymapType.Saved)
             }
     }
 

@@ -46,9 +46,12 @@ fun KeymapGrid(){
                 LayerSelector()
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
-                    if(serialConnectionOpen) UploadButton()
-                    Box(modifier = Modifier.width(8.dp))
+                    if(serialConnectionOpen) {
+                        UploadButton()
+                        SaveAsButton()
+                    }
                     Text(keymap.name)
                 }
             }

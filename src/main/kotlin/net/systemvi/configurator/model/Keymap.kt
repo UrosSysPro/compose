@@ -74,7 +74,7 @@ fun KeyMap.addSnapTapPair(pair: SnapTapPair): KeyMap=
 fun KeyMap.removeSnapTapPair(pair: SnapTapPair): KeyMap=
     KeyMap.snapTapPairs.modify(this) { snappairs -> snappairs.filter { it != pair } }
 
-//fun KeyMap.changeType(type: KeymapType)= KeyMap.type
+fun KeyMap.changeType(type: KeymapType)= KeyMap.type.set(this, type)
 
 fun KeyMap.forEveryKeycapPositioned(keycapSize:KeycapSize,keycapPadding: net.systemvi.configurator.utils.export.round_filet_design.KeycapPadding,callback:(keycap: Keycap, rowIndex:Int, keycapIndex:Int, positionX: Double, positionY: Double)->Unit) {
     var minSize = 1.0
