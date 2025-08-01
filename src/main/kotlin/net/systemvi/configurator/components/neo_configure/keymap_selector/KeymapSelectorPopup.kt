@@ -21,7 +21,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import arrow.core.getOrElse
 import net.systemvi.configurator.components.neo_configure.NeoConfigureViewModel
 import net.systemvi.configurator.data.defaultKeymaps
-import net.systemvi.configurator.model.padding
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable

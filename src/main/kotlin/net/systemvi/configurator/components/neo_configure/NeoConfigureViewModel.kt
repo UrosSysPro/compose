@@ -12,6 +12,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
+import net.systemvi.configurator.components.configure.UploadStatus
 import net.systemvi.configurator.model.Key
 import net.systemvi.configurator.model.KeyMap
 import net.systemvi.configurator.model.KeycapMatrixPosition
@@ -21,6 +22,7 @@ import net.systemvi.configurator.model.updateKeycap
 import net.systemvi.configurator.utils.api.KeyboardSerialApi
 import net.systemvi.configurator.utils.api.KeymapApi
 import net.systemvi.configurator.utils.syntax.paired
+import net.systemvi.configurator.utils.syntax.tripled
 import kotlin.coroutines.resume
 
 data class SnapTapSelection(
@@ -172,6 +174,12 @@ class NeoConfigureViewModel: ViewModel() {
             }else{
                 keymapApi.savedKeymaps+=keymap
             }
+        }
+    }
+
+    suspend fun uploadKeymap(onStatusUpdate:(UploadStatus)->Unit){
+        Triple(keymap,keymapApi,serialApi).tripled().onSome { (keymap,keymapApi,serialApi) ->
+            keymapApi.upload(serialApi,keymap,onStatusUpdate)
         }
     }
 }

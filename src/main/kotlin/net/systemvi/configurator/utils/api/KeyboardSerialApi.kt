@@ -37,6 +37,8 @@ class KeyboardSerialApi {
     //port selection
     private var selectedPortName by mutableStateOf<String?>(null)
     private var port by mutableStateOf<Option<SerialPort>>(None)
+    var connectionOpen by mutableStateOf(false)
+        private set
 
     //user event listeners
     private var onKeymapRead:(keymap: KeyMap)->Unit={}
@@ -152,19 +154,25 @@ class KeyboardSerialApi {
             selectedPortName=name
             port = SerialPort(name).some()
             port.onSome { port->
-                port.openPort()
-                port.setParams(
-                    SerialPort.BAUDRATE_9600,
-                    SerialPort.DATABITS_8,
-                    SerialPort.STOPBITS_1,
-                    SerialPort.PARITY_NONE
-                )
+                try{
+                    port.openPort()
+                    port.setParams(
+                        SerialPort.BAUDRATE_9600,
+                        SerialPort.DATABITS_8,
+                        SerialPort.STOPBITS_1,
+                        SerialPort.PARITY_NONE
+                    )
 
-                port.addEventListener { event ->
-                    val port=event.port
-                    val array: ByteArray = port.readBytes()?: ByteArray(0)
-                    messageBuffer=messageBuffer.plus(array.toList())
-                    checkForCommands()
+                    port.addEventListener { event ->
+                        val port=event.port
+                        val array: ByteArray = port.readBytes()?: ByteArray(0)
+                        messageBuffer=messageBuffer.plus(array.toList())
+                        checkForCommands()
+                    }
+                    connectionOpen=true
+                }catch (e:Exception){
+                    connectionOpen=false
+                    e.printStackTrace()
                 }
             }
         }
@@ -275,7 +283,7 @@ class KeyboardSerialApi {
                                     val type=buffer[1].toInt()
                                     actions[i]= MacroAction(
                                         allKeys.find { it.value == value }.toOption()
-                                        .getOrElse { alphabetKeys.last() },
+                                            .getOrElse { alphabetKeys.last() },
                                         if (type == 1) MacroActionType.KEY_DOWN else MacroActionType.KEY_UP
                                     )
                                     buffer=buffer.drop(2)
@@ -345,6 +353,7 @@ class KeyboardSerialApi {
             disableKeyPressEvents()
             port.closePort()
         } }
+        connectionOpen=false
         port= None
     }
     fun storeToFlash(){

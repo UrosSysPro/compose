@@ -1,6 +1,7 @@
 package net.systemvi.configurator.components.neo_configure.keymap
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
@@ -8,12 +9,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Card
+import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import arrow.core.getOrElse
 import net.systemvi.configurator.components.common.keyboard_grid.Grid
 import net.systemvi.configurator.components.neo_configure.NeoConfigureViewModel
 import net.systemvi.configurator.components.neo_configure.keymap.keycap.NeoConfigKeycap
@@ -24,6 +27,7 @@ import net.systemvi.configurator.model.width
 fun KeymapGrid(){
     val neoConfigViewModel = viewModel { NeoConfigureViewModel() }
     val keymap = neoConfigViewModel.keymap.getOrNull()!!
+    val serialConnectionOpen=neoConfigViewModel.serialApi.map { it.connectionOpen }.getOrElse { false }
 
     Card {
         Column(
@@ -35,13 +39,18 @@ fun KeymapGrid(){
         ) {
             Row (
                 modifier = Modifier
-//                    .width(IntrinsicSize.Max),
                     .fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 LayerSelector()
-                Text(keymap.name)
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    if(serialConnectionOpen) UploadButton()
+                    Box(modifier = Modifier.width(8.dp))
+                    Text(keymap.name)
+                }
             }
             Grid(
                 keymap,
