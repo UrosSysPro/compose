@@ -97,7 +97,7 @@ fun KeysPopUp(
                     onRemoveMacro = {macros = macros.filter { macro-> macro != it }},
                     onNormalKeySelected = { key-> neoConfigViewModel.setKey(key);close()},
                     onMacroKeySelected = {macro->neoConfigViewModel.setMacro(macro);close()},
-                    onLayerKeySelected = {layer->neoConfigViewModel.setLayerKey(layer);close()},
+                    onLayerKeySelected = {layer->neoConfigViewModel.addLayerKey(layer);close()},
                     snapTapPairs = snapTapPairs,
                     onAddSnapTap = {println("Add snap tap pair")},
                     onRemoveSnapTap = {println("Remove snap tap pair")},
