@@ -2,6 +2,7 @@ package net.systemvi.configurator.components.neo_configure
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
@@ -188,12 +189,10 @@ class NeoConfigureViewModel: ViewModel() {
     fun setKey(key: Key){
         Pair(keymap,serialApi).paired().onSome { (keymap,serialApi) ->
             currentlySelectedKeycaps.forEach { position->
-//                val keycap=keymap.keycaps[position.row][position.column]
-//                var keymap=keymap
-//                if(keymap.layerKeyPositions.map { it.position }.contains(keycap.matrixPosition)){
-//                    keymap=keymap.removeLayerKey(keycap.matrixPosition)
-//                    serialApi.removeLayerKeyPosition(keycap.matrixPosition)
-//                }
+                val keycap=keymap.keycaps[position.column][position.row]
+                if(keymap.layerKeyPositions.map { it.position }.contains(keycap.matrixPosition)){
+                    removeLayerKey(keycap.matrixPosition)
+                }
                 this.keymap = this.keymap.map { it.updateKeycap(
                     position.column,
                     position.row,
@@ -204,7 +203,7 @@ class NeoConfigureViewModel: ViewModel() {
                 serialApi.setKeyOnLayer(
                     key,
                     currentLayer,
-                    keymap.keycaps[position.column][position.row].matrixPosition
+                    keycap.matrixPosition
                 )
             }
             when(keymap.type){
@@ -218,12 +217,10 @@ class NeoConfigureViewModel: ViewModel() {
     fun setMacro(key: Macro){
         Pair(keymap,serialApi).paired().onSome { (keymap,serialApi) ->
             currentlySelectedKeycaps.forEach { position->
-//                val keycap=keymap.keycaps[position.column][position.row]
-//                var keymap=keymap
-//                if(keymap.layerKeyPositions.map { it.position }.contains(keycap.matrixPosition)){
-//                    keymap=keymap.removeLayerKey(keycap.matrixPosition)
-//                    serialApi.removeLayerKeyPosition(keycap.matrixPosition)
-//                }
+                val keycap=keymap.keycaps[position.column][position.row]
+                if(keymap.layerKeyPositions.map { it.position }.contains(keycap.matrixPosition)){
+                    removeLayerKey(keycap.matrixPosition)
+                }
                 this.keymap = this.keymap.map { it.updateKeycap(
                     position.column,
                     position.row,
@@ -234,7 +231,7 @@ class NeoConfigureViewModel: ViewModel() {
                 serialApi.setKeyOnLayer(
                     key,
                     currentLayer,
-                    keymap.keycaps[position.column][position.row].matrixPosition
+                    keycap.matrixPosition
                 )
             }
             when(keymap.type){
@@ -259,6 +256,12 @@ class NeoConfigureViewModel: ViewModel() {
                 else -> Unit
             }
         }
+    }
+
+    fun removeLayerKey(position: KeycapMatrixPosition){
+        this.keymap = this.keymap.map { it.removeLayerKey(position) }
+        this.serialApi.onSome { it.removeLayerKeyPosition(position) }
+        saveKeymap()
     }
 
     fun saveKeymap(){
