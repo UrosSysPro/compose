@@ -54,22 +54,22 @@ fun KeysPicker(
             horizontalArrangement = Arrangement.spacedBy(4.dp),
         ){
             categories.forEach { category ->
-//                IconButton(
-//                    onClick = { onCategorySelect(category) }
-//                ){
-//                    Icon(
-//                        imageVector = Icons.Filled.KeyboardArrowUp,
-//                        contentDescription = "keys category icon",
-//                    )
-//                }
-                TextButton(
-                    onClick = { onCategorySelect(category) },
-                    colors = ButtonDefaults.textButtonColors(
-                        containerColor = if(category==selectedCategory) MaterialTheme.colorScheme.secondaryContainer else Color.Transparent,
-                    )
+                IconButton(
+                    onClick = { onCategorySelect(category) }
                 ){
-                    Text(text = category.title)
+                    Icon(
+                        imageVector = Icons.Filled.KeyboardArrowUp,
+                        contentDescription = "keys category icon",
+                    )
                 }
+//                TextButton(
+//                    onClick = { onCategorySelect(category) },
+//                    colors = ButtonDefaults.textButtonColors(
+//                        containerColor = if(category==selectedCategory) MaterialTheme.colorScheme.secondaryContainer else Color.Transparent,
+//                    )
+//                ){
+//                    Text(text = category.title)
+//                }
             }
         }
         KeyCategoryGrid(

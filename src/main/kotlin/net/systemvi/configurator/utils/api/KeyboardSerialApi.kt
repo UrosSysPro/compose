@@ -87,6 +87,8 @@ class KeyboardSerialApi {
                 layer.toByte(),
                 macro.actions.size.toByte(),
                 *macro.actions.flatMap { (key, action) -> listOf(key.value,action.id.toByte()) }.toTypedArray(),
+                macro.name.length.toByte(),
+                *macro.name.map { it.code.toByte() }.toTypedArray()
             ).toByteArray()
             port.writeBytes(bytes)
         }.onNone {
@@ -291,7 +293,14 @@ class KeyboardSerialApi {
                                     )
                                     buffer=buffer.drop(2)
                                 }
-                                keys[i] = Macro("macro 0", actions.toList()).left()
+                                val nameLength=buffer[0].toInt()
+                                buffer=buffer.drop(1)
+                                var name=""
+                                for(i in 0 until nameLength){
+                                    name+=buffer[0].toInt().toChar()
+                                    buffer=buffer.drop(1)
+                                }
+                                keys[i] = Macro(name, actions.toList()).left()
                             }
                             else->{
                                 println("[ERROR] unknown key type: $keyType")
