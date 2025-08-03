@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import arrow.core.Either
 import arrow.core.getOrElse
 import net.systemvi.configurator.components.common.keys_picker.KeysPicker
 import net.systemvi.configurator.components.configure.KeyboardKeysPages
@@ -42,7 +43,14 @@ fun KeysPopUp(
     val categories = KeyboardKeysPages.entries
     var selectedCategory by remember { mutableStateOf(categories[0]) }
     val neoConfigViewModel = viewModel { NeoConfigureViewModel() }
-    var macros by remember { mutableStateOf(emptyList<Macro>()) }
+    var macros by remember { mutableStateOf(
+        neoConfigViewModel.keymap.map { it.keycaps.flatten().flatMap { it.layers }.flatMap {
+            when(val key = it){
+                is Either.Left -> listOf(key.value)
+                is Either.Right -> emptyList()
+            }
+        } }.getOrElse { emptyList() }
+    ) }
     val snapTapPairs=neoConfigViewModel.keymap.map { it.snapTapPairs }.getOrElse { emptyList() }
 
     Card(
