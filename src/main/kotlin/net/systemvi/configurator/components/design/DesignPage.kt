@@ -1,20 +1,17 @@
 package net.systemvi.configurator.components.design
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import net.systemvi.configurator.components.common.DraggableList
 import net.systemvi.configurator.components.common.DraggableListDirection
 import net.systemvi.configurator.model.KeycapPosition
+import net.systemvi.configurator.model.Keycap
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable fun DesignPage(modifier: Modifier, showFloatingActionButtons: Boolean = true, keycapLimit: Int = 20, rowLimit: Int = 10, oneUSize:Int = 50) {
@@ -28,58 +25,13 @@ import net.systemvi.configurator.model.KeycapPosition
                 .padding(horizontal = 150.dp)
         )
     ) {
-        Row(
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
-        ){
-            AddRowButton(viewModel::addRow, keymap.keycaps.size>=rowLimit, oneUSize)
-            SaveAsButton(keymap, viewModel::setName, keymap.keycaps.flatten().isNotEmpty())
-        }
+        AddRowAndSaveAsButton(rowLimit, oneUSize)
         DraggableList(
             items = keymap.keycaps,
             key = {it},
             onDrop = {}
         ){ i, row, isSelected ->
-            val paddingBottom = oneUSize * row.fold(0f){acc, keycap -> acc.coerceAtLeast(keycap.padding.bottom)}
-
-            Row(
-                modifier = Modifier
-                    .graphicsLayer(
-                        alpha = if(isSelected)0f else 1f,
-                    )
-                    .wrapContentSize(unbounded = true)
-                    .padding(bottom = (paddingBottom+10).dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            )
-            {
-                AddKeycapButton({ viewModel.addKeycap(i) }, row.size >= keycapLimit, oneUSize)
-                DraggableList(
-                    items = row,
-                    key = {it},
-                    onDrop = {},
-                    direction = DraggableListDirection.horizontal
-                ){ j,keycap, isSelected->
-                    val width = oneUSize * keycap.width.size
-                    val height = oneUSize * keycap.height.size
-                    val leftPadding = oneUSize * keycap.padding.left
-
-                    Box(
-                        modifier = Modifier
-                            .graphicsLayer(
-                                alpha = if(isSelected)0f else 1f,
-                            )
-                            .padding(start = leftPadding.dp)
-                            .size(width.dp, height.dp)
-                            .wrapContentSize(unbounded = true),
-                    ) {
-                        KeycapDesign(keycap, { viewModel.deleteKeycap(i, j) }, {
-                            viewModel.selectedKeycap = KeycapPosition(i, j)
-                        }, oneUSize)
-                    }
-                }
-                RemoveRowButton({ viewModel.removeRow(i) }, oneUSize)
-            }
+            KeymapRow(row, i, isSelected, keycapLimit, oneUSize)
         }
     }
     if(viewModel.selectedKeycap != null) {
@@ -88,18 +40,69 @@ import net.systemvi.configurator.model.KeycapPosition
 }
 
 @Composable
-fun DesignHoverCard(){
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-        modifier = Modifier
-            .padding(bottom=20.dp)
-            .shadow(elevation = 20.dp,RoundedCornerShape(20.dp))
-            .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(20.dp))
-            .padding(20.dp)
-            .size(900.dp,400.dp)
+fun AddRowAndSaveAsButton(rowLimit: Int, oneUSize: Int){
+    val viewModel = viewModel { DesignPageViewModel() }
+    val keymap = viewModel.keymap
+
+    Row(
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
     ){
-        DesignPage(Modifier.fillMaxSize(), showFloatingActionButtons = false, keycapLimit = 8, rowLimit = 5)
+        AddRowButton(viewModel::addRow, keymap.keycaps.size>=rowLimit, oneUSize)
+        SaveAsButton(keymap, viewModel::setName, keymap.keycaps.flatten().isNotEmpty())
+    }
+}
+
+@Composable
+fun KeymapRow(row: List<Keycap>, i:Int, isSelected: Boolean, keycapLimit: Int, oneUSize: Int){
+    val viewModel = viewModel { DesignPageViewModel() }
+    val paddingBottom = oneUSize * row.fold(0f){acc, keycap -> acc.coerceAtLeast(keycap.padding.bottom)}
+
+    Row(
+        modifier = Modifier
+            .graphicsLayer(
+                alpha = if(isSelected)0f else 1f,
+            )
+            .wrapContentSize(unbounded = true)
+            .padding(bottom = (paddingBottom+10).dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
+    )
+    {
+        AddKeycapButton({ viewModel.addKeycap(i) }, row.size >= keycapLimit, oneUSize)
+        DraggableList(
+            items = row,
+            key = {it},
+            onDrop = {},
+            direction = DraggableListDirection.horizontal
+        ){ j,keycap, isSelected->
+            OneKeycap(keycap, i, j, isSelected, oneUSize)
+        }
+        RemoveRowButton({ viewModel.removeRow(i) }, oneUSize)
+    }
+
+}
+
+@Composable
+fun OneKeycap(keycap: Keycap, i:Int, j: Int, isSelected: Boolean, oneUSize: Int){
+    val viewModel = viewModel { DesignPageViewModel() }
+
+    val width = oneUSize * keycap.width.size
+    val height = oneUSize * keycap.height.size
+    val leftPadding = oneUSize * keycap.padding.left
+
+    Box(
+        modifier = Modifier
+            .graphicsLayer(
+                alpha = if(isSelected)0f else 1f,
+            )
+            .padding(start = leftPadding.dp)
+            .size(width.dp, height.dp)
+            .wrapContentSize(unbounded = true),
+    ) {
+        KeycapDesign(keycap, { viewModel.deleteKeycap(i, j) }, {
+            viewModel.selectedKeycap = KeycapPosition(i, j)
+        }, oneUSize)
     }
 }
 
