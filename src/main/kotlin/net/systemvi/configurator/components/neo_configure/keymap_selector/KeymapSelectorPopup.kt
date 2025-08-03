@@ -4,6 +4,7 @@ import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -50,7 +51,8 @@ fun KeymapsPopUp(
             Column(
                 modifier = Modifier
                     .size(1000.dp,400.dp)
-                    .padding(top = 20.dp,)
+                    .padding(top = 20.dp)
+                    .padding(horizontal = 20.dp)
                     .verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -66,10 +68,11 @@ fun KeymapsPopUp(
                     color = MaterialTheme.colorScheme.primary
                 )
                 Column(
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
                     modifier = Modifier
+                        .padding(bottom = 20.dp)
                         .weight(1f)
                         .verticalScroll(rememberScrollState())
-
                 ) {
                     keymaps.filter { it.second.isNotEmpty() }.forEach { (title,keymaps)->
                         KeymapRow(title,keymaps){
