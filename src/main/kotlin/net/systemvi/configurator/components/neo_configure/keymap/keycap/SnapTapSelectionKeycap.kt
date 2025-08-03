@@ -18,26 +18,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import net.systemvi.configurator.data.LayerKeyColors
-import net.systemvi.configurator.data.SnapTapKeyColors
 
 @Composable
-fun SnapTapKeycap(isDown: Boolean, selected: Boolean, text:String, isFirst:Boolean, index:Int) {
-
-    val containerColor by animateColorAsState(
-        targetValue = when {
-            isDown -> MaterialTheme.colorScheme.tertiary
-            else -> MaterialTheme.colorScheme.primaryContainer
-        }
-    )
-
-    val textColor by animateColorAsState(
-        targetValue = when {
-            isDown -> MaterialTheme.colorScheme.tertiaryContainer
-            selected -> MaterialTheme.colorScheme.primaryContainer
-            else -> MaterialTheme.colorScheme.primary
-        }
-    )
+fun SnaptapSelectionKeycap(text:String){
 
     Column(
         verticalArrangement = Arrangement.Center,
@@ -46,12 +29,12 @@ fun SnapTapKeycap(isDown: Boolean, selected: Boolean, text:String, isFirst:Boole
             .padding(2.dp)
             .clip(RoundedCornerShape(10.dp))
             .background(
-                color = containerColor
+                color = MaterialTheme.colorScheme.surfaceContainerLow
             )
             .border(
                 BorderStroke(
                     2.dp,
-                    SnapTapKeyColors[index.coerceAtMost(SnapTapKeyColors.size-1)],
+                    MaterialTheme.colorScheme.inverseOnSurface,
                 ),
                 shape = RoundedCornerShape(10.dp)
             ),
@@ -60,7 +43,7 @@ fun SnapTapKeycap(isDown: Boolean, selected: Boolean, text:String, isFirst:Boole
         Text(
             text = text,
             style = MaterialTheme.typography.bodySmall,
-            color = textColor,
+            color = MaterialTheme.colorScheme.inverseOnSurface,
             textAlign = TextAlign.Center
         )
     }

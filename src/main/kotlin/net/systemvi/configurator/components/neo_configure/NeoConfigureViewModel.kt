@@ -26,6 +26,8 @@ import net.systemvi.configurator.model.addLayerKey
 import net.systemvi.configurator.model.addSnapTapPair
 import net.systemvi.configurator.model.changeName
 import net.systemvi.configurator.model.changeType
+import net.systemvi.configurator.model.removeLayerKey
+import net.systemvi.configurator.model.removeSnapTapPair
 import net.systemvi.configurator.model.updateKeycap
 import net.systemvi.configurator.utils.api.KeyboardSerialApi
 import net.systemvi.configurator.utils.api.KeymapApi
@@ -140,22 +142,24 @@ class NeoConfigureViewModel: ViewModel() {
     }
 
     fun keycapClick(position: KeycapPosition,ctrlPressed:Boolean){
-        val isSnapTapSelecting by snapTapSelection.isSelecting
+        var isSnapTapSelecting by snapTapSelection.isSelecting
         if(isSnapTapSelecting){
             Triple(keymap,keymapApi,serialApi).tripled().onSome { (keymap,keymapApi,serialApi)->
-                val keycap=keymap.keycaps[position.row][position.column]
+                val keycap=keymap.keycaps[position.column][position.row]
                 var first by snapTapSelection.first
                 var second by snapTapSelection.second
                 when{
                     first.isNone() -> first=keycap.matrixPosition.some()
-                    second.isNone() -> second=keycap.matrixPosition.some()
                     else -> {
+                        second=keycap.matrixPosition.some()
                         val pair= SnapTapPair(
                             first.getOrNull()!!,
                             second.getOrNull()!!
                         )
                         this.keymap=keymap.addSnapTapPair(pair).some()
+                        saveKeymap()
                         serialApi.addSnapTapPair(pair)
+                        isSnapTapSelecting=false
                     }
                 }
             }
@@ -184,6 +188,12 @@ class NeoConfigureViewModel: ViewModel() {
     fun setKey(key: Key){
         Pair(keymap,serialApi).paired().onSome { (keymap,serialApi) ->
             currentlySelectedKeycaps.forEach { position->
+//                val keycap=keymap.keycaps[position.row][position.column]
+//                var keymap=keymap
+//                if(keymap.layerKeyPositions.map { it.position }.contains(keycap.matrixPosition)){
+//                    keymap=keymap.removeLayerKey(keycap.matrixPosition)
+//                    serialApi.removeLayerKeyPosition(keycap.matrixPosition)
+//                }
                 this.keymap = this.keymap.map { it.updateKeycap(
                     position.column,
                     position.row,
@@ -208,6 +218,12 @@ class NeoConfigureViewModel: ViewModel() {
     fun setMacro(key: Macro){
         Pair(keymap,serialApi).paired().onSome { (keymap,serialApi) ->
             currentlySelectedKeycaps.forEach { position->
+//                val keycap=keymap.keycaps[position.column][position.row]
+//                var keymap=keymap
+//                if(keymap.layerKeyPositions.map { it.position }.contains(keycap.matrixPosition)){
+//                    keymap=keymap.removeLayerKey(keycap.matrixPosition)
+//                    serialApi.removeLayerKeyPosition(keycap.matrixPosition)
+//                }
                 this.keymap = this.keymap.map { it.updateKeycap(
                     position.column,
                     position.row,
@@ -284,6 +300,13 @@ class NeoConfigureViewModel: ViewModel() {
         isSelecting=true
 
     }
+
+    fun removeSnapTapPair(pair: SnapTapPair) =
+        Triple(keymap,keymapApi,serialApi).tripled().onSome { (keymap, _,serialApi) ->
+            this.keymap=keymap.removeSnapTapPair(pair).some()
+            serialApi.removeSnapTapPair(pair)
+            saveKeymap()
+        }
 
     fun createCopyOfKeymap(name:String){
         Pair(keymap,keymapApi).paired().onSome { (keymap,api)->

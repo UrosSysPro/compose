@@ -1,6 +1,7 @@
 package net.systemvi.configurator.components.neo_configure.keymap.keycap
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.isCtrlPressed
@@ -38,6 +39,12 @@ val NeoConfigKeycap: KeycapComponent = { params ->
     val snapTapIndex = keymap.snapTapPairs.indexOfFirst { it.first == keycap.matrixPosition || it.second == keycap.matrixPosition }
     val isSnapTapFirst = keymap.snapTapPairs.any { it.first == keycap.matrixPosition }
 
+    val isSelectingSnapTap by neoConfigViewModel.snapTapSelection.isSelecting
+    val firstSelectedSnapTapKey by neoConfigViewModel.snapTapSelection.first
+    val secondSelectedSnapTapKey by neoConfigViewModel.snapTapSelection.second
+    val isFirstSelectedSnapTapKey = firstSelectedSnapTapKey.map { it==keycap.matrixPosition }.getOrElse { false }
+    val isSecondSelectedSnapTapKey = firstSelectedSnapTapKey.map { it==keycap.matrixPosition }.getOrElse { false }
+
     Box(
         modifier = Modifier.pointerInput(Unit) {
             awaitPointerEventScope {
@@ -52,6 +59,10 @@ val NeoConfigKeycap: KeycapComponent = { params ->
         }
     ) {
         when{
+            isSelectingSnapTap && isSnapTap -> SnapTapKeycap(isPressed,isSelected,text,isSnapTapFirst,snapTapIndex)
+            isSelectingSnapTap && isFirstSelectedSnapTapKey -> SnapTapKeycap(isPressed,isSelected,text,true,0)
+            isSelectingSnapTap && isSecondSelectedSnapTapKey -> SnapTapKeycap(isPressed,isSelected,text,false,0)
+            isSelectingSnapTap  -> SnaptapSelectionKeycap(text)
             isLayer -> LayerKeycap(isPressed,layer)
             isSnapTap -> SnapTapKeycap(isPressed,isSelected,text,isSnapTapFirst,snapTapIndex)
             else -> FlatKeycap(isPressed,isSelected,text)

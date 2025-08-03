@@ -93,14 +93,14 @@ fun KeysPopUp(
                 KeyCategoryGrid(
                     page = selectedCategory,
                     macros = macros,
-                    onAddMacro = {macros += it},
-                    onRemoveMacro = {macros = macros.filter { macro-> macro != it }},
-                    onNormalKeySelected = { key-> neoConfigViewModel.setKey(key);close()},
-                    onMacroKeySelected = {macro->neoConfigViewModel.setMacro(macro);close()},
-                    onLayerKeySelected = {layer->neoConfigViewModel.addLayerKey(layer);close()},
+                    onAddMacro = { macros += it },
+                    onRemoveMacro = { macros = macros.filter { macro-> macro != it } },
+                    onNormalKeySelected = { key-> neoConfigViewModel.setKey(key);close() },
+                    onMacroKeySelected = { macro->neoConfigViewModel.setMacro(macro);close() },
+                    onLayerKeySelected = { layer->neoConfigViewModel.addLayerKey(layer);close() },
                     snapTapPairs = snapTapPairs,
-                    onAddSnapTap = {println("Add snap tap pair")},
-                    onRemoveSnapTap = {println("Remove snap tap pair")},
+                    onAddSnapTap = { neoConfigViewModel.startSelectingSnapTapPair() },
+                    onRemoveSnapTap = { neoConfigViewModel.removeSnapTapPair(it) },
                 )
             }
         }
