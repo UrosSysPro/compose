@@ -1,4 +1,4 @@
-package net.systemvi.configurator.components.neo_configure.key_selector
+package net.systemvi.configurator.components.common.keys_picker
 
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
@@ -20,29 +20,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
-import net.systemvi.configurator.components.common.dialog.MacroEditorModal
-import net.systemvi.configurator.data.emptyMacro
-import net.systemvi.configurator.model.Macro
+import net.systemvi.configurator.model.SnapTapPair
 
 @Composable
-fun KeyCategoryMacro(
-    macroKeys: List<Macro>,
-    onAddMacro:(Macro)->Unit,
-    onRemoveMacro:(Macro)->Unit,
-    onMacroKeySelected:(Macro)->Unit,
-) {
-    var showEditor by remember { mutableStateOf(false) }
-    var editedMacro by remember { mutableStateOf(emptyMacro) }
-
+fun KeyCategorySnapTap(
+    snapTapPairs:List<SnapTapPair>,
+    onAddSnapTap:() -> Unit,
+    onRemoveSnapTap:(SnapTapPair) -> Unit,
+){
     ElevatedButton(
-        onClick = { showEditor = true }
+        onClick = onAddSnapTap
     ){
         Text(text = "+")
     }
-
-    macroKeys.forEach { macro->
+    snapTapPairs.forEach { pair ->
         ElevatedButton(
-            onClick = { onMacroKeySelected(macro) },
+            onClick = { },
         ){
             Row (
                 verticalAlignment = Alignment.CenterVertically,
@@ -50,7 +43,7 @@ fun KeyCategoryMacro(
                 modifier = Modifier
             ){
                 var showMenu by remember { mutableStateOf(false) }
-                Text(macro.name)
+                Text("snap tap pair")
                 Icon(
                     Icons.Filled.MoreVert,
                     contentDescription = "three dots",
@@ -63,22 +56,11 @@ fun KeyCategoryMacro(
                     onDismissRequest = { showMenu = false },
                 ){
                     DropdownMenuItem(
-                        text = { Text("Edit") },
-                        onClick = { editedMacro = macro; showEditor = true; showMenu = false }
-                    )
-                    DropdownMenuItem(
                         text = { Text("Delete") },
-                        onClick = { onRemoveMacro(macro); showMenu = false }
+                        onClick = { onRemoveSnapTap(pair); showMenu = false }
                     )
                 }
             }
         }
     }
-
-    MacroEditorModal(
-        showEditor,
-        editedMacro,
-        onSave = { onAddMacro(it); showEditor = false },
-        onCancel = { showEditor = false },
-    )
 }

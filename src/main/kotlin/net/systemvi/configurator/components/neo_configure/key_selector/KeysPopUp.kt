@@ -26,6 +26,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import arrow.core.getOrElse
+import net.systemvi.configurator.components.common.keys_picker.KeysPicker
 import net.systemvi.configurator.components.configure.KeyboardKeysPages
 import net.systemvi.configurator.components.neo_configure.NeoConfigureViewModel
 import net.systemvi.configurator.model.Macro
@@ -59,7 +60,7 @@ fun KeysPopUp(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
-                text = selectedCategory.title,
+                text = "Keys",
                 modifier = Modifier
                     .sharedElement(
                         rememberSharedContentState(key = "title"),
@@ -69,40 +70,20 @@ fun KeysPopUp(
                 color = MaterialTheme.colorScheme.primary
             )
             //content
-            Column(
-                modifier = Modifier,
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                Row(
-                    modifier = Modifier,
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center,
-                ){
-                    categories.forEach { category ->
-                        IconButton(
-                            onClick = {selectedCategory=category}
-                        ){
-                            Icon(
-                                imageVector = Icons.Filled.KeyboardArrowUp,
-                                contentDescription = "keys category icon",
-                            )
-                        }
-                    }
-                }
-                KeyCategoryGrid(
-                    page = selectedCategory,
-                    macros = macros,
-                    onAddMacro = { macros += it },
-                    onRemoveMacro = { macros = macros.filter { macro-> macro != it } },
-                    onNormalKeySelected = { key-> neoConfigViewModel.setKey(key);close() },
-                    onMacroKeySelected = { macro->neoConfigViewModel.setMacro(macro);close() },
-                    onLayerKeySelected = { layer->neoConfigViewModel.addLayerKey(layer);close() },
-                    snapTapPairs = snapTapPairs,
-                    onAddSnapTap = { neoConfigViewModel.startSelectingSnapTapPair() },
-                    onRemoveSnapTap = { neoConfigViewModel.removeSnapTapPair(it) },
-                )
-            }
+            KeysPicker(
+                categories = categories,
+                onCategorySelect = { selectedCategory = it },
+                selectedCategory = selectedCategory,
+                macros = macros,
+                onAddMacro = { macros += it },
+                onRemoveMacro = { macros = macros.filter { macro-> macro != it } },
+                onNormalKeySelected = { key-> neoConfigViewModel.setKey(key);close() },
+                onMacroKeySelected = { macro->neoConfigViewModel.setMacro(macro);close() },
+                onLayerKeySelected = { layer->neoConfigViewModel.addLayerKey(layer);close() },
+                snapTapPairs = snapTapPairs,
+                onAddSnapTap = { neoConfigViewModel.startSelectingSnapTapPair() },
+                onRemoveSnapTap = { neoConfigViewModel.removeSnapTapPair(it) },
+            )
         }
     }
 }

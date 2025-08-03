@@ -1,4 +1,4 @@
-package net.systemvi.configurator.components.neo_configure.key_selector
+package net.systemvi.configurator.components.common.keys_picker
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.FlowRow
@@ -40,8 +40,8 @@ fun KeyCategoryGrid(
                     }
                 }
             }
-            KeyboardKeysPages.MacroKeys -> KeyCategoryMacro(macros,onAddMacro,onRemoveMacro,onMacroKeySelected)
-            KeyboardKeysPages.SnapTapKeys -> KeyCategorySnapTap(snapTapPairs,onAddSnapTap,onRemoveSnapTap)
+            KeyboardKeysPages.MacroKeys -> KeyCategoryMacro(macros, onAddMacro, onRemoveMacro, onMacroKeySelected)
+            KeyboardKeysPages.SnapTapKeys -> KeyCategorySnapTap(snapTapPairs, onAddSnapTap, onRemoveSnapTap)
             else -> page.keys.forEach { key ->
                 ElevatedButton(
                     onClick = {onNormalKeySelected(key)},
