@@ -97,8 +97,8 @@ fun OneKeycap(keycap: Keycap, i:Int, j: Int, isSelected: Boolean, oneUSize: Int)
                 alpha = if(isSelected)0f else 1f,
             )
             .padding(start = leftPadding.dp)
-            .size(width.dp, height.dp)
-            .wrapContentSize(unbounded = true),
+            .size(width.dp, oneUSize.dp)
+            .wrapContentSize(unbounded = true, align = Alignment.TopCenter),
     ) {
         KeycapDesign(keycap, { viewModel.deleteKeycap(i, j) }, {
             viewModel.selectedKeycap = KeycapPosition(i, j)
