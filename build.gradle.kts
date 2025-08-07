@@ -44,6 +44,8 @@ dependencies {
     // csg model exporter
     implementation("eu.mihosoft.vvecmath:vvecmath:0.3.8")
     implementation(files("./libs/jcsg.jar"))
+
+    implementation("io.github.classgraph:classgraph:4.8.165")
 }
 
 javafx {

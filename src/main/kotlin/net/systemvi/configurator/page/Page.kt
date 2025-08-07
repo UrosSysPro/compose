@@ -18,3 +18,5 @@ object SettingsPage:Page()
 object ComponentPage:Page()
 @Serializable
 object SerialApiTestPage:Page()
+@Serializable
+object ComposablesGalleryPage:Page()

@@ -20,13 +20,15 @@ import arrow.core.None
 import arrow.core.Option
 import net.systemvi.configurator.components.settings.SettingsHoverCard
 import net.systemvi.configurator.components.tester.TesterHoverCard
+import net.systemvi.configurator.page.ComposablesGalleryPage
 import net.systemvi.configurator.page.ConfigurePage
 import net.systemvi.configurator.page.DesignPage
 import net.systemvi.configurator.page.NeoConfigurePage
 import net.systemvi.configurator.page.SettingsPage
 import net.systemvi.configurator.page.TesterPage
+import net.systemvi.configurator.utils.annotations.ComposablesGalleryItem
 
-
+@ComposablesGalleryItem("nav bar")
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)
 @Composable
 fun NavBar() {
@@ -36,6 +38,7 @@ fun NavBar() {
         NavbarLink("Key Tester", TesterPage,    Icons.Filled.Check,     { TesterHoverCard() }),
         NavbarLink("Design", DesignPage,    Icons.Filled.Create,    {}),
         NavbarLink("Settings", SettingsPage,  Icons.Filled.Settings,  { SettingsHoverCard() }),
+        NavbarLink("Composables Gallery", ComposablesGalleryPage,  Icons.Filled.Settings,  {}),
 //        NavbarLink("Component",     ComponentPage,  Icons.Filled.Settings, {}),
 //        NavbarLink("Serial Api Tester", SerialApiTestPage,  Icons.Filled.Settings, {}),
     )

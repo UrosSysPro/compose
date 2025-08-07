@@ -23,6 +23,7 @@ import net.systemvi.configurator.components.tester.TesterPage
 import net.systemvi.configurator.components.serial_api_test_page.SerialApiTestPage
 import net.systemvi.configurator.components.component_tester.ComponentPage
 import net.systemvi.configurator.page.ComponentPage
+import net.systemvi.configurator.page.ComposablesGalleryPage
 import net.systemvi.configurator.page.ConfigurePage
 import net.systemvi.configurator.page.DesignPage
 import net.systemvi.configurator.page.NeoConfigPage
@@ -75,6 +76,7 @@ fun App(
                         SettingsPage -> SettingsPage(Modifier)
                         ComponentPage -> ComponentPage(Modifier)
                         SerialApiTestPage -> SerialApiTestPage(Modifier)
+                        ComposablesGalleryPage -> ComposablesGalleryPage()
                     }
                     NavBar()
                 }
