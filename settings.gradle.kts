@@ -14,3 +14,4 @@ pluginManagement {
 }
 
 rootProject.name = "compose"
+include("processor")
