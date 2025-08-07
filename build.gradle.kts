@@ -45,7 +45,8 @@ dependencies {
     implementation("eu.mihosoft.vvecmath:vvecmath:0.3.8")
     implementation(files("./libs/jcsg.jar"))
 
-    implementation("io.github.classgraph:classgraph:4.8.165")
+    implementation("com.google.devtools.ksp:symbol-processing-api:2.1.20-2.0.0")
+    ksp(rootProject.files("./src/net/systemvi/configurator/utils/annotations/ComposablesGalleryItem.kt"))
 }
 
 javafx {
