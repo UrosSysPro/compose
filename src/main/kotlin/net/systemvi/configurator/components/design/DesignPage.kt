@@ -10,8 +10,12 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import net.systemvi.configurator.components.common.DraggableList
 import net.systemvi.configurator.components.common.DraggableListDirection
+import net.systemvi.configurator.model.KeyMap
 import net.systemvi.configurator.model.KeycapPosition
 import net.systemvi.configurator.model.Keycap
+import net.systemvi.configurator.model.forEveryKeycapPositioned
+import net.systemvi.configurator.utils.export.round_filet_design.KeycapPadding
+import net.systemvi.configurator.utils.export.round_filet_design.KeycapSize
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable fun DesignPage(modifier: Modifier, showFloatingActionButtons: Boolean = true, keycapLimit: Int = 20, rowLimit: Int = 10, oneUSize:Int = 50) {
@@ -37,6 +41,23 @@ import net.systemvi.configurator.model.Keycap
     if(viewModel.selectedKeycap != null) {
         if(showFloatingActionButtons) KeycapEdit(keymap, viewModel.selectedKeycap!!, viewModel::updateKeymap)
     }
+//    Column {
+//        EditableGrid(keymap,onChange={})
+//        Row{
+//            Tabs(
+//                KeycapSettings(),
+//                keyboardSettings(),
+//                KeyboardJson(),
+//                Summary(),
+//            )
+//            when(selectedPage){
+//                KeycapSettingsTab -> KeycapSettings()
+//                KeyboardSettingsTab -> KeyboardSettings()
+//                KeybaordJsonTab -> KeyboardSettings()
+//                SummaryTab -> Summary()
+//            }
+//        }
+//    }
 }
 
 @Composable
