@@ -46,7 +46,8 @@ dependencies {
     implementation(files("./libs/jcsg.jar"))
 
     implementation("com.google.devtools.ksp:symbol-processing-api:2.1.20-2.0.0")
-    ksp(rootProject.files("./src/net/systemvi/configurator/utils/annotations/ComposablesGalleryItem.kt"))
+    implementation(project(":processor"))
+    ksp(project(":processor"))
 }
 
 javafx {
