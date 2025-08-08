@@ -61,6 +61,12 @@ tasks.withType<Jar> {
     }
 }
 
+buildscript{
+    dependencies{
+        classpath(kotlin("gradle-plugin", "2.1.20"))
+    }
+}
+
 compose.desktop {
     application {
         mainClass = "net.systemvi.configurator.MainKt"
