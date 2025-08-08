@@ -1,10 +1,10 @@
 package net.systemvi.configurator.page
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -35,14 +35,14 @@ fun ComposablesGalleryPage (){
                 fontSize = 40.sp,
                 fontWeight = FontWeight.Bold,
             )
-            galleryComponents.forEach { (name,component)->
-                FlowRow (
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
-                    modifier = Modifier
-                        .width(650.dp)
-                        .horizontalScroll(rememberScrollState())
-                ){
+            FlowRow (
+                horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                modifier = Modifier
+                    .verticalScroll(rememberScrollState())
+                    .width(800.dp)
+            ){
+                galleryComponents.forEach { (name,component)->
                     Column(
                         verticalArrangement = Arrangement.spacedBy(16.dp),
                         modifier = Modifier
@@ -57,7 +57,15 @@ fun ComposablesGalleryPage (){
                             fontSize = 30.sp,
                             modifier = Modifier
                         )
-                        component()
+                        Column(
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier
+                                .weight(1f)
+                                .fillMaxWidth()
+                        ){
+                            component()
+                        }
                     }
                 }
             }

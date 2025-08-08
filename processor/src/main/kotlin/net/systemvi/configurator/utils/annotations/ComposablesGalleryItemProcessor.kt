@@ -14,10 +14,6 @@ class ComposablesGalleryItemProcessor(
     private val logger: KSPLogger
 ): SymbolProcessor{
     override fun process(resolver: Resolver): List<KSAnnotated> {
-
-        logger.warn("hello from ksp")
-        println("hello from ksp")
-
         val symbols = resolver
             .getSymbolsWithAnnotation(ComposablesGalleryItem::class.qualifiedName!!)
             .filterIsInstance<KSFunctionDeclaration>()
@@ -44,6 +40,9 @@ class ComposablesGalleryItemProcessor(
                     .value as String
 
                 val fqName = func.qualifiedName!!.asString()
+
+                logger.info("found item:$name function:$fqName")
+
                 writer.appendLine("""    "$name" to { $fqName() },""")
             }
 
