@@ -5,6 +5,7 @@ import arrow.core.right
 import arrow.optics.dsl.index
 import arrow.optics.optics
 import kotlinx.serialization.Serializable
+import net.systemvi.configurator.data.allKeys
 import net.systemvi.configurator.utils.export.round_filet_design.KeycapSize
 import net.systemvi.configurator.utils.export.round_filet_design.RoundFiletKeyboard
 import net.systemvi.configurator.utils.export.round_filet_design.SwitchSize
@@ -61,6 +62,27 @@ fun KeyMap.updateKeycap(x:Int,y:Int,layer:Int,macro:Macro): KeyMap=
         .layers
         .index(layer)
         .set(this,macro.left())
+
+fun KeyMap.addRow(): KeyMap =
+    KeyMap.keycaps.modify(this) { it + listOf(listOf()) }
+
+fun KeyMap.addKeycap(row: Int): KeyMap =
+    KeyMap.keycaps.index(row).modify(this) {
+        it + Keycap(
+            listOf(allKeys[0].right()),
+            matrixPosition = KeycapMatrixPosition(row, it.size + 1)
+        )
+    }
+
+fun KeyMap.removeRow(row: Int): KeyMap =
+    KeyMap.keycaps.modify(this) { keycaps ->
+        keycaps.filterIndexed { index, _ -> index != row }
+    }
+
+fun KeyMap.deleteKeycap(row: Int, key: Int): KeyMap =
+    KeyMap.keycaps.index(row).modify(this, {
+        it.filterIndexed { index, _ -> index != key }
+    })
 
 fun KeyMap.addLayerKey(layerKeyPosition: LayerKeyPosition): KeyMap=
     KeyMap.layerKeyPositions.modify(this) { layerkeys -> layerkeys + layerKeyPosition }

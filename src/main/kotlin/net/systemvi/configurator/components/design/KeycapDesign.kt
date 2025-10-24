@@ -25,13 +25,14 @@ import androidx.compose.ui.input.pointer.PointerButton
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.onPointerEvent
 import androidx.compose.ui.unit.dp
+import net.systemvi.configurator.components.common.keyboard_grid.KeycapComponent
 import net.systemvi.configurator.components.common.keycaps.FlatKeycap
 import net.systemvi.configurator.model.KeyMap
 import net.systemvi.configurator.model.Keycap
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalFoundationApi::class)
 @Composable
-fun KeycapDesign(keycap: Keycap, onDelete: () -> Unit, onRightClick: () -> Unit, size: Int){
+fun KeycapDesign(keycap: Keycap, onDelete: () -> Unit, onRightClick: () -> Unit, size: Int, keycapType: KeycapComponent){
 
     var isHovered by remember { mutableStateOf(false) }
     val width = size * keycap.width.size
@@ -48,11 +49,12 @@ fun KeycapDesign(keycap: Keycap, onDelete: () -> Unit, onRightClick: () -> Unit,
             }
             .onClick(
                 enabled = true,
-                matcher = PointerMatcher.mouse(PointerButton.Secondary),
+                matcher = PointerMatcher.mouse(PointerButton.Primary),
                 onClick = onRightClick
             )
     ) {
-        FlatKeycap(false,false,"A")
+//        FlatKeycap(isDown = false, wasDown = false, "A")
+        keycapType
         if (isHovered) {
             IconButton(
                 onClick = onDelete,

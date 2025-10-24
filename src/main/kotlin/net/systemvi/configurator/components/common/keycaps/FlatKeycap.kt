@@ -16,18 +16,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import arrow.core.getOrElse
-import net.systemvi.configurator.components.common.keyboard_grid.KeycapComponent
-import net.systemvi.configurator.components.common.keyboard_grid.KeycapParam
-import net.systemvi.configurator.components.tester.TesterPageViewModel
-import net.systemvi.configurator.data.allKeys
 
 @Composable
-fun FlatKeycap(isDown: Boolean,wasDown:Boolean, text:String) {
+fun FlatKeycap(isDown: Boolean, wasDown:Boolean, text:String) {
 
     val containerColor by animateColorAsState(
         targetValue = when {

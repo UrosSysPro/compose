@@ -1,4 +1,4 @@
-package net.systemvi.configurator.components.design
+package net.systemvi.configurator.components.design.neo_design_page
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
