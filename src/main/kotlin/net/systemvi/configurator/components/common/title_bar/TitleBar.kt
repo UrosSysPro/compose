@@ -18,7 +18,6 @@ import androidx.compose.ui.draganddrop.DragData
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.FrameWindowScope
-import javafx.scene.paint.Material
 import net.systemvi.configurator.components.common.icons.Exit
 import net.systemvi.configurator.components.common.icons.Maximize
 import net.systemvi.configurator.components.common.icons.Minimize

@@ -7,7 +7,6 @@ import arrow.optics.optics
 import kotlinx.serialization.Serializable
 import net.systemvi.configurator.data.allKeys
 import net.systemvi.configurator.utils.export.round_filet_design.KeycapSize
-import net.systemvi.configurator.utils.export.round_filet_design.RoundFiletKeyboard
 import net.systemvi.configurator.utils.export.round_filet_design.SwitchSize
 import java.io.File
 
@@ -129,16 +128,16 @@ fun KeyMap.forEveryKeycapPositioned(keycapSize:KeycapSize,keycapPadding: net.sys
 }
 
 fun KeyMap.exportStl(name:String){
-    val dirName="round_filet_design"
-    val file= File(dirName)
-    file.mkdir()
-    RoundFiletKeyboard(
-        keymap=this,
-        switchSize = SwitchSize(14.0,14.0),
-        keycapSize = KeycapSize(18.0,18.0),
-        keycapPadding = net.systemvi.configurator.utils.export.round_filet_design.KeycapPadding(0.5,0.5),
-        plateHeight = 2.0,
-        keyboardBorderWidth = 8.0,
-        keyboardBorderHeight = 20.0,
-    ).saveToDir(dirName)
+//    val dirName="round_filet_design"
+//    val file= File(dirName)
+//    file.mkdir()
+//    RoundFiletKeyboard(
+//        keymap=this,
+//        switchSize = SwitchSize(14.0,14.0),
+//        keycapSize = KeycapSize(18.0,18.0),
+//        keycapPadding = net.systemvi.configurator.utils.export.round_filet_design.KeycapPadding(0.5,0.5),
+//        plateHeight = 2.0,
+//        keyboardBorderWidth = 8.0,
+//        keyboardBorderHeight = 20.0,
+//    ).saveToDir(dirName)
 }
