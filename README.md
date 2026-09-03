@@ -1,4 +1,5 @@
 # Download and Run
+
 Go to releases page and download latest release for your platform
 
 # Compile and Run
