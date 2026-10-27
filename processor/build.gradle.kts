@@ -2,13 +2,8 @@ plugins {
     kotlin("jvm")
 }
 
-repositories {
-    mavenCentral()
-    maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
-    gradlePluginPortal()
-    google()
-}
-
 dependencies {
-    implementation("com.google.devtools.ksp:symbol-processing-api:2.1.20-2.0.0")
+    // Version comes from gradle/libs.versions.toml. KSP is versioned independently of Kotlin
+    // since the 2.3.x line, so this no longer has to match the Kotlin version.
+    implementation(libs.ksp.api)
 }

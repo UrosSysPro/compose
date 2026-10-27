@@ -1,0 +1,63 @@
+# Single source of truth for every dependency and plugin version in this build.
+# build.gradle.kts / processor/build.gradle.kts only reference these through the generated `libs` accessors.
+#
+# Conventions used here:
+# - `kotlin` is also the version of the Compose compiler plugin and the serialization plugin; they
+#   are released together with Kotlin and must never be pinned to different versions.
+# - `compose` is the Compose Multiplatform Gradle plugin version. `compose.material3`,
+#   `compose.desktop` etc. are resolved by that plugin, so they are not listed separately.
+# - KSP is versioned independently of Kotlin since the 2.3.x line (no longer "<kotlin>-<ksp>").
+
+[versions]
+kotlin = "2.4.21"
+compose = "1.12.2"
+ksp = "2.3.12"
+
+arrow = "2.3.0"
+coroutines = "1.11.0"
+serialization = "1.12.0"
+lifecycle = "2.11.0"
+
+jssc = "2.10.4"
+slf4j = "2.0.20"
+materialkolor = "5.0.1"
+composeDnd = "1.0.0-alpha02"
+
+# Frozen: 1.7.3 is the last version JetBrains published for Compose Multiplatform.
+# There is no 1.8+ release of this artifact. See "Known issues" in AGENTS.md.
+materialIcons = "1.7.3"
+
+[libraries]
+# serial connection
+jssc = { module = "io.github.java-native:jssc", version.ref = "jssc" }
+slf4j-simple = { module = "org.slf4j:slf4j-simple", version.ref = "slf4j" }
+
+# kotlinx
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization" }
+
+# lifecycle (Compose Multiplatform flavor)
+lifecycle-viewmodel-compose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycle" }
+lifecycle-runtime-compose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycle" }
+
+# arrow
+arrow-core = { module = "io.arrow-kt:arrow-core", version.ref = "arrow" }
+arrow-core-serialization = { module = "io.arrow-kt:arrow-core-serialization", version.ref = "arrow" }
+arrow-optics = { module = "io.arrow-kt:arrow-optics", version.ref = "arrow" }
+arrow-optics-ksp = { module = "io.arrow-kt:arrow-optics-ksp-plugin", version.ref = "arrow" }
+
+# third party ui
+materialkolor = { module = "com.materialkolor:material-kolor", version.ref = "materialkolor" }
+compose-dnd = { module = "com.mohamedrejeb.dnd:compose-dnd", version.ref = "composeDnd" }
+material-icons-core = { module = "org.jetbrains.compose.material:material-icons-core", version.ref = "materialIcons" }
+
+# codegen / testing
+ksp-api = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "ksp" }
+kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
+
+[plugins]
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+compose = { id = "org.jetbrains.compose", version.ref = "compose" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
